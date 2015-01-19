@@ -1,15 +1,6 @@
 ﻿<?php
 session_start();
 	include 'headers/_user-details.php';
-	$korkID = $_GET['korkID'];
-	//$korkName_Hypens = $_GET['kork'];
-	//$korkName = str_replace('-', ' ', $korkName_Hypens);
-	
-  	$stmt = $dbh->prepare("SELECT * FROM korks WHERE id = :korkid");
-    $stmt->bindParam(':korkid', $korkID);
-    $stmt->execute();
-    $result = $stmt->fetchAll();
-	$row = $result[0];
 	
 	if($row['userID'] != $_userID){
 		$dbh->exec("UPDATE korks SET visitors=visitors+1 WHERE id=$korkID");
@@ -17,7 +8,7 @@ session_start();
 	}else{
 		$visitors = $row['visitors'];
 	}
-
+	$fullname = $_fname.' '.$_lname;
     $id  = $row['id'];
 	$title = $row['title'];
 	$detail = $row['detail'];
@@ -346,18 +337,12 @@ function sendMessage()
 <div class="full_article_bg" style="top:140px;">
 <div class="kork_desc" style="top:140px;">
   <div class="left_kork">
-    <ul class="bxslider">
-      <!-- <li>
-   					 <iframe src="http://player.vimeo.com/video/17914974" width="610" height="425" frameborder="0" 		webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
-  				</li> -->
-      <li><img src="korkImages/<?php echo $image; ?>" /></li>
-      <li><img src="korkImages/<?php echo $image; ?>" /></li>
-    </ul>
+      <img src="img/users/<?php echo $_profilePic; ?>" /></li>
   </div>
   <div class="right_kork">
-    <h3><?php echo $title;	?></h3>
-    <h4> Created <span class="orange"><?php echo ($daysPassed > 1) ? "$daysPassed days ago" : ($daysPassed == 0) ? "today" : "$daysPassed day ago";?></span><br>
-      in <span class="orange">CATEGORIES / SUB CATEGORIES</span> </h4>
+    <h3><?php echo $fullname;?></h3>
+    <h4>Joined <span class="orange"><?php echo ($joinedAgo > 1) ? "$joinedAgo days ago" : ($joinedAgo == 0) ? "today" : "$joinedAgo day ago";?></span><br>
+      from <span class="orange"><?php echo "<a href='$collegeURL'>$_collegeName</a>";?></span> </h4>
     <p><?php echo $detail; ?></p>
     <a href="#" class="btn_signup" data-toggle="modal" data-target="#message">contact now</a> </div>
   <div class="clear"></div>
@@ -366,7 +351,7 @@ function sendMessage()
 <ul>
 <li>
   <div class="first_dt"> <span> <img src="img/user_thumb_2.png" width="50" height="50" alt=""> </span>
-    <h2>By <a href="#"><?php echo $username; ?></a></h2>
+    <h2>By <a href="#"><?php echo $fullname; ?></a></h2>
     <p>From: Pakistan (joined <?php echo ($joinedAgo > 1) ? "$joinedAgo days ago" : ($joinedAgo == 0) ? "today" : "$joinedAgo day ago";?>)</p>
   </div>
 </li>
@@ -391,7 +376,7 @@ function sendMessage()
 	<div class="bidding_header">
 		<ul><li>
 		<div class='first_dt'>
-		<h2>Bidders</h2></div></li>
+		<h2>Products by <?php echo $fullname; ?></h2></div></li>
 
 		<li><div class="second_dt">
 		<h2>Message</h2>

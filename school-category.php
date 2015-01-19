@@ -246,7 +246,7 @@ function parallax(){
 									$bids=$row['bids'];
 									echo "<div class='prod_desc'>";
         							echo "<span class='featured_bedge'>featured</span>";
-        							echo "<img class='main-prod-pic' src='korkImages/$image' width='247' style='max-height:172px;' alt=''>";
+        							echo "<img class='main-prod-pic' src='img/korkImages/$image' width='247' style='max-height:172px;' alt=''>";
             						echo "<div class='details'>";
             						echo "<a href='cate_desc.php?korkID={$id}'><h3 style='font-weight:bold;height:2.5em;overflow:hidden;'>$title</h3></a>";
 									echo "<a href='cate_desc.php?korkID={$id}'><div class='kork_text_wrap'><h3> $detail </h3></div></a>";

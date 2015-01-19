@@ -234,7 +234,7 @@ join users u on u.ID = i.senderID left outer join korks k on k.ID = i.korkID WHE
             <div class='gig_related_to'>
             	<h4>THIS MESSAGE IS RELATED TO:</h4>
                 <div class='msg-gig'>
-                        <span class='gig-pict-74'><img src='korkImages/$result[image]' width='50px' class='related-gig-pict' alt=''></span>
+                        <span class='gig-pict-74'><img src='img/korkImages/$result[image]' width='50px' class='related-gig-pict' alt=''></span>
                         <p class='gig-desc'><a href='#'>$result[title]</a></p>
                         <p class='gig-username'>by <a href='#'>$result[username]</a><span class='flag-in'></span></p>
                     </div>
@@ -246,7 +246,7 @@ join users u on u.ID = i.senderID left outer join korks k on k.ID = i.korkID WHE
             <div class='msg_wrap_2'>
             <div class='messege_push'>
                 	<span class='user-pict_50'>
-                			<a href='#'><img src='$result[profilePic]' alt='$result[username]' width='50' height='50' class=''></a>
+                			<a href='#'><img src='img/users/$result[profilePic]' alt='$result[username]' width='50' height='50' class=''></a>
                		</span>
                     <h4><a href='#'>$result[fname] $result[lname]</a></h4>
                       <div class='msg_body'>
@@ -260,7 +260,7 @@ join users u on u.ID = i.senderID left outer join korks k on k.ID = i.korkID WHE
             <div class='msg_wrap_11'>
             <div class='messege_push'>
                 	<span class='user-pict_50'>
-                			<a href='#'><img src='$result[profilePic]' alt='$result[username]' width='50' height='50' class=''></a>
+                			<a href='#'><img src='img/users/$result[profilePic]' alt='$result[username]' width='50' height='50' class=''></a>
                		</span>
                     <h4><a href='#'>$result[fname] $result[lname]</a></h4>
                       <div class='msg_body'>
@@ -275,7 +275,7 @@ join users u on u.ID = i.senderID left outer join korks k on k.ID = i.korkID WHE
 	}
                 
               echo"  <div class='reply_box_22' id='reply_box'>
-                	<div class='reply_box_header'><h3>SEND <a href='#'>$name</a> A MESSAGE</h3></div>";
+                	<div class='reply_box_header'><h3>Send <a href='#'>$name</a> a message.</h3></div>";
 					
 					
 						$query = "UPDATE inbox i SET i.isRead=1 WHERE ((i.senderID = :sID && i.receiverID = :rID) || (i.senderID = :rID && i.receiverID = :sID)) order by i.ID";
@@ -292,7 +292,7 @@ join users u on u.ID = i.senderID left outer join korks k on k.ID = i.korkID WHE
           <button class="btn btn_file read_un"><span class="fa fa-file"> &nbsp;</span>ATTACH FILE</button>
           <p class="maxsize"> <span>Maxsize 30MB</span> <br>
             <span><a class="upload_prob" href="#">Problems with upload?</a></span> </p>
-          <p class="char-count"><span>0</span><span> / 1200</span> CHARS MAX </p>
+          <p class="char-count"><span>0</span><span> / 1200</span> Characters Limit</p>
           <input class="button_send" type="button" id="msgsend" value="SEND" />
         </div>
         <div class="clear"></div>

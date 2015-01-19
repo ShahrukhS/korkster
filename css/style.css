@@ -196,7 +196,7 @@ td.inbox_mail_row table td{vertical-align:middle; height:45px;}
 td.inbox_mail_row table td img{vertical-align:middle;}
 td.inbox_mail_row td.checkbox{width:40px; text-align:center;}
 td.inbox_mail_row td.star{width:88px; text-align:left;}
-td.inbox_mail_row td.sender_dt{width:193px; color:#0284a6; padding-right:2%;}
+td.inbox_mail_row td.sender_dt{width:193px; color:#0284a6;}
 td.inbox_mail_row td.sender_dt img{padding-right:13px;}
 td.inbox_mail_row td.messege_subject{width:490px; color:#666666;}
 .main_table table tbody > tr:nth-child(even){background:#fbeedc;}

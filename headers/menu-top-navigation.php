@@ -27,7 +27,7 @@
 
                          
       
-              <li class='admin'><a href='#'> <span class='user_pic_thumb' style='padding:0px'><img src='{$_profilePic}' width='24' alt='user pic'></span> {$_fname_uppercase}</a></li>
+              <li class='admin'><a href='#'> <span class='user_pic_thumb' style='padding:0px'><img src='img/users/{$_profilePic}' width='24' alt='user pic'></span> {$_fname_uppercase}</a></li>
             <li><a href='{$collegeURL}' class='whats_new'><span class='info_circle fa fa-institution' <!--style='display:inline'-->>&nbsp;</span>My School</a></li>
                             <li><a href='inbox.php' class='inbox'><span class='fa fa-inbox' style='display:inline'>&nbsp;</span>Inbox</a></li>
                             <li><a href='deals.php' class='collection'><span class='fa-heart-o'  style='display:inline'>&nbsp;</span>My Deals</a></li>";
@@ -67,7 +67,7 @@
     </div> <!--toPopup end-->
                     </li>
                     <li id='admin'><a href='#'>
-                    				<span class='user_pic_thumb'><img src='{$_profilePic}' width='24' alt='user pic'></span>
+                    				<span class='user_pic_thumb'><img src='img/users/{$_profilePic}' width='24' alt='user pic'></span>
                     				{$_fname_uppercase} {$_lname_uppercase}</a>
                     	<ul>
                         	<li><a href='{$collegeURL}' class='whats_new'><span class='info_circle fa fa-institution'>&nbsp;</span>My School</a></li>
@@ -109,7 +109,6 @@
                     <!-- <li class='bubble'><a href='#'><img src='img/bubble.png' width='24' alt=''></a></li> -->
                     <li class='shopping'><a href='#'  data-toggle='modal' data-target='#login'>LOGIN</a></li>
                     <li id='sales'><a href='#' data-toggle='modal' data-target='#register'>JOIN</a></li>
-                    <!-- <li class='admin'><a href='#'>ZOHAIR HEMANI</a></li> -->
                 </ul>
 			</nav>";
 	}

@@ -5,7 +5,7 @@ session_start();
 	//$korkName_Hypens = $_GET['kork'];
 	//$korkName = str_replace('-', ' ', $korkName_Hypens);
 	
-  	$stmt = $dbh->prepare("SELECT * FROM korks WHERE id = :korkid");
+  	$stmt = $dbh->prepare("SELECT k.*, u.username, u.profilePic, c.name, c.city FROM korks k INNER JOIN users u ON k.userID = u.ID INNER JOIN colleges c ON u.collegeID = c.id WHERE k.id = :korkid");
     $stmt->bindParam(':korkid', $korkID);
     $stmt->execute();
     $result = $stmt->fetchAll();
@@ -44,6 +44,9 @@ session_start();
 	
 	$image = $row['image'];
 	$userID = $row['userID'];
+	$userPic = $row['profilePic'];
+	$korkUser = $row['username'];
+	$korkCollege = $row['name'].', '. $row['city'];
 	
 	/** Bids **/
 	$stmt = $dbh->prepare("SELECT count(korkID) FROM inbox WHERE receiverID = :username");
@@ -350,8 +353,8 @@ function sendMessage()
       <!-- <li>
    					 <iframe src="http://player.vimeo.com/video/17914974" width="610" height="425" frameborder="0" 		webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
   				</li> -->
-      <li><img src="korkImages/<?php echo $image; ?>" /></li>
-      <li><img src="korkImages/<?php echo $image; ?>" /></li>
+      <li><img src="img/korkImages/<?php echo $image; ?>" /></li>
+      <li><img src="img/korkImages/<?php echo $image; ?>" /></li>
     </ul>
   </div>
   <div class="right_kork">
@@ -365,9 +368,9 @@ function sendMessage()
 <div class="kork_option">
 <ul>
 <li>
-  <div class="first_dt"> <span> <img src="img/user_thumb_2.png" width="50" height="50" alt=""> </span>
-    <h2>By <a href="#"><?php echo $username; ?></a></h2>
-    <p>From: Pakistan (joined <?php echo ($joinedAgo > 1) ? "$joinedAgo days ago" : ($joinedAgo == 0) ? "today" : "$joinedAgo day ago";?>)</p>
+  <div class="first_dt"> <span> <img src="img/users/user_thumb_2.png" width="50" height="50" alt=""> </span>
+    <h2>By <a href="#"><?php echo $korkUser; ?></a></h2>
+    <p>From: <?php echo "$korkCollege (joined ",($joinedAgo > 1) ? "$joinedAgo days ago" : ($joinedAgo == 0) ? "today" : "$joinedAgo day ago";?>)</p>
   </div>
 </li>
 <li>
@@ -387,24 +390,24 @@ function sendMessage()
 </li></ul>
 <div class="clear"></div>
 </div>
-<div class="kork_bidding">
-	<div class="bidding_header">
-		<ul><li>
-		<div class='first_dt'>
-		<h2>Bidders</h2></div></li>
-
-		<li><div class="second_dt">
-		<h2>Message</h2>
-		</div></li>
-
-		<li><div class="third_dt">
-		<h2>Bid</h2>
-		</div></li></ul>
-	</div>
-</div>
 
 <?php
 	if($userID == $_userID){
+		echo '<div class="kork_bidding">
+				<div class="bidding_header">
+					<ul><li>
+					<div class="first_dt">
+					<h2>Bidders</h2></div></li>
+
+					<li><div class="second_dt">
+					<h2>Message</h2>
+					</div></li>
+
+					<li><div class="third_dt">
+					<h2>Bid</h2>
+					</div></li></ul>
+				</div>
+			</div>';
 		echo '<div class="kork_message"><ul>';
 		try {
 			if($bid != 0){
@@ -428,7 +431,7 @@ function sendMessage()
 					$diff = $now - $creationDate;
 					$daysPassed = floor($diff/(60*60*24));
 					
-					echo "<li><div class='first_dt'> <span> <img src='$profilePic' width='50' height='50' alt=''> </span>
+					echo "<li><div class='first_dt'> <span> <img src='img/users/$profilePic' width='50' height='50' alt=''> </span>
 						<h2><a href='#'>$sender</a> (sent ",($daysPassed > 1) ? "$daysPassed days ago" : ($daysPassed == 0) ? "today" : "$daysPassed day ago",")</h2>
 						</div></li>";
 					echo "<li><div class='second_dt'>
