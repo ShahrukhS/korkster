@@ -393,7 +393,7 @@ span.orange{color:#f5a532;}
 .kork_option ul li, .kork_message ul li{float:left; border-right:1px solid #cacaca; height:51px;}
 .kork_option .first_dt span, .kork_message .first_dt span{display:block; float:left; margin-right:10px;}
 .kork_option .first_dt,.kork_bidding .first_dt,.kork_message .first_dt{width:350px;}
-.kork_option .first_dt p, .kork_message .first_dt p{ margin:0; color:#989898; white-space:nowrap; font-size:13px; color:#454545;}
+.kork_option .first_dt p, .kork_message .first_dt p{ margin:0; color:#989898; font-size:13px; color:#454545;}
 .kork_option .second_dt, .kork_option .third_dt, .kork_option .share_dt{ width:215px; text-align:center; box-sizing:border-box; -moz-box-sizing:border-box; -webkit-box-sizing:border-box;}
 .kork_option .second_dt p, .kork_option .third_dt p, .kork_option .share_dt p{height:24px; line-height:23px; padding-left:23px;}
 .kork_option .second_dt p{ background:url(../img/phone_img.png) no-repeat 15% center;}
@@ -413,7 +413,7 @@ span.orange{color:#f5a532;}
 
 .kork_message{width:1000px; background:#fff; margin:5px auto; padding:8px; display:table;}
 .kork_message  div{text-align:center; box-sizing:border-box; -moz-box-sizing:border-box; -webkit-box-sizing:border-box;}
-.kork_message h2,p{line-height:23px;}
+.kork_message h2{line-height:23px;}
 .kork_message li .fa{color:#1abc9c;}
 
 .bx-wrapper .bx-viewport{box-shadow:none; border:0 none;}

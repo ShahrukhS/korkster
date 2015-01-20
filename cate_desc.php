@@ -359,7 +359,7 @@ function sendMessage()
   </div>
   <div class="right_kork">
     <h3><?php echo $title;	?></h3>
-    <h4> Created <span class="orange"><?php echo ($daysPassed > 1) ? "$daysPassed days ago" : ($daysPassed == 0) ? "today" : "$daysPassed day ago";?></span><br>
+    <h4> Created <span class="orange"><?php echo $daysPassed > 1 ? "$daysPassed days ago" : ($daysPassed == 0 ? "today" : "$daysPassed day ago");?></span><br>
       in <span class="orange">CATEGORIES / SUB CATEGORIES</span> </h4>
     <p><?php echo $detail; ?></p>
     <a href="#" class="btn_signup" data-toggle="modal" data-target="#message">contact now</a> </div>
@@ -368,9 +368,9 @@ function sendMessage()
 <div class="kork_option">
 <ul>
 <li>
-  <div class="first_dt"> <span> <img src="img/users/user_thumb_2.png" width="50" height="50" alt=""> </span>
+  <div class="first_dt"> <span> <img src="img/users/<?php echo $userPic; ?>" width="50" height="50" alt=""> </span>
     <h2>By <a href="#"><?php echo $korkUser; ?></a></h2>
-    <p>From: <?php echo "$korkCollege (joined ",($joinedAgo > 1) ? "$joinedAgo days ago" : ($joinedAgo == 0) ? "today" : "$joinedAgo day ago";?>)</p>
+    <p>From: <?php echo "$korkCollege (joined ",$joinedAgo > 1 ? "$joinedAgo days ago" : ($joinedAgo == 0 ? "today $joinedAgo" : "$joinedAgo day ago");?>)</p>
   </div>
 </li>
 <li>
@@ -432,7 +432,7 @@ function sendMessage()
 					$daysPassed = floor($diff/(60*60*24));
 					
 					echo "<li><div class='first_dt'> <span> <img src='img/users/$profilePic' width='50' height='50' alt=''> </span>
-						<h2><a href='#'>$sender</a> (sent ",($daysPassed > 1) ? "$daysPassed days ago" : ($daysPassed == 0) ? "today" : "$daysPassed day ago",")</h2>
+						<h2><a href='#'>$sender</a> (sent ",$daysPassed > 1 ? "$daysPassed days ago" : ($daysPassed == 0 ? "today" : "$daysPassed day ago"),")</h2>
 						</div></li>";
 					echo "<li><div class='second_dt'>
 						 <p>$message</p>
