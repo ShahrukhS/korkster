@@ -137,7 +137,7 @@ function sendMessage()
 <body>
 <div class="container inbox_des">
   <div class="header_bg">
-    <header> <a id="simple-menu" class="icon-menu" href="#sidr"></a>
+    <header class="main-header"> <a id="simple-menu" class="icon-menu" href="#sidr"></a>
            <?php include 'headers/menu-top-navigation.php';?>
     </header>
     <div class="clear"></div>

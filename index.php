@@ -69,7 +69,7 @@ img {
 ?>
 <div class="wrapper">
   <div class="header_bg">
-    <header> <a id="simple-menu" class="icon-menu" href="#sidr"></a>
+    <header class="main-header"> <a id="simple-menu" class="icon-menu" href="#sidr"></a>
       <?php
            include 'headers/menu-top-navigation.php';?>
     </header>

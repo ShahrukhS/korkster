@@ -1,22 +1,24 @@
 <?php
 session_start();
 include 'headers/_user-details.php';
-
-	$type = $_GET['type'];
-	if($type=='archive'){
-		  $stmt = $dbh->prepare("SELECT max(i.ID),i.*,u.profilePic,u.fname,u.lname FROM inbox i,users u WHERE i.senderID = u.ID and i.receiverID  = :user and i.isArchive=:isarchive GROUP BY i.senderID");
+	if(isset($_GET['type'])){
+		$type = $_GET['type'];
+		if($type=='archive'){
+			$stmt = $dbh->prepare("SELECT i.senderID,i.message,i.dateM,u.profilePic,u.fname,u.lname FROM inbox i INNER JOIN users u ON i.senderID = u.ID WHERE i.receiverID = :user and i.isArchive=:isarchive and i.ID IN (select max(ID) FROM inbox GROUP BY senderID)");
 			$readS=1;
 			$stmt->bindParam(':user', $_userID);
 			$stmt->bindParam(':isarchive', $readS);
 			$stmt->execute();
-	}else if($type=='read' || $type=='unread'){
-		$readS=($type=='unread') ? 0 : 1;
-		$stmt = $dbh->prepare("SELECT i.senderID,i.message,i.dateM,u.profilePic,u.fname,u.lname FROM inbox i INNER JOIN users u ON i.senderID = u.ID WHERE i.receiverID = :user and i.isRead =:isread and i.ID IN (select max(ID) FROM inbox GROUP BY senderID)");
-		$stmt->bindParam(':user', $_userID);
-		$stmt->bindParam(':isread', $readS);
-		$stmt->execute();
+		}else if($type=='read' || $type=='unread'){
+			$readS=($type=='unread') ? 0 : 1;
+			$stmt = $dbh->prepare("SELECT i.senderID,i.message,i.dateM,u.profilePic,u.fname,u.lname FROM inbox i INNER JOIN users u ON i.senderID = u.ID WHERE i.receiverID = :user and i.isRead =:isread and i.ID IN (select max(ID) FROM inbox GROUP BY senderID)");
+			$stmt->bindParam(':user', $_userID);
+			$stmt->bindParam(':isread', $readS);
+			$stmt->execute();
+		}
 	}else{
-		$stmt = $dbh->prepare("SELECT max(i.ID),i.*,u.profilePic,u.fname,u.lname FROM inbox i,users u WHERE i.senderID = u.ID and i.receiverID  = :user GROUP BY i.senderID");
+		/*$stmt = $dbh->prepare("SELECT max(i.ID),i.*,u.profilePic,u.fname,u.lname FROM inbox i,users u WHERE i.senderID = u.ID and i.receiverID  = :user GROUP BY i.senderID");*/
+		$stmt = $dbh->prepare("SELECT i.senderID, i.message, i.dateM, u.profilePic, u.fname, u.lname FROM inbox i INNER JOIN users u ON i.senderID = u.ID WHERE i.receiverID = :user and and i.ID IN (select max(ID) FROM inbox GROUP BY senderID)");
 		$stmt->bindParam(':user', $_userID);
 		$stmt->execute();
 	}
@@ -68,7 +70,7 @@ $(function() {
 <body>
 <div class="container">
 	<div class="header_bg">
-        <header>
+        <header class="main-header">
         <a id="simple-menu" class="icon-menu" href="#sidr"></a>
 
            <?php include "headers/menu-top-navigation.php"; ?>

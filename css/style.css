@@ -19,7 +19,7 @@ a img{border:none; outline:none;}
 #simple-menu{display:none;}
 .wrapper{width:100%; padding:0; margin:0 auto; background:#f4f4f4;}
 .header_bg{width:100%; background:#0084a6; height:43px; clear:both; border-bottom:5px solid #007492;}
-header{width:1000px; margin:0 auto; height:43px; line-height:43px;}
+.main-header{width:1000px; margin:0 auto; height:43px; line-height:43px;}
 .logo{float:left; margin-left:22px; margin-top:9px; height:30px;}
 nav.main_nav{float:right; }
 nav.main_nav ul{position:relative;}
@@ -418,6 +418,7 @@ span.orange{color:#f5a532;}
 
 .bx-wrapper .bx-viewport{box-shadow:none; border:0 none;}
 
+/****************USER PROFILE**********************/
 
 /******************CREATE GIG PAGE ***************************/
 
@@ -677,6 +678,12 @@ border-radius: 12px;
 
 .featured_prod{padding-bottom:40px; -moz-box-sizing:border-box; -webkit-box-sizing:border-box; box-sizing:border-box;}
 .featured_prod .col-lg-3, .featured_prod col-md-3{padding-left:5px; padding-right:5px;}
+.featured_prod h2 {
+	font: 400 18px/20px 'Pluto', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+	color: #0e0e0f;
+	text-transform: uppercase;
+	padding-bottom: 15px
+}
 .prod_detail{ -moz-box-sizing:border-box; -webkit-box-sizing:border-box; box-sizing:border-box;}
 .prod_detail li{ -moz-box-sizing:border-box; -webkit-box-sizing:border-box; box-sizing:border-box;}
 .featured_prod .single_product{border:1px solid #dcdcdc; text-align:center; padding:0px 15px; -moz-box-sizing:border-box; -webkit-box-sizing:border-box; box-sizing:border-box;}

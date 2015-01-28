@@ -86,7 +86,7 @@
 	{
 		echo "
 		 
-    <div id='sidr'>
+    <div id='sidr'>		<!--unnecessary-->
 
           <ul>
 

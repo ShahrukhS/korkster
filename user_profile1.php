@@ -1,15 +1,6 @@
 ﻿<?php
 session_start();
 	include 'headers/_user-details.php';
-	$korkID = $_GET['korkID'];
-	//$korkName_Hypens = $_GET['kork'];
-	//$korkName = str_replace('-', ' ', $korkName_Hypens);
-	
-  	$stmt = $dbh->prepare("SELECT k.*, u.username, u.profilePic, c.name, c.city FROM korks k INNER JOIN users u ON k.userID = u.ID INNER JOIN colleges c ON u.collegeID = c.id WHERE k.id = :korkid");
-    $stmt->bindParam(':korkid', $korkID);
-    $stmt->execute();
-    $result = $stmt->fetchAll();
-	$row = $result[0];
 	
 	if($row['userID'] != $_userID){
 		$dbh->exec("UPDATE korks SET visitors=visitors+1 WHERE id=$korkID");
@@ -17,7 +8,7 @@ session_start();
 	}else{
 		$visitors = $row['visitors'];
 	}
-
+	$fullname = $_fname.' '.$_lname;
     $id  = $row['id'];
 	$title = $row['title'];
 	$detail = $row['detail'];
@@ -44,17 +35,14 @@ session_start();
 	
 	$image = $row['image'];
 	$userID = $row['userID'];
-	$userPic = $row['profilePic'];
-	$korkUser = $row['username'];
-	$korkCollege = $row['name'].', '. $row['city'];
 	
-	/** Bids **/
-	$stmt = $dbh->prepare("SELECT count(korkID) FROM inbox WHERE receiverID = :username");
+	/** Number of Products **/
+	$stmt = $dbh->prepare("SELECT count(id) FROM korks WHERE userID = :username");
 	$stmt->bindParam(':username', $_userID);
 	$stmt->execute();
 		
 	$result = $stmt->fetchAll();
-	$bid=$result[0][0];
+	$prod_num=$result[0][0];
 ?>
 <!doctype html>
 <html>
@@ -215,8 +203,13 @@ function sendMessage()
 <body>
 <div class="cate_desc">
 <div class="header_bg static_top">
-  <header class="main-header"> <a id="simple-menu" class="icon-menu" href="#sidr"></a>
-    <?php include 'headers/menu-top-navigation.php';?>
+  <header> <a id="simple-menu" class="icon-menu" href="#sidr"></a>
+   
+    
+    
+    <?php include 'headers/menu-top-navigation.php';
+	?>
+    
   </header>
 
   <nav class="category_nav main-category-search">
@@ -342,20 +335,21 @@ function sendMessage()
 </article> -->
 <div id="backgroundPopup"></div>
 <div class="full_article_bg" style="top:140px;">
-<div class="kork_desc" style="top:140px;">
+<div class="hero-profile-image">
+	<div class="box-row cf">
+		<span class="user-pict-130"><img src="//cdnil1.fiverrcdn.com/photos/2161205/original/1419576634500_Profile.jpg?1419576635" class="user-pict-img" alt="umaisdesigns" itemprop="logo" width="130" height="130" data-reload="inprogress" /></span>
+			<span class="name-tag"><h3><?php echo $fullname; ?></h3></span>
+			<span class="user-badge-round-med top_rated_seller"><a href="/levels"></a></span>
+	</div>
+</div>
+<div class="user-data">
   <div class="left_kork">
-    <ul class="bxslider">
-      <!-- <li>
-   					 <iframe src="http://player.vimeo.com/video/17914974" width="610" height="425" frameborder="0" 		webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
-  				</li> -->
-      <li><img src="img/korkImages/<?php echo $image; ?>" /></li>
-      <li><img src="img/korkImages/<?php echo $image; ?>" /></li>
-    </ul>
+      
   </div>
   <div class="right_kork">
-    <h3><?php echo $title;	?></h3>
-    <h4> Created <span class="orange"><?php echo $daysPassed > 1 ? "$daysPassed days ago" : ($daysPassed == 0 ? "today" : "$daysPassed day ago");?></span><br>
-      in <span class="orange">CATEGORIES / SUB CATEGORIES</span> </h4>
+    <h3><?php echo $fullname;?></h3>
+    <h4>Joined <span class="orange"><?php echo $joinedAgo > 1 ? "$joinedAgo days ago" : ($joinedAgo == 0 ? "today" : "$joinedAgo day ago");?></span><br>
+      from <span class="orange"><?php echo "<a href='$collegeURL'>$_collegeName</a>";?></span> </h4>
     <p><?php echo $detail; ?></p>
     <a href="#" class="btn_signup" data-toggle="modal" data-target="#message">contact now</a> </div>
   <div class="clear"></div>
@@ -363,14 +357,14 @@ function sendMessage()
 <div class="kork_option">
 <ul>
 <li>
-  <div class="first_dt"> <span> <img src="img/users/<?php echo $userPic; ?>" width="50" height="50" alt=""> </span>
-    <h2>By <a href="#"><?php echo $korkUser; ?></a></h2>
-    <p>From: <?php echo "$korkCollege (joined ",$joinedAgo > 1 ? "$joinedAgo days ago" : ($joinedAgo == 0 ? "today $joinedAgo" : "$joinedAgo day ago");?>)</p>
+  <div class="first_dt">
+    <h2>Number of products: <?php echo $prod_num; ?></h2>
+    <p>Products Sold: </p>
   </div>
 </li>
 <li>
   <div class="second_dt">
-    <p>Number of bids: <span><?php echo $bid;?></span></p>
+    <p>Number of bids: <span></span></p>
   </div>
 </li>
 <li>
@@ -385,49 +379,53 @@ function sendMessage()
 </li></ul>
 <div class="clear"></div>
 </div>
+<div class="kork_bidding">
+	<div class="bidding_header">
+		<ul><li>
+		<div class='first_dt'>
+		<h2>Products by <?php echo $fullname; ?></h2></div></li>
+
+		<li><div class="second_dt">
+		<h2>Categories</h2>
+		</div></li>
+
+		<li><div class="third_dt">
+		<h2>Status</h2>
+		</div></li>
+		
+		<li><div class="fourth_dt">
+		<h2>Date</h2>
+		</div></li></ul>
+	</div>
+</div>
 
 <?php
 	if($userID == $_userID){
-		echo '<div class="kork_bidding">
-				<div class="bidding_header">
-					<ul><li>
-					<div class="first_dt">
-					<h2>Bidders</h2></div></li>
-
-					<li><div class="second_dt">
-					<h2>Message</h2>
-					</div></li>
-
-					<li><div class="third_dt">
-					<h2>Bid</h2>
-					</div></li></ul>
-				</div>
-			</div>';
 		echo '<div class="kork_message"><ul>';
 		try {
-			if($bid != 0){
+			if($prod_num != 0){
 				include 'headers/connect_database.php';
 				/*** The SQL SELECT statement ***/
-				$sql = "SELECT u.username, u.profilePic, i.senderID, i.message, i.bid, i.dateM FROM inbox i INNER JOIN users u ON i.senderID = u.ID WHERE i.korkID = $korkID";
+				$sql = "SELECT id, title, image, status, expiryDate, category FROM korks WHERE userID = $_userID";
 				$result = mysqli_query($con,$sql);
 					 
 			
 				foreach ($dbh->query($sql) as $row)
 				{
-					$profilePic = $row['profilePic'];
-					$sender = $row['username'];
-					$senderID = $row['senderID'];
-					$message = $row['message'];
-					$bid = $row['bid'];
-					$bidDate = $row['dateM'];
+					$korkLink = 'cate_desc.php?korkID='.$row['id'];
+					$prod_title = $row['title'];
+					$prod_image = $row['image'];
+					$prod_status = $row['status'];
+					$prod_date = $row['expiryDate'];
+					$prod_category = $row['category'];
 					
 					$now = time(); // or your date as well
 					$creationDate = strtotime($bidDate);
 					$diff = $now - $creationDate;
 					$daysPassed = floor($diff/(60*60*24));
 					
-					echo "<li><div class='first_dt'> <span> <img src='img/users/$profilePic' width='50' height='50' alt=''> </span>
-						<h2><a href='#'>$sender</a> (sent ",$daysPassed > 1 ? "$daysPassed days ago" : ($daysPassed == 0 ? "today" : "$daysPassed day ago"),")</h2>
+					echo "<li><div class='first_dt'> <span> <img src='$profilePic' width='50' height='50' alt=''> </span>
+						<h2><a href='#'>$sender</a> (sent ",($daysPassed > 1) ? "$daysPassed days ago" : ($daysPassed == 0) ? "today" : "$daysPassed day ago",")</h2>
 						</div></li>";
 					echo "<li><div class='second_dt'>
 						 <p>$message</p>
@@ -447,9 +445,9 @@ function sendMessage()
 		}
 		echo '</div>';
 	}
-
-	include 'headers/menu-bottom-navigation.php' ?>
-</div>
+	include 'headers/menu-bottom-navigation.php';
+	?>
+</div></div>
 <div class="modal fade" id="message" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">

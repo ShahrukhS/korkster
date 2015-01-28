@@ -66,7 +66,7 @@ function parallax(){
 <body>
 <div >
 	<div class="header_bg static_top">
-        <header>
+        <header class="main-header">
         <a id="simple-menu" class="icon-menu" href="#sidr"></a>
 
        
@@ -216,7 +216,7 @@ function parallax(){
 					
 
 							/*** The SQL SELECT statement ***/
-							$sql = "SELECT k.id, k.title, k.userID, k.detail, k.price, k.image, k.expirydate, u.ID,u.collegeID , count(i.ID) as `bids` FROM `korks` k join `users` u on u.ID = k.userID left outer join `inbox` i on k.id = i.korkID where u.collegeID = $school_id group by k.id";
+							$sql = "SELECT k.id, k.title, k.userID, k.detail, k.price, k.image, k.expirydate, u.ID,u.collegeID , count(i.ID) as `bids` FROM `korks` k join `users` u on u.ID = k.userID left outer join `inbox` i on k.id = i.korkID where u.collegeID = $school_id group by k.id ORDER BY k.id DESC";
 							$result = mysqli_query($con,$sql);
 							$count = mysqli_num_rows($result);
 							

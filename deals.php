@@ -53,7 +53,7 @@ $(document).ready(function() {
 <body>
 <div >
 	<div class="header_bg static_top">
-        <header>
+        <header class="main-header">
         <a id="simple-menu" class="icon-menu" href="#sidr"></a>
 
        
@@ -74,7 +74,7 @@ $(document).ready(function() {
 					
 
 							/*** The SQL SELECT statement ***/
-							$sql = "SELECT k.id, k.title, k.userID, k.detail, k.price, k.image, k.expirydate, u.ID, u.collegeID, count(i.ID) as `bids` FROM `korks` k join `users` u on u.ID = k.userID left outer join `inbox` i on k.id = i.korkID where u.ID = $_userID group by k.id";
+							$sql = "SELECT k.id, k.title, k.userID, k.detail, k.price, k.image, k.expirydate, u.ID, u.collegeID, count(i.ID) as `bids` FROM `korks` k join `users` u on u.ID = k.userID left outer join `inbox` i on k.id = i.korkID where u.ID = $_userID group by k.id ORDER BY k.id DESC";
 							$result = mysqli_query($con,$sql);
 							$count = mysqli_num_rows($result);
 							
@@ -104,7 +104,7 @@ $(document).ready(function() {
 									$bids=$row['bids'];
 									echo "<div class='prod_desc'>";
         							echo "<span class='featured_bedge'>featured</span>";
-        							echo "<img class='main-prod-pic' src='korkImages/$image' width='247' style='max-height:172px;' alt=''>";
+        							echo "<img class='main-prod-pic' src='img/korkImages/$image' width='247' style='max-height:172px;' alt=''>";
             						echo "<div class='details'>";
             						echo "<a href='cate_desc.php?korkID={$id}'><h3 style='font-weight:bold;height:2.5em;overflow:hidden;'>$title</h3></a>";
 									echo "<a href='cate_desc.php?korkID={$id}'><div class='kork_text_wrap'><h3> $detail </h3></div></a>";
