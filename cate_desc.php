@@ -5,7 +5,7 @@ session_start();
 	//$korkName_Hypens = $_GET['kork'];
 	//$korkName = str_replace('-', ' ', $korkName_Hypens);
 	
-  	$stmt = $dbh->prepare("SELECT k.*, u.username, u.profilePic, c.name, c.city FROM korks k INNER JOIN users u ON k.userID = u.ID INNER JOIN colleges c ON u.collegeID = c.id WHERE k.id = :korkid");
+  	$stmt = $dbh->prepare("SELECT k.*, kc.category, u.username, u.profilePic, c.name, c.city FROM korks k INNER JOIN kork_categories kc ON k.catID = kc.cat_id INNER JOIN users u ON k.userID = u.ID INNER JOIN colleges c ON u.collegeID = c.id WHERE k.id = :korkid");
     $stmt->bindParam(':korkid', $korkID);
     $stmt->execute();
     $result = $stmt->fetchAll();
@@ -22,6 +22,7 @@ session_start();
 	$title = $row['title'];
 	$detail = $row['detail'];
 	$status = $row['status'];
+	$kork_category = $row['category'];
 	$dateOfCreation = $row['expirydate'];
 	
 	/* Checking to see how many days have passed since the gig created */
@@ -49,8 +50,8 @@ session_start();
 	$korkCollege = $row['name'].', '. $row['city'];
 	
 	/** Bids **/
-	$stmt = $dbh->prepare("SELECT count(korkID) FROM inbox WHERE receiverID = :username");
-	$stmt->bindParam(':username', $_userID);
+	$stmt = $dbh->prepare("SELECT count(ID) FROM inbox WHERE korkID = :korkid");
+	$stmt->bindParam(':korkid', $id);
 	$stmt->execute();
 		
 	$result = $stmt->fetchAll();
@@ -61,7 +62,7 @@ session_start();
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
-<title><?php echo $title ?> - SchoolBook</title>
+<title><?php echo $title ?> | WalknSell</title>
 <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800' rel='stylesheet' type='text/css'>
 <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.css">
 <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css">
@@ -355,7 +356,7 @@ function sendMessage()
   <div class="right_kork">
     <h3><?php echo $title;	?></h3>
     <h4> Created <span class="orange"><?php echo $daysPassed > 1 ? "$daysPassed days ago" : ($daysPassed == 0 ? "today" : "$daysPassed day ago");?></span><br>
-      in <span class="orange">CATEGORIES / SUB CATEGORIES</span> </h4>
+      in <span class="orange"><?php echo $kork_category; ?> category</span> </h4>
     <p><?php echo $detail; ?></p>
     <a href="#" class="btn_signup" data-toggle="modal" data-target="#message">contact now</a> </div>
   <div class="clear"></div>
