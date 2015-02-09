@@ -1,12 +1,7 @@
 <?php
-
-
-	
-	
-		if(isset($_SESSION['username']))
-		{
+	include 'connect_database.php';
+	if(isset($_SESSION['username'])){
 		$username = $_SESSION['username'];
-		include 'connect_database.php';
 		$query = "SELECT * FROM users u, colleges c WHERE u.collegeID = c.ID and u.username like '$username'";
 		$result = mysqli_query($con,$query);
 		
@@ -25,10 +20,10 @@
 			$_collegeName=$row['name'];
 			$name_hypens = str_replace(' ', '-', $_collegeName);
 			$collegeURL="school-category.php?schoolID={$_college}&schoolName={$name_hypens}";
-echo "<script>
-var collegeURL='${collegeURL}';
-</script>";
+			
+			echo "<script>
+			var collegeURL='${collegeURL}';
+			</script>";
 		}
-		}
-		
+	}
 ?>

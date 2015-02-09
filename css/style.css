@@ -452,6 +452,9 @@ span.orange{color:#f5a532;}
 .gig-tooltip figure p{color:#828282; font-size:13px;}
 .gig-tooltip .gig-tooltip-img{background:url(../img/gig_title_pic.png) no-repeat center; width:231px; height:232px;}
 .gig-tooltip figure:after{background:url(../img/site_sprites.png) no-repeat; content:""; z-index:1; display:block; overflow:hidden;	 background-position:-300px -400px; width:10px; height:23px; position:absolute; top:10px; left:-9px;}
+/***Edit profile***/
+/*.form_row .grey-box {background: #f4f4f4; border:1px solid #e8e8e8;}*/
+.form_row .file_input{background: #f4f4f4; border:1px solid #e8e8e8; text-align:center; color:#414141; width:95%; padding:10px 0;}
 
 .alert
 {
@@ -690,7 +693,7 @@ border-radius: 12px;
 .featured_prod .single_product .img_wrap{min-height:208px; padding:20px 0 0 0; text-align:center;}
 .single_product .img_wrap img{margin:0 auto;}
 .featured_prod .single_product h3{font:bold 18px Arial, Helvetica, sans-serif; margin:5px 0 10px 0; color:#000;}
-.featured_prod .single_product .prod_desc_22{font:bold 15px/19px Arial, Helvetica, sans-serif; padding:0px 45px;}
+.featured_prod .single_product .prod_cat_22{color:#606060; font: normal 13px/15px Arial, Helvetica, sans-serif;}
 .single_product .attributes{color:#606060; font:normal 12px Arial, Helvetica, sans-serif;}
 
 .single_product .price_tag_22{height:50px; line-height:50px; color:#fff; font-weight:bold; background:#1abc9c; margin:0px -15px; font-size:24px; text-align:left;}

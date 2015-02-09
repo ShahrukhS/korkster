@@ -99,7 +99,40 @@ img {
   <div class="full_article_bg featured_prod">
     <article  class="prod_detail col-lg-12">
       	<ul class="row">
-        	<li class="col-lg-3 col-md-6 col-sm-6">
+		<?php
+		$sql = "Select a.id, a.title, a.detail, a.price, a.expirydate, a.status, a.image, u.username, kc.category from korks a INNER JOIN inbox b ON a.id = b.korkID INNER JOIN kork_categories kc ON a.catID = kc.cat_id INNER JOIN users u ON a.userID = u.ID where b.bid IN (select max(i.bid) from inbox i, korks k where k.id = i.korkID GROUP BY k.catID) LIMIT 4";
+		
+		foreach ($dbh->query($sql) as $row){
+			$kork_id = $row['id'];
+			$kork_title = $row['title'];
+			$kork_detail = $row['detail'];
+			$kork_price = $row['price'];
+			$kork_date = $row['expirydate'];
+			$kork_status = $row['status'];
+			$kork_image = $row['image'];
+			$kork_category = $row['category'];
+			$kork_user = $row['username'];
+			
+			echo "<li class='col-lg-3 col-md-6 col-sm-6'><a href='cate_desc.php?korkID=$kork_id'>
+					<span class='featured_tag'></span>
+					<div class='col-lg-12 single_product'>
+						<div class='img_wrap'>
+							<img src='img/korkImages/$kork_image' width='134' alt='' class='img-responsive'>
+						</div>
+						<h3>$kork_title</h3>
+						<p class='prod_cat_22'>$kork_category Category</p>
+						<p class='prod_cat_22'>By $kork_user</p>
+						<p class='attributes'>2014-05-24  | 05:26:51  | 12:03 PM</p>
+						<div class='price_tag_22'>
+							<span class='price_main'>$$kork_price</span>
+							<span class='offer_dt'>10% OFF</span>
+						</div>
+				   </div>
+				</a></li>";
+		}
+		$dbh = null;
+		?>
+        	<!--<li class="col-lg-3 col-md-6 col-sm-6">
             	<span class="featured_tag"></span>
             	<div class="col-lg-12 single_product">
                 	<div class="img_wrap">
@@ -158,10 +191,8 @@ img {
                         <span class="offer_dt">10% OFF</span>
                     </div>
                </div>
-            </li>
-
-            
-        </ul>
+            </li>-->
+		</ul>
         <div class="clear"></div>
     </article>
     <div class="clear"></div>
@@ -218,7 +249,7 @@ $(document).ready(function() {
 });
 
 </script> 
-<script src="js/nav-admin-dropdown.js"></script> 
+<script src="js/nav-admin-dropdown.js"></script>
 <script src="js/school-list.js"></script>
 </body>
 </html>

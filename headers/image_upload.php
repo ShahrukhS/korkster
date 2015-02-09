@@ -44,9 +44,11 @@ if ((($_FILES["file"]["type"] == "image/gif") || ($_FILES["file"]["type"] == "im
     } else {
 			$file_extn = strtolower(end(explode('.', $_FILES['file']['name'])));
 			$file_name = substr(md5(time()), 0, 10) . '.' . $file_extn;
-            move_uploaded_file($_FILES["file"]["tmp_name"], 'korkImages/' . $file_name);
-            //echo "Stored in: " . "../upload/" . $_FILES["file"]["name"];
-            
+			if($imgFrom == "korks"){
+				move_uploaded_file($_FILES["file"]["tmp_name"], 'img/korkImages/' . $file_name);
+            }else if($imgFrom == "users"){
+				move_uploaded_file($_FILES["file"]["tmp_name"], 'img/users/' . $file_name);
+			}
             $profilePic = $file_name;
     }
 } else {

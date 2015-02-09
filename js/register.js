@@ -53,7 +53,7 @@ function signupForm()
 			request.done(function (response, textStatus, jqXHR){
 				// log a message to the console
 				
-				console.log("Hooray, it worked!");
+				//console.log("Hooray, it worked!");
 				$('#loading').html('');
 				
 				if(response=="success")

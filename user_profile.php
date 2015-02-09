@@ -3,11 +3,12 @@ session_start();
 	include 'headers/_user-details.php';
 	$username = $_GET['username'];
 	
-  	$stmt = $dbh->prepare("SELECT k.title, k.detail, k.price, k.image, k.status, k.expiryDate, u.username, u.profilePic, u.fname, u.lname, u.joinDate, c.name, c.city FROM users u INNER JOIN korks k ON u.ID = k.userID INNER JOIN colleges c ON u.collegeID = c.id WHERE u.username = :username ORDER BY k.id DESC");
+  	$stmt = $dbh->prepare("SELECT k.title, k.detail, k.price, k.image, k.status, k.expiryDate, u.username, u.profilePic, u.fname, u.lname, u.joinDate, c.name, c.city FROM users u INNER JOIN korks k ON u.ID = k.userID INNER JOIN colleges c ON u.collegeID = c.id WHERE u.username = :username ORDER BY k.id DESC LIMIT 1");
     $stmt->bindParam(':username', $username);
     $stmt->execute();
     $result = $stmt->fetchAll();
 	$row = $result[0];
+	
 	/*
 	if($row['userID'] != $_userID){
 		$dbh->exec("UPDATE korks SET visitors=visitors+1 WHERE id=$korkID");
@@ -362,8 +363,21 @@ function sendMessage()
                     <div class="hero-profile-image">
                         <div class="box-row cf">
                             <span class="user-data rf">Member since September 2013</span>
-                            <span class="user-pict-130"><img src="img/users/<?php echo $profilePic; ?>" class="user-pict-img" alt="umaisdesigns" itemprop="logo" width="130" height="130" data-reload="inprogress"></span>
-                                <span class="user-badge-round-med top_rated_seller"><a href="/levels"></a></span>
+							<?php
+							if($_username == $username){
+								echo "<span class='user-pict-130 js-user-pict-130'>
+								<form><span class='user-pict-upload js-user-pict-upload'>
+									<small class='js-user-pict-upload-text'>Change<br>Photo</small>
+									<div id='uploadifive-user-profile-pic' class='uploadifive-button .js-user-pict-upload btn-upload' style='height: auto; overflow: hidden; position: relative; text-align: center; width: auto;'>ATTACH FILES<input type='file' id='user-profile-pic' name='user-profile-pic' class='inp-uploadify hidden' style='display: none;'><input type='file' class='uploadifive-input' style='opacity: 0; position: absolute; right: -3px; top: -3px; z-index: 999;'></div>
+									<input type='hidden' name='authenticity_token' value='v6Z2sfCwe61F73NmXvOHpLQVHsRGSh+yYO72yGsgS8U='>
+									<span id='user-profile-pic-queue' class='hidden'></span>
+								</span></form>
+								<img src='img/users/$profilePic' width='130' height='130'></span>";
+							}else{
+								echo "<span class='user-pict-130'><img src='img/users/$profilePic' class='user-pict-img' alt='umaisdesigns' itemprop='logo' width='130' height='130' data-reload='inprogress'></span>
+                                <!--<span class='user-badge-round-med top_rated_seller'><a href='/levels'></a></span>-->";
+							}
+							?>
                                 <span class="user-data lf"><a href="/levels">Top Rated Seller</a></span>
                         </div>
                     </div>
@@ -419,7 +433,13 @@ function sendMessage()
                         </ul>
 
                         <footer class="cf">
-                                <a class="btn-standard btn-green-grad btn-contact js-btn-user-contact js-gtm-event-auto" data-gtm-action="click" data-gtm-category="new-user-page" data-gtm-label="contact-user" data-user-id="umaisdesigns" href="/conversations/umaisdesigns" rel="nofollow"><i></i>Contact</a>
+                                <?php
+								if($username == $_username){
+									echo '<a class="btn-standard btn-edit js-btn-edit-user" href="profile_edit.php" rel="nofollow"><i></i>Edit</a>';
+								}else{
+									echo '<a class="btn-standard btn-green-grad btn-contact js-btn-user-contact js-gtm-event-auto" data-gtm-action="click" data-gtm-category="new-user-page" data-gtm-label="contact-user" data-user-id="umaisdesigns" href="/conversations/umaisdesigns" rel="nofollow"><i></i>Contact</a>';
+								}
+								?>
                         </footer>
 
                     </div>
@@ -623,7 +643,39 @@ function sendMessage()
 					</header>		
 					<article  class="prod_detail col-lg-12">
       	<ul class="row">
-        	<li class="col-lg-3 col-md-6 col-sm-6">
+		<?php
+			$sql = "SELECT k.id, k.title, k.detail, k.price, k.image, k.status, k.expiryDate, kc.category FROM korks k INNER JOIN kork_categories kc ON k.catID = kc.cat_id WHERE k.userID = $_userID";
+			
+			
+			foreach ($dbh->query($sql) as $row){
+			$kork_id = $row['id'];
+			$kork_title = $row['title'];
+			$kork_detail = $row['detail'];
+			$kork_price = $row['price'];
+			$kork_date = $row['expiryDate'];
+			$kork_status = $row['status'];
+			$kork_image = $row['image'];
+			$kork_category = $row['category'];
+			
+			echo "<li class='col-lg-3 col-md-6 col-sm-6'><a href='cate_desc.php?korkID=$kork_id'>
+					<span class='featured_tag'></span>
+					<div class='col-lg-12 single_product'>
+						<div class='img_wrap'>
+							<img src='img/korkImages/$kork_image' width='134' alt='' class='img-responsive'>
+						</div>
+						<h3>$kork_title</h3>
+						<p class='prod_cat_22'>$kork_category Category</p>
+						<p class='attributes'>2014-05-24  | 05:26:51  | 12:03 PM</p>
+						<div class='price_tag_22'>
+							<span class='price_main'>$$kork_price</span>
+							<span class='offer_dt'>10% OFF</span>
+						</div>
+				   </div>
+				</a></li>";
+			}
+		$dbh = null;
+		?>
+        	<!--<li class="col-lg-3 col-md-6 col-sm-6">
             	<span class="featured_tag"></span>
             	<div class="col-lg-12 single_product">
                 	<div class="img_wrap">
@@ -682,7 +734,7 @@ function sendMessage()
                         <span class="offer_dt">10% OFF</span>
                     </div>
                </div>
-            </li>
+            </li>-->
 
             
         </ul>

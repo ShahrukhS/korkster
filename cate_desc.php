@@ -5,7 +5,7 @@ session_start();
 	//$korkName_Hypens = $_GET['kork'];
 	//$korkName = str_replace('-', ' ', $korkName_Hypens);
 	
-  	$stmt = $dbh->prepare("SELECT k.*, kc.category, u.username, u.profilePic, c.name, c.city FROM korks k INNER JOIN kork_categories kc ON k.catID = kc.cat_id INNER JOIN users u ON k.userID = u.ID INNER JOIN colleges c ON u.collegeID = c.id WHERE k.id = :korkid");
+  	$stmt = $dbh->prepare("SELECT k.*, kc.category, u.username, u.profilePic, u.joinDate, c.name, c.city FROM korks k INNER JOIN kork_categories kc ON k.catID = kc.cat_id INNER JOIN users u ON k.userID = u.ID INNER JOIN colleges c ON u.collegeID = c.id WHERE k.id = :korkid");
     $stmt->bindParam(':korkid', $korkID);
     $stmt->execute();
     $result = $stmt->fetchAll();
@@ -35,19 +35,19 @@ session_start();
 	
  	$date = DateTime::createFromFormat("Y-m-d", $dateOfCreation);
 	
-    $_joinDate = strtotime($_joinDate);
-    $datediff_user = $now - $_joinDate;
-    $joinedAgo = floor($datediff_user/(60*60*24));
+	$image = $row['image'];
+	$userID = $row['userID'];
+	$userPic = $row['profilePic'];
+	$userDate = $row['joinDate'];
+	$korkUser = $row['username'];
+	$korkCollege = $row['name'].', '. $row['city'];
 	
 	/* 
 		Calculating number of days ago username joined.
 	*/
-	
-	$image = $row['image'];
-	$userID = $row['userID'];
-	$userPic = $row['profilePic'];
-	$korkUser = $row['username'];
-	$korkCollege = $row['name'].', '. $row['city'];
+	$userDate = strtotime($userDate);
+    $datediff_user = $now - $userDate;
+    $joinedAgo = floor($datediff_user/(60*60*24));
 	
 	/** Bids **/
 	$stmt = $dbh->prepare("SELECT count(ID) FROM inbox WHERE korkID = :korkid");
