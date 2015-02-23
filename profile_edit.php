@@ -10,17 +10,20 @@ include 'headers/_user-details.php';
 		$description = $_POST['userDesc'];
 		$lname = $_POST['lname'];
 		//$school = $_POST['userSchool'];
-		
+		if(!isset($profilePic)){
+			$profilePic = "profile_pic.png";
+		}
 		$query = "SELECT ID from colleges WHERE name = :cname";
 		$sth = $dbh->prepare($query);
 		$sth->bindValue(':cname','IBA INSTITUTE OF BUSINESS ADMINISTRATION');
 		$sth->execute();
 		$schoolID = $sth->fetchColumn();
 		
-		$sth = $dbh->prepare("UPDATE users SET fname = :fname, lname = :lname, profilePic = :profilePic, collegeID = :schoolID WHERE ID = :userID");
+		$sth = $dbh->prepare("UPDATE users SET fname = :fname, lname = :lname, profilePic = :profilePic, description = :desc, collegeID = :schoolID WHERE ID = :userID");
 		$sth->bindValue(':fname',$fname);
 		$sth->bindValue(':lname',$lname);
 		$sth->bindValue(':profilePic',$profilePic);
+		$sth->bindValue(':desc',$description);
 		$sth->bindValue(':schoolID',$schoolID);
 		$sth->bindValue(':userID',$_userID);
 		$sth->execute();
@@ -124,18 +127,6 @@ $(document).ready(function() {
 		<input type="text" class="form-control gig_text school_txt" value="<?php echo $_collegeName; ?>" name="userSchool" placeholder="School" size="" id="regsearch" onKeyUp="regfindmatch();" autocomplete="off" style="width:95%" required>
             <ul id ="regresults" name="schools" >
             </ul>
-        <!--<select class="fake-dropdown fake-dropdown-double dropdown-inner " style="width:95%" name="school" required>
-        <option value="0">Select School</option>-->
-        <?php
-			$sql = "SELECT category FROM kork_categories";
-			$option_num = 1;
-			foreach($dbh->query($sql) as $row) {
-				$category = $row['category'];
-				//echo "<option value='$option_num'>$category</option>";
-				$option_num++;
-			}
-		?>
-        </select>
         </div>
         <aside class="gig-tooltip">
           <figure>
@@ -155,7 +146,7 @@ $(document).ready(function() {
           <div class="file_input">
             <!--  <button type="file" class="btn_signup" name="file" id="name">Browse</button>  -->
             
-            <input id="fileupload" type="file" name="file" multiple required >
+            <input id="fileupload" type="file" name="file" multiple >
             
             <p>JPEG file, 2MB Max, <span class="grey_c">you own the copyrights</span></p>
           </div>

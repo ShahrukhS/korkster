@@ -100,7 +100,10 @@ img {
     <article  class="prod_detail col-lg-12">
       	<ul class="row">
 		<?php
-		$sql = "Select a.id, a.title, a.detail, a.price, a.expirydate, a.status, a.image, u.username, kc.category from korks a INNER JOIN inbox b ON a.id = b.korkID INNER JOIN kork_categories kc ON a.catID = kc.cat_id INNER JOIN users u ON a.userID = u.ID where b.bid IN (select max(i.bid) from inbox i, korks k where k.id = i.korkID GROUP BY k.catID) LIMIT 4";
+		/*$sql = "Select a.id, a.title, a.detail, a.price, a.expirydate, a.status, a.image, COUNT(b.korkID), u.username, kc.category from korks a INNER JOIN inbox b ON a.id = b.korkID INNER JOIN kork_categories kc ON a.catID = kc.cat_id INNER JOIN users u ON a.userID = u.ID where b.bid IN (select max(i.bid) from inbox i, korks k where k.id = i.korkID GROUP BY k.catID) LIMIT 4";*/
+		
+		/*$sql = "Select catID, korkID, bids from (Select k.catID, i.korkID, count(i.korkID) bids FROM inbox i INNER JOIN korks k ON i.korkID = k.id GROUP BY i.korkID order by bids DESC) tabs GROUP BY catID";*/
+		$sql = "Select id, title, detail, price, expirydate, status, image, bids, username, category from (Select k.id, k.title, k.detail, k.price, k.expirydate, k.status, k.image, count(i.korkID) bids, u.username, kc.category, k.catID FROM inbox i INNER JOIN korks k ON i.korkID = k.id INNER JOIN users u ON k.userID = u.ID INNER JOIN kork_categories kc ON k.catID = kc.cat_id GROUP BY i.korkID order by bids DESC) b GROUP BY catID";
 		
 		foreach ($dbh->query($sql) as $row){
 			$kork_id = $row['id'];
@@ -112,9 +115,10 @@ img {
 			$kork_image = $row['image'];
 			$kork_category = $row['category'];
 			$kork_user = $row['username'];
+			$kork_bids = $row['bids'];
 			
 			echo "<li class='col-lg-3 col-md-6 col-sm-6'><a href='cate_desc.php?korkID=$kork_id'>
-					<span class='featured_tag'></span>
+					<span class='available tag'></span>
 					<div class='col-lg-12 single_product'>
 						<div class='img_wrap'>
 							<img src='img/korkImages/$kork_image' width='134' alt='' class='img-responsive'>
@@ -125,7 +129,7 @@ img {
 						<p class='attributes'>2014-05-24  | 05:26:51  | 12:03 PM</p>
 						<div class='price_tag_22'>
 							<span class='price_main'>$$kork_price</span>
-							<span class='offer_dt'>10% OFF</span>
+							<span class='offer_dt'>$kork_bids BID",($kork_bids > 1) ? "S" : "","</span>
 						</div>
 				   </div>
 				</a></li>";

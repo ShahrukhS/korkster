@@ -67,66 +67,71 @@ $(document).ready(function() {
     
     <?php
 		
-						include 'headers/connect_database.php';
-							
-							
-						try {
-					
+	include 'headers/connect_database.php';
+		
+		
+	try {
+		/*** The SQL SELECT statement ***/
+		$sql = "SELECT k.id, k.title, k.userID, k.detail, k.price, k.image, k.expirydate, k.status, u.ID, u.collegeID, count(i.ID) as `bids` FROM `korks` k join `users` u on u.ID = k.userID left outer join `inbox` i on k.id = i.korkID where u.ID = $_userID group by k.id ORDER BY k.id DESC";
+		$result = mysqli_query($con,$sql);
+		$count = mysqli_num_rows($result);
+		
+		if($count==0){
+			echo "<div id='contentSub' class='clearfix'>
+					  <div class='contentBox'>
+						  <p class='fontelico-emo-unhappy noKorks'> No Korks found.</p>
+						  <p class='noKorksCreate'>Are you looking to buy or sell something at Southern Polytechnic State University?</p>
+						  <p class='noKorksCreate'><a href='/create-kork' class='entypo-pencil'> Create Your Kork!</a></p>
+					  </div>
+				  </div>";
+		}
+		
+		$counter = 0;	 
 
-							/*** The SQL SELECT statement ***/
-							$sql = "SELECT k.id, k.title, k.userID, k.detail, k.price, k.image, k.expirydate, u.ID, u.collegeID, count(i.ID) as `bids` FROM `korks` k join `users` u on u.ID = k.userID left outer join `inbox` i on k.id = i.korkID where u.ID = $_userID group by k.id ORDER BY k.id DESC";
-							$result = mysqli_query($con,$sql);
-							$count = mysqli_num_rows($result);
-							
-							if($count==0){
-								echo "<div id='contentSub' class='clearfix'>
-										  <div class='contentBox'>
-											  <p class='fontelico-emo-unhappy noKorks'> No Korks found.</p>
-											  <p class='noKorksCreate'>Are you looking to buy or sell something at Southern Polytechnic State University?</p>
-											  <p class='noKorksCreate'><a href='/create-kork' class='entypo-pencil'> Create Your Kork!</a></p>
-										  </div>
-									  </div>";
-							}
-							
-							$counter = 0;	 
-						
-							foreach ($dbh->query($sql) as $row)
-							{		
-									$counter++;
-									$id = $row['id'];
-								    $title = $row['title'];
-									$title_withDashes = str_replace(' ', '-', $title);
-									$image = $row['image'];
-									$expiryDate = $row['expirydate'];
-									$detail = $row['detail'];
-									$price=$row['price'];
-									$price=$row['price'];
-									$bids=$row['bids'];
-									echo "<div class='prod_desc'>";
-        							echo "<span class='featured_bedge'>featured</span>";
-        							echo "<img class='main-prod-pic' src='img/korkImages/$image' width='247' style='max-height:172px;' alt=''>";
-            						echo "<div class='details'>";
-            						echo "<a href='cate_desc.php?korkID={$id}'><h3 style='font-weight:bold;height:2.5em;overflow:hidden;'>$title</h3></a>";
-									echo "<a href='cate_desc.php?korkID={$id}'><div class='kork_text_wrap'><h3> $detail </h3></div></a>";
-									
-									
-                    				echo"<p><span> $expiryDate <span> | <span>12:03 PM<span></p>
-                    	 <div class='price'><span class='price_first'>$ {$price}</span><span class='prod_scheme'>&nbsp; {$bids} <span class='off'>BIDS																	</span></span></div>
-                    
-            			</div>
-            			<div class='clear'></div>
-        				</div>";
-								
-							}
+		foreach ($dbh->query($sql) as $row)
+		{		
+				$counter++;
+				$id = $row['id'];
+				$title = $row['title'];
+				$title_withDashes = str_replace(' ', '-', $title);
+				$image = $row['image'];
+				$expiryDate = $row['expirydate'];
+				$detail = $row['detail'];
+				$price=$row['price'];
+				$price=$row['price'];
+				$bids=$row['bids'];
+				$status = $row['status'];
+				if($status == 0){
+					$status = "available";
+				}else if($status == 1){
+					$status = "sold";
+				}else{
+					$status = "expired";
+				}
+				echo "<div class='prod_desc'>";
+				echo "<span class='$status tag'></span>";
+				echo "<img class='main-prod-pic' src='img/korkImages/$image' width='247' style='max-height:172px;' alt=''>";
+				echo "<div class='details'>";
+				echo "<a href='cate_desc.php?korkID={$id}'><h3 style='font-weight:bold;height:2.5em;overflow:hidden;'>$title</h3></a>";
+				echo "<a href='cate_desc.php?korkID={$id}'><div class='kork_text_wrap'><h3> $detail </h3></div></a>";
+				
+				
+				echo"<p><span> $expiryDate <span> | <span>12:03 PM<span></p>
+					 <div class='price'><span class='price_first'>$ {$price}</span><span class='prod_scheme'>&nbsp; {$bids} <span class='off'>BIDS																	</span></span></div>
+				
+					</div>
+					<div class='clear'></div>
+					</div>";
+		}
 
-							/*** close the database connection ***/
-								$dbh = null;
-							
-							}
-							catch(PDOException $e)
-							{
-								echo $e->getMessage();
-							}
+		/*** close the database connection ***/
+			$dbh = null;
+		
+		}
+		catch(PDOException $e)
+		{
+			echo $e->getMessage();
+		}
 
 	?>
     <div class="clear"></div>

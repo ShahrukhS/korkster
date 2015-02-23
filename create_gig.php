@@ -27,7 +27,16 @@ include 'headers/_user-details.php';
 				$profilePic = "kork.png";
 			}
 
-		$dbh->exec("INSERT INTO korks(userID,title,detail,image,catID,expirydate,price) VALUES('$_userID','$korkname','$description','$profilePic','$category',now(), $price)");
+		$stmt = $dbh->prepare("INSERT INTO korks(userID,title,detail,image,catID,expirydate,price) VALUES(:userID,:korkTitle,:desc,:profilePic,:category,:expirydate, :price)");
+		$stmt->bindValue(':userID',$_userID);
+		$stmt->bindValue(':korkTitle',$korkname);
+		$stmt->bindValue(':desc',$description);
+		$stmt->bindValue(':profilePic',$profilePic);
+		$stmt->bindValue(':profilePic',$profilePic);
+		$stmt->bindValue(':category',$category);
+		$stmt->bindValue(':expirydate',date('Y/m/d H:i:s'));
+		$stmt->bindValue(':price',$price);
+		$stmt->execute();
 		
 		$stmt = $dbh->prepare("SELECT max(id) FROM korks WHERE userID = :username");
 		$stmt->bindParam(':username', $_userID);
@@ -45,7 +54,7 @@ include 'headers/_user-details.php';
 		//foreach($pieces as &$arr)
 		//{
 		//  $dbh->exec("INSERT INTO kork_img(refId,attachment) VALUES('$id[0]' ,'$arr')");
-	//	}
+		//}
 		//  $dbh = null;
 		}
 		//echo "Result: {$result}";

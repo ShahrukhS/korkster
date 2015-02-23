@@ -3,50 +3,53 @@ session_start();
 	include 'headers/_user-details.php';
 	$username = $_GET['username'];
 	
-  	$stmt = $dbh->prepare("SELECT k.title, k.detail, k.price, k.image, k.status, k.expiryDate, u.username, u.profilePic, u.fname, u.lname, u.joinDate, c.name, c.city FROM users u INNER JOIN korks k ON u.ID = k.userID INNER JOIN colleges c ON u.collegeID = c.id WHERE u.username = :username ORDER BY k.id DESC LIMIT 1");
+	/* getting user details */
+	$stmt = $dbh->prepare("SELECT u.ID, u.username, u.profilePic, u.fname, u.lname, u.joinDate, u.description, c.name, c.city FROM users u INNER JOIN colleges c ON u.collegeID = c.id WHERE u.username = :username");
     $stmt->bindParam(':username', $username);
     $stmt->execute();
-    $result = $stmt->fetchAll();
-	$row = $result[0];
-	
-	/*
-	if($row['userID'] != $_userID){
-		$dbh->exec("UPDATE korks SET visitors=visitors+1 WHERE id=$korkID");
-		$visitors = $row['visitors']+1;
+	if($row = $stmt->fetch()){
+		$userID = $row['ID'];
+		$username = $row['username'];
+		$profilePic = $row['profilePic'];
+		$fullname = $row['fname'].' '.$row['lname'];
+		$joinDate = $row['joinDate'];
+		$description = $row['description'];
+		
+		$college_name = $row['name'];
+		$city = $row['city'];
 	}else{
-		$visitors = $row['visitors'];
-	}*/
-	
-	/* getting user details */
-    $username = $row['username'];
-	$profilePic = $row['profilePic'];
-	$fullname = $row['fname'].' '.$row['lname'];
-	$joinDate = $row['joinDate'];
-	
-	$college_name = $row['name'];
-	$city = $row['city'];
+		header($_SERVER["SERVER_PROTOCOL"]." 404 Not Found");
+		//include("notFound.php");
+		exit();
+	}
 	
 	/* getting korks details */
-    $kork_title = $row['title'];
-	$kork_detail = $row['detail'];
-	$kork_price = $row['price'];
-	$kork_image = $row['image'];
-	$kork_status = $row['status'];
-	$kork_date = $row['expiryDate'];
+	$stmt = $dbh->prepare("SELECT k.id, k.title, k.detail, k.price, k.image, k.status, k.expiryDate, kc.category, COUNT(i.korkID) as `bids` FROM korks k INNER JOIN kork_categories kc ON k.catID = kc.cat_id left outer join `inbox` i on k.id = i.korkID WHERE k.userID = :userID GROUP BY k.id ORDER BY k.id DESC");
+    $stmt->bindParam(':userID', $userID);
+    $stmt->execute();
+    $allKorks = $stmt->fetchAll(PDO::FETCH_ASSOC);
+	//print_r($allKorks);
+	$kork_title = $allKorks[0]['title'];
+	$kork_detail = $allKorks[0]['detail'];
+	$kork_price = $allKorks[0]['price'];
+	$kork_image = $allKorks[0]['image'];
+	$kork_status = $allKorks[0]['status'];
+	$kork_date = $allKorks[0]['expiryDate'];
+	$kork_bids = $allKorks[0]['bids'];
 	
-	$now = time(); // or your date as well
+	/*$now = time(); // or your date as well
     //$date = DateTime::createFromFormat("Y-m-d", $dateOfCreation);
     $joinDate = strtotime($joinDate);
     $datediff_user = $now - $joinDate;
-    $joinedAgo = floor($datediff_user/(60*60*24));
+    $joinedAgo = floor($datediff_user/(60*60*24));*/
 	
 	/** Number of Products **/
-	$stmt = $dbh->prepare("SELECT count(id) FROM korks WHERE userID = :username");
-	$stmt->bindParam(':username', $_userID);
+	$stmt = $dbh->prepare("SELECT count(id) FROM korks WHERE userID = :userID AND status > -1");
+	$stmt->bindParam(':userID', $userID);
 	$stmt->execute();
 		
-	$result1 = $stmt->fetchAll();
-	$prod_num=$result1[0][0];
+	$result = $stmt->fetchAll();
+	$prod_num=$result[0][0];
 ?>
 <!doctype html>
 <html>
@@ -202,104 +205,7 @@ function sendMessage()
   <header class="main-header"> <a id="simple-menu" class="icon-menu" href="#sidr"></a>
 	<?php include 'headers/menu-top-navigation.php';?>
   </header>
-
-  <nav class="category_nav main-category-search">
-    <div class="category_inner">
-      <div class="fake-dropdown fake-dropdown-double"> <a href="#" class="dropdown-toggle category" data-toggle="dropdown" data-autowidth="true" rel="nofollow">CATEGORIES</a>
-        <div class="dropdown-menu mega_menu" role="menu">
-          <div class="dropdown-inner"> <span class="arr"></span> <span class="rightie"></span>
-            <ul>
-              <li><a href="#" onMouseOver="getlist(1)">Gifts</a></li>
-              <li><a href="#" onmouseover="getlist(2)">Graphics & Design</a></li>
-              <li><a href="#" onmouseover="getlist(3)">Video & Animation</a></li>
-              <li><a href="#" onmouseover="getlist(4)">Online Marketing</a></li>
-              <li><a href="#" onmouseover="getlist(5)">Writing & Translation</a></li>
-              <li><a href="#" onmouseover="getlist(6)">Advertising</a></li>
-              <li><a href="#" onmouseover="getlist(7)">Business</a></li>
-            </ul>
-            <div class="side-menu">
-              <ul class="hidee" id="veiwlist1">
-                <li>
-                  <h5><a href="#">Gifts</a></h5>
-                </li>
-                <li><a href="#">Greeting Cards</a></li>
-                <li><a href="#">Video Greetings</a></li>
-                <li><a href="#">Unusual Gifts</a></li>
-                <li><a href="#">Arts & Crafts</a></li>
-              </ul>
-              <ul class="hidee"id="veiwlist2">
-                <li>
-                  <h5><a href="#">Graphics & Design</a></h5>
-                </li>
-                <li><a href="#">Cartoons & Caricatures</a></li>
-                <li><a href="#">Logo Design</a></li>
-                <li><a href="#">Illustration</a></li>
-                <li><a href="#">Ebook Covers & Packages</a></li>
-                <li><a href="#">Web Design & UI</a></li>
-                <li><a href="#">Photography & Photoshopping</a></li>
-                <li><a href="#">Presentation Design</a></li>
-                <li><a href="#">Flyers & Brochures </a></li>
-                <li><a href="#">Business Cards</a></li>
-                <li><a href="#">Banners & Headers</a></li>
-                <li><a href="#">Architecture</a></li>
-                <li><a href="#">Landing Pages</a></li>
-                <li><a href="#">Other</a></li>
-              </ul>
-              <ul class="hidee" id="veiwlist3">
-                <li>
-                  <h5><a href="#">Video & Animation</a></h5>
-                </li>
-                <li><a href="#">Commercials</a></li>
-                <li><a href="#">Editing & Post Production</a></li>
-                <li><a href="#">Animation & 3D</a></li>
-                <li><a href="#">Testimonials & Reviews by Actors</a></li>
-                <li><a href="#">Puppets</a></li>
-                <li><a href="#">Stop Motion</a></li>
-                <li><a href="#">Intros</a></li>
-                <li><a href="#">Other</a></li>
-              </ul>
-              <ul class="hidee" id="veiwlist4">
-                <li>
-                  <h5><a href="#">Online Marketing</a></h5>
-                </li>
-                <li><a href="#">Web Analytics</a></li>
-                <li><a href="#">Article & PR Submission</a></li>
-                <li><a href="#">Blog Mentions</a></li>
-                <li><a href="#">Domain Research</a></li>
-                <li><a href="#">Fan Pages</a></li>
-                <li><a href="#">Keywords Research</a></li>
-                <li><a href="#">SEO</a></li>
-              </ul>
-              <ul class="hidee" id="veiwlist5">
-                <li>
-                  <h5><a href="#">Advertising</a></h5>
-                </li>
-                <li><a href="#">Hold Your Sign</a></li>
-                <li><a href="#">Flyers & Handouts</a></li>
-                <li><a href="#">Human Billboards</a></li>
-                <li><a href="#">Pet Models</a></li>
-                <li><a href="#">Outdoor Advertising</a></li>
-                <li><a href="#">Radio</a></li>
-              </ul>
-              <ul class="hidee" id="veiwlist6">
-                <li>
-                  <h5><a href="#">Video & Animation</a></h5>
-                </li>
-                <li><a href="#">Commercials</a></li>
-                <li><a href="#">Editing & Post Production</a></li>
-                <li><a href="#">Animation & 3D</a></li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="wrap-search">
-        <input id="query" maxlength="80" name="query" type="text" placeholder="SEARCH">
-        <input type="image" src="img/glass_small.png" alt="Go">
-      </div>
-      <div class="clear"></div>
-    </div>
-  </nav>
+  <?php include 'headers/subhead.php' ?>
   <div class="clear"></div>
     
   <div class="submenu_wrap">
@@ -362,7 +268,7 @@ function sendMessage()
 
                     <div class="hero-profile-image">
                         <div class="box-row cf">
-                            <span class="user-data rf">Member since September 2013</span>
+                            <span class="user-data rf">Member since <?php echo date('F, Y', strtotime($joinDate))?></span>
 							<?php
 							if($_username == $username){
 								echo "<span class='user-pict-130 js-user-pict-130'>
@@ -378,7 +284,7 @@ function sendMessage()
                                 <!--<span class='user-badge-round-med top_rated_seller'><a href='/levels'></a></span>-->";
 							}
 							?>
-                                <span class="user-data lf"><a href="/levels">Top Rated Seller</a></span>
+                                <!--<span class="user-data lf"><a href="/levels">Top Rated Seller</a></span>-->
                         </div>
                     </div>
 
@@ -411,11 +317,11 @@ function sendMessage()
 		</aside>
 
                         <header>
-                            <h2>About <?php echo trim($fullname); ?>
+                            <h2>About <?php echo $fullname; ?>
                                 <span class="user-is-online js-user-is-online" data-user-id="umaisdesigns"><em></em>online</span>
                             </h2>
                             <div class="desc">
-                                <textarea class="user-edit-desc js-edit-desc" maxlength="300" name="user-edit-desc" tabindex="2" rows="1" data-org="Expert in Graphics Designing, Photography, Photoshopping, Logo Designing, Business cards, Advertisements, Flyer, Booklet, Book Covers, Illustrations and Company Branding. " readonly style="overflow: hidden; word-wrap: break-word; height: 72px;">Expert in Graphics Designing, Photography, Photoshopping, Logo Designing, Business cards, Advertisements, Flyer, Booklet, Book Covers, Illustrations and Company Branding. </textarea>
+                                <textarea class="user-edit-desc js-edit-desc" maxlength="300" name="user-edit-desc" tabindex="2" rows="1" data-org="Expert in Graphics Designing, Photography, Photoshopping, Logo Designing, Business cards, Advertisements, Flyer, Booklet, Book Covers, Illustrations and Company Branding. " readonly style="overflow: hidden; word-wrap: break-word; height: 72px;"><?php echo ($description == NULL) ? "$fullname has no description." : $description; ?></textarea>
                             </div>
                         </header>
 
@@ -423,7 +329,7 @@ function sendMessage()
                                 <li class="icn-country">From: <em><?php echo $city; ?></em></li>
                             <li class="icn-speaks">
                                 Number of Gigs:
-                                    <em>English</em>
+                                    <em><?php echo $prod_num; ?></em>
                             </li>
                             <li class="icn-response">Avg. Response Time: <em>1 Day</em></li>
                             <li class="icn-recent">Recent Delivery: <em>1 day ago</em></li>
@@ -644,10 +550,7 @@ function sendMessage()
 					<article  class="prod_detail col-lg-12">
       	<ul class="row">
 		<?php
-			$sql = "SELECT k.id, k.title, k.detail, k.price, k.image, k.status, k.expiryDate, kc.category FROM korks k INNER JOIN kork_categories kc ON k.catID = kc.cat_id WHERE k.userID = $_userID";
-			
-			
-			foreach ($dbh->query($sql) as $row){
+			foreach ($allKorks as $row){
 			$kork_id = $row['id'];
 			$kork_title = $row['title'];
 			$kork_detail = $row['detail'];
@@ -656,87 +559,27 @@ function sendMessage()
 			$kork_status = $row['status'];
 			$kork_image = $row['image'];
 			$kork_category = $row['category'];
-			
-			echo "<li class='col-lg-3 col-md-6 col-sm-6'><a href='cate_desc.php?korkID=$kork_id'>
-					<span class='featured_tag'></span>
-					<div class='col-lg-12 single_product'>
-						<div class='img_wrap'>
-							<img src='img/korkImages/$kork_image' width='134' alt='' class='img-responsive'>
-						</div>
-						<h3>$kork_title</h3>
-						<p class='prod_cat_22'>$kork_category Category</p>
-						<p class='attributes'>2014-05-24  | 05:26:51  | 12:03 PM</p>
-						<div class='price_tag_22'>
-							<span class='price_main'>$$kork_price</span>
-							<span class='offer_dt'>10% OFF</span>
-						</div>
-				   </div>
-				</a></li>";
+			$kork_bids = $row['bids'];
+			if($kork_status == 0 || $kork_status == 1){
+				($kork_status == 0) ? $kork_status = "available" : $kork_status = "sold";
+				echo "<li class='col-lg-3 col-md-6 col-sm-6'><a href='cate_desc.php?korkID=$kork_id'>
+						<span class='$kork_status tag'></span>
+						<div class='col-lg-12 single_product'>
+							<div class='img_wrap'>
+								<img src='img/korkImages/$kork_image' width='134' alt='' class='img-responsive'>
+							</div>
+							<h3>$kork_title</h3>
+							<p class='prod_cat_22'>$kork_category Category</p>
+							<p class='attributes'>2014-05-24  | 05:26:51  | 12:03 PM</p>
+							<div class='price_tag_22'>
+								<span class='price_main'>$$kork_price</span>
+								<span class='offer_dt'>$kork_bids BID",($kork_bids > 1) ? "S" : "","</span>
+							</div>
+					   </div>
+					</a></li>";
 			}
-		$dbh = null;
-		?>
-        	<!--<li class="col-lg-3 col-md-6 col-sm-6">
-            	<span class="featured_tag"></span>
-            	<div class="col-lg-12 single_product">
-                	<div class="img_wrap">
-                		<img src="img/mobile_img.png" width="134" alt="" class="img-responsive">
-                	</div>
-                    <h3>Android Cell Phone</h3>
-                    <p class="prod_desc_22">I want to sell my android phone</p>
-                    <p class="attributes">2014-05-24  | 05:26:51  | 12:03 PM</p>
-                    <div class="price_tag_22">
-                    	<span class="price_main">$200</span>
-                        <span class="offer_dt">10% OFF</span>
-                    </div>
-               </div>
-            </li>
-            <li class="col-lg-3 col-md-6 col-sm-6">
-            <span class="featured_tag"></span>
-            	<div class="col-lg-12 single_product">
-                	<div class="img_wrap">
-                		<img src="img/mobile_img.png" width="134" alt="" class="img-responsive">
-                	</div>
-                    <h3>Android Cell Phone</h3>
-                    <p class="prod_desc_22">I want to sell my android phone</p>
-                    <p class="attributes">2014-05-24  | 05:26:51  | 12:03 PM</p>
-                    <div class="price_tag_22">
-                    	<span class="price_main">$200</span>
-                        <span class="offer_dt">10% OFF</span>
-                    </div>
-               </div>
-            </li>
-            <li class="col-lg-3 col-md-6 col-sm-6">
-            <span class="featured_tag"></span>
-            	<div class="col-lg-12 single_product">
-                	<div class="img_wrap">
-                		<img src="img/mobile_img.png" width="134" alt="" class="img-responsive">
-                	</div>
-                    <h3>Android Cell Phone</h3>
-                    <p class="prod_desc_22">I want to sell my android phone</p>
-                    <p class="attributes">2014-05-24  | 05:26:51  | 12:03 PM</p>
-                    <div class="price_tag_22">
-                    	<span class="price_main">$200</span>
-                        <span class="offer_dt">10% OFF</span>
-                    </div>
-               </div>
-            </li>
-            <li class="col-lg-3 col-md-6 col-sm-6">
-            <span class="featured_tag"></span>
-            	<div class="col-lg-12 single_product">
-                	<div class="img_wrap">
-                		<img src="img/mobile_img.png" width="134" alt="" class="img-responsive">
-                	</div>
-                    <h3>Android Cell Phone</h3>
-                    <p class="prod_desc_22">I want to sell my android phone</p>
-                    <p class="attributes">2014-05-24  | 05:26:51  | 12:03 PM</p>
-                    <div class="price_tag_22">
-                    	<span class="price_main">$200</span>
-                        <span class="offer_dt">10% OFF</span>
-                    </div>
-               </div>
-            </li>-->
-
-            
+			}
+		?>           
         </ul>
         <div class="clear"></div>
     </article>
