@@ -16,6 +16,7 @@
 			$_email = $row['email'];
 			$_password = $row['password'];
 			$_joinDate = $row['joinDate'];
+			$_description = $row['description'];
 			$_profilePic = $row['profilePic'];
 			$_collegeName=$row['name'];
 			$name_hypens = str_replace(' ', '-', $_collegeName);

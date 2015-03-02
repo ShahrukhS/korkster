@@ -100,9 +100,21 @@
                     
                 </div>
             </div>
+			<?php 
+			$pageurl = basename($_SERVER['PHP_SELF']);
+			if(isset($_GET)){
+				$pageurl .= "?";
+				foreach($_GET as $keyname => $keyvalue){
+					$pageurl .= "$keyname=$keyvalue&";
+				}
+				$pageurl = substr($pageurl, 0, -1);
+			}
+			?>
             <div class="wrap-search">
-					<input id="query" maxlength="80" name="query" type="text" placeholder="SEARCH">
-		            <input type="image" src="img/glass_small.png" alt="Go">
+					<form action="<?php echo $pageurl; ?>" method="post">
+						<input id="query" maxlength="80" name="query" type="text" placeholder="SEARCH">
+						<input type="image" src="img/glass_small.png" alt="Go">
+					</form>
                   </div>
                 <div class="clear"></div>  
            </div> 

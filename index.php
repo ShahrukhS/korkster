@@ -118,7 +118,7 @@ img {
 			$kork_bids = $row['bids'];
 			
 			echo "<li class='col-lg-3 col-md-6 col-sm-6'><a href='cate_desc.php?korkID=$kork_id'>
-					<span class='available tag'></span>
+					<span class='available korkbadge'></span>
 					<div class='col-lg-12 single_product'>
 						<div class='img_wrap'>
 							<img src='img/korkImages/$kork_image' width='134' alt='' class='img-responsive'>

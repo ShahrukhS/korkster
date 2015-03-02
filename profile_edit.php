@@ -11,7 +11,7 @@ include 'headers/_user-details.php';
 		$lname = $_POST['lname'];
 		//$school = $_POST['userSchool'];
 		if(!isset($profilePic)){
-			$profilePic = "profile_pic.png";
+			$profilePic = $_profilePic;
 		}
 		$query = "SELECT ID from colleges WHERE name = :cname";
 		$sth = $dbh->prepare($query);
@@ -158,7 +158,7 @@ $(document).ready(function() {
           <label for="gig_desc">Description</label>
         </div>
         <div class="input_wrap gig_desc">
-          <textarea class="gig_text desc" rows="10" maxlength="200" name="userDesc" required></textarea>
+          <textarea class="gig_text desc" rows="10" maxlength="200" name="userDesc" required><?php echo $_description; ?></textarea>
         </div>
       </div>
      <!-- <div class="form_row">
@@ -183,6 +183,47 @@ $(document).ready(function() {
   </div>
   <?php include 'headers/menu-bottom-navigation.php' ?>
 </div>
+
+<nav class="navbar navbar-default" role="navigation">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="#">Company Name</a>
+    </div>
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <ul class="nav navbar-nav">
+            <li class="active"><a href="#">Link</a></li>
+            <li><a href="#">Link</a></li>
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                    <li><a href="#">Action</a></li>
+                    <li><a href="#">Another action</a></li>
+                    <li><a href="#">Something else here</a></li>
+                    <li class="divider"></li>
+                    <li><a href="#">Separated link</a></li>
+                    <li class="divider"></li>                    
+                </ul>
+            </li>
+        </ul>
+        <div class="col-sm-3 col-md-3 pull-right">
+            <form class="navbar-form" role="search">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Search" name="q">
+                    <div class="input-group-btn">
+                        <button class="btn btn-default" type="submit"><i class="glyphicon glyphicon-search"></i></button>
+                    </div>
+                </div>
+            </form>
+        </div>        
+    </div>
+</nav>
+
+
 <script>
 $(function() {      
           $("nav.main_nav li#admin > ul").css("display","none");

@@ -109,7 +109,7 @@ $(document).ready(function() {
 					$status = "expired";
 				}
 				echo "<div class='prod_desc'>";
-				echo "<span class='$status tag'></span>";
+				echo "<span class='$status korkbadge'></span>";
 				echo "<img class='main-prod-pic' src='img/korkImages/$image' width='247' style='max-height:172px;' alt=''>";
 				echo "<div class='details'>";
 				echo "<a href='cate_desc.php?korkID={$id}'><h3 style='font-weight:bold;height:2.5em;overflow:hidden;'>$title</h3></a>";

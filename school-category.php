@@ -4,6 +4,17 @@ include 'headers/_user-details.php';
 	$school_hypens = $_GET['schoolName'];
 	$school = str_replace('-', ' ', $school_hypens);
 	$school_id = $_GET['schoolID'];
+	
+	if(isset($_POST['query'])){
+		$searchq = $_POST['query'];
+		preg_replace("#[^0-9a-z]#i","",$searchq);
+		$stmt = $dbh->prepare("SELECT * FROM users WHERE username like %:q%");
+		$stmt->bindParam(':q', $searchq);
+		$stmt->execute();
+		$row = $stmt->fetchAll(PDO::FETCH_ASSOC);
+		print_r($row);
+	}
+	
 ?>
 
 <!doctype html>
@@ -156,7 +167,7 @@ function parallax(){
 					if($status == 0){
 						$status = "available";
 						echo "<div class='prod_desc'>";
-						echo "<span class='$status tag'></span>";
+						echo "<span class='$status korkbadge'></span>";
 						echo "<img class='main-prod-pic' src='img/korkImages/$image' width='247' style='max-height:172px;' alt=''>";
 						echo "<div class='details'>";
 						echo "<a href='cate_desc.php?korkID={$id}'><h3 style='font-weight:bold;height:2.5em;overflow:hidden;'>$title</h3></a>";

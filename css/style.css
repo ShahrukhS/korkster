@@ -713,7 +713,7 @@ border-radius: 12px;
 .single_product .price_tag_22 .price_main{float:left; display:block; padding:0 20px; width:40%; -moz-box-sizing:border-box; -webkit-box-sizing:border-box; box-sizing:border-box; }
 .single_product .price_tag_22 .offer_dt{display:block; float:right; text-align:center; padding:0px 10px; width:60%;  -moz-box-sizing:border-box; -webkit-box-sizing:border-box; box-sizing:border-box; background:url(../img/orange_skewed.png) no-repeat right center;}
 
-.tag{position:absolute; top:0; left:4px; width:114px; height:114px; z-index:100; display:block;}
+.korkbadge{position:absolute; top:0; left:4px; width:114px; height:114px; z-index:100; display:block;}
 .available{ background:url(../img/available_badge.png) no-repeat center top;}
 .expired{ background:url(../img/expired_badge.png) no-repeat center top;}
 .sold{ background:url(../img/sold_badge.png) no-repeat center top;}
