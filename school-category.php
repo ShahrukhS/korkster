@@ -8,11 +8,13 @@ include 'headers/_user-details.php';
 	if(isset($_POST['query'])){
 		$searchq = $_POST['query'];
 		preg_replace("#[^0-9a-z]#i","",$searchq);
-		$stmt = $dbh->prepare("SELECT * FROM users WHERE username like %:q%");
-		$stmt->bindParam(':q', $searchq);
+		$stmt = $dbh->prepare("SELECT ID FROM users WHERE username like :q");
+		$stmt->bindValue(':q', "%$searchq%");
 		$stmt->execute();
-		$row = $stmt->fetchAll(PDO::FETCH_ASSOC);
-		print_r($row);
+		$searchRows = $stmt->fetchAll(PDO::FETCH_COLUMN, 0);
+		/*foreach($dbh->query("SELECT * FROM users WHERE username like '%$searchq%'") as $row){
+			echo $row['ID'];
+		}*/
 	}
 	
 ?>
@@ -130,11 +132,22 @@ function parallax(){
 			
 		try {
 			/*** The SQL SELECT statement ***/
-			if(isset($_GET['category'])){
-				$cat_id = $_GET['category'];
-				$sql = "SELECT k.id, k.title, k.userID, k.detail, k.price, k.image, k.expirydate, k.status, u.ID, u.collegeID, count(i.ID) as `bids` FROM `korks` k join `users` u on u.ID = k.userID left outer join `inbox` i on k.id = i.korkID where u.collegeID = $school_id AND catID = $cat_id group by k.id ORDER BY k.id DESC";
+			if(isset($_GET['category']) == true || empty($searchRows) == false){
+				if(isset($_GET['category']) == true && empty($searchRows) == false){
+						$cat_id = $_GET['category'];
+						$searchRows = implode(',',$searchRows);
+						$sql = "SELECT k.id, k.title, k.userID, k.detail, k.price, k.image, k.expirydate, u.ID, u.collegeID, count(i.ID) as `bids` FROM `korks` k join `users` u on u.ID = k.userID left outer join `inbox` i on k.id = i.korkID where u.collegeID = $school_id AND k.catID = $cat_id AND k.status = 0 AND k.userID IN ($searchRows) group by k.id ORDER BY k.id DESC";
+				}else{
+					if(isset($_GET['category'])){
+						$cat_id = $_GET['category'];
+						$sql = "SELECT k.id, k.title, k.userID, k.detail, k.price, k.image, k.expirydate, u.ID, u.collegeID, count(i.ID) as `bids` FROM `korks` k join `users` u on u.ID = k.userID left outer join `inbox` i on k.id = i.korkID where u.collegeID = $school_id AND k.catID = $cat_id AND k.status = 0 group by k.id ORDER BY k.id DESC";
+					}else {
+						$searchRows = implode(',',$searchRows);
+						$sql = "SELECT k.id, k.title, k.userID, k.detail, k.price, k.image, k.expirydate, u.ID, u.collegeID, count(i.ID) as `bids` FROM `korks` k join `users` u on u.ID = k.userID left outer join `inbox` i on k.id = i.korkID where u.collegeID = $school_id AND k.status = 0 AND k.userID IN ($searchRows) group by k.id ORDER BY k.id DESC";
+					}
+				}
 			}else{
-				$sql = "SELECT k.id, k.title, k.userID, k.detail, k.price, k.image, k.expirydate, k.status, u.ID, u.collegeID, count(i.ID) as `bids` FROM `korks` k join `users` u on u.ID = k.userID left outer join `inbox` i on k.id = i.korkID where u.collegeID = $school_id group by k.id ORDER BY k.id DESC";
+				$sql = "SELECT k.id, k.title, k.userID, k.detail, k.price, k.image, k.expirydate, u.ID, u.collegeID, count(i.ID) as `bids` FROM `korks` k join `users` u on u.ID = k.userID left outer join `inbox` i on k.id = i.korkID where u.collegeID = $school_id AND k.status = 0 group by k.id ORDER BY k.id DESC";
 			}
 			$result = mysqli_query($con,$sql);
 			$count = mysqli_num_rows($result);
@@ -161,24 +174,21 @@ function parallax(){
 					$expiryDate = $row['expirydate'];
 					$detail = $row['detail'];
 					$price=$row['price'];
-					$price=$row['price'];
 					$bids=$row['bids'];
-					$status = $row['status'];
-					if($status == 0){
-						$status = "available";
-						echo "<div class='prod_desc'>";
-						echo "<span class='$status korkbadge'></span>";
-						echo "<img class='main-prod-pic' src='img/korkImages/$image' width='247' style='max-height:172px;' alt=''>";
-						echo "<div class='details'>";
-						echo "<a href='cate_desc.php?korkID={$id}'><h3 style='font-weight:bold;height:2.5em;overflow:hidden;'>$title</h3></a>";
-						echo "<a href='cate_desc.php?korkID={$id}'><div class='kork_text_wrap'><h3> $detail </h3></div></a>";					
-						echo"<p><span> $expiryDate <span> | <span>12:03 PM<span></p>
-							 <div class='price'><span class='price_first'>$ {$price}</span><span class='prod_scheme'>&nbsp; {$bids} <span class='off'>BID",$bids > 1 ? "S" : "","</span></span></div>
-						
-							</div>
-							<div class='clear'></div>
-							</div>";
-					}
+					$status = "available";
+					
+					echo "<div class='prod_desc'>";
+					echo "<span class='$status korkbadge'></span>";
+					echo "<img class='main-prod-pic' src='img/korkImages/$image' width='247' style='max-height:172px;' alt=''>";
+					echo "<div class='details'>";
+					echo "<a href='cate_desc.php?korkID={$id}'><h3 style='font-weight:bold;height:2.5em;overflow:hidden;'>$title</h3></a>";
+					echo "<a href='cate_desc.php?korkID={$id}'><div class='kork_text_wrap'><h3> $detail </h3></div></a>";					
+					echo"<p><span> $expiryDate <span> | <span>12:03 PM<span></p>
+						 <div class='price'><span class='price_first'>$ {$price}</span><span class='prod_scheme'>&nbsp; {$bids} <span class='off'>BID",$bids > 1 ? "S" : "","</span></span></div>
+					
+						</div>
+						<div class='clear'></div>
+						</div>";
 			}
 
 			/*** close the database connection ***/
