@@ -44,7 +44,7 @@ function signupForm()
 			 $inputs.prop("disabled", true);
 		// fire off the request to /form.php
 			request = $.ajax({
-				url: "http://localhost:2126/korkster/signup_form.php",
+				url: "localhost:2126/korkster/signup_form.php",
 				type: "post",
 				data: serializedData
 			});

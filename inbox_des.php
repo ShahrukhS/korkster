@@ -44,6 +44,7 @@ var sender = $_userID;
 var receiver = $_GET[id];
 var fname='${_fname}';
 var lname='${_lname}';
+var username='${_username}';
 var img = '${_profilePic}';
 
 </script>";
@@ -82,20 +83,13 @@ function sendMessage()
 				// callback handler that will be called on success
 			request.done(function (response, textStatus, jqXHR){
 				// log a message to the console
-				
 					if(response=="Message Sent!"){
-						//alert('Message Sent Successfully!');
-						
-						
-						//$( "<div class='msg_wrap_2'> <div class='messege_push'><span class='user-pict_50'><a href='#'>"
-						//+"<imgsrc='"+img+"' alt='$result[username]' width='50' height='50' class=''></a>"
-							
 						$( "<div class='msg_wrap_2'> <div class='messege_push'><span class='user-pict_50'>"
-						+"</span><h4><a href='#'>"+fname + " "+lname+"</a></h4> <div class='msg_body'>"
+						+"<a href='/"+username+"'><img src='img/users/"+img+"' width='50' height='50' /></a></span>"
+						+"<h4><a href='/"+username+"'>"+fname + " "+lname+"</a></h4> <div class='msg_body'>"
 						 +" <p>"+$('#reply_texts').val()+"</p></div></div>"
 					   +"<div class='clear'></div>" ).insertBefore( ".reply_box_22" );
 							
-						$('.user-pict_50').html("<a href='#'><img src='img/users/"+img+"' width='50' height='50' /></a>");
 						//location.reload();
 						$('#reply_texts').val('');
 					}
@@ -107,10 +101,7 @@ function sendMessage()
 				// log the error to the console
 				
 				alert('Request Failed!');
-				console.error(
-					"The following error occured: "+
-					textStatus, errorThrown
-				);
+				console.error("The following error occured: "+textStatus, errorThrown);
 			});
 	
 			// callback handler that will be called regardless
@@ -171,7 +162,7 @@ function sendMessage()
 		$sth->bindValue(':ID',$ID);
 		$sth->execute();
 		$result = $sth->fetch(PDO::FETCH_ASSOC);
-		$name=$result['fname']." " .$result['lname'];
+		$name=$result['fname']." ".$result['lname'];
 	
     echo"<span class='user-picture'>
                 	<img src='img/users/$result[profilePic]' alt='$result[username]' width='50' height='50' class=''>
@@ -191,7 +182,7 @@ function sendMessage()
         </div>
         
 		
-        <div class='conver_body'>
+			<div class='conver_body'>
         	<div class='div_aside'>
             	<a href='inbox_des.php?id=$ID&mode=2' class='read_un unread'>unread</a>
 		    	<a href='inbox_des.php?id=$ID&mode=1' class='read_un read'>read</a>
@@ -199,20 +190,20 @@ function sendMessage()
                 <div class='clear'></div>      
             </div>";
 			
-		$readindex=0;
+			$readindex=0;
 		if($_GET['mode']==1){
-		$query = "SELECT i.*, u.fname,u.username,u.lname,u.profilePic,k.image,k.title from inbox i 
-join users u on u.ID = i.senderID left outer join korks k on k.ID = i.korkID WHERE ((i.senderID = :sID && i.receiverID = :rID) || (i.senderID = :rID && i.receiverID = :sID)) && i.isRead=1 order by i.ID";
-$readindex=1;
+			$query = "SELECT i.*, u.fname,u.username,u.lname,u.profilePic,k.image,k.title from inbox i 
+			join users u on u.ID = i.senderID left outer join korks k on k.ID = i.korkID WHERE ((i.senderID = :sID && i.receiverID = :rID) || (i.senderID = :rID && i.receiverID = 	:sID)) && i.isRead=1 order by i.ID";
+			$readindex=1;
 		}else if($_GET['mode']==2){
-					$query = "SELECT i.*, u.fname,u.username,u.lname,u.profilePic,k.image,k.title  from inbox i 
-join users u on u.ID = i.senderID left outer join korks k on k.ID = i.korkID WHERE ((i.senderID = :sID && i.receiverID = :rID) || (i.senderID = :rID && i.receiverID = :sID))  && i.isRead=0 order by i.ID";
+			$query = "SELECT i.*, u.fname,u.username,u.lname,u.profilePic,k.image,k.title  from inbox i 
+			join users u on u.ID = i.senderID left outer join korks k on k.ID = i.korkID WHERE ((i.senderID = :sID && i.receiverID = :rID) || (i.senderID = :rID && i.receiverID = :sID))  && i.isRead=0 order by i.ID";
 			$readindex=2;
-			}else{
-						$query = "SELECT i.*, u.fname,u.username,u.lname,u.profilePic,k.image,k.title  from inbox i 
-join users u on u.ID = i.senderID left outer join korks k on k.ID = i.korkID WHERE ((i.senderID = :sID && i.receiverID = :rID) || (i.senderID = :rID && i.receiverID = :sID)) order by i.ID";
-				$readindex=0;
-				}
+		}else{
+			$query = "SELECT i.*, u.fname,u.username,u.lname,u.profilePic,k.image,k.title  from inbox i 
+			join users u on u.ID = i.senderID left outer join korks k on k.ID = i.korkID WHERE ((i.senderID = :sID && i.receiverID = :rID) || (i.senderID = :rID && i.receiverID = :sID)) order by i.ID";
+			$readindex=0;
+		}
 		$sth = $dbh->prepare($query);
 		$sth->bindValue(':sID',$ID);
 		$sth->bindValue(':rID',$_userID);
@@ -228,7 +219,7 @@ join users u on u.ID = i.senderID left outer join korks k on k.ID = i.korkID WHE
             <div class='conv_action'>
             	<div class='messege_push_1'>
 				<span class='user-pict_50'>
-                		<a href='#'><img src='img/users/$result[profilePic]' alt='$result[username]' width='50' height='50' class=''></a>
+                		<a href='/$result[username]'><img src='img/users/$result[profilePic]' alt='$result[username]' width='50' height='50' class=''></a>
                		</span>
                     <h4><a href='#'>$result[fname] $result[lname]</a></h4>
                       <div class='msg_body'>
@@ -289,8 +280,9 @@ join users u on u.ID = i.senderID left outer join korks k on k.ID = i.korkID WHE
                 	<div class='reply_box_header'><h3>Send <a href='#'>$name</a> a message.</h3></div>";
 					
 					
-						$query = "UPDATE inbox i SET i.isRead=1 WHERE ((i.senderID = :sID && i.receiverID = :rID) || (i.senderID = :rID && i.receiverID = :sID)) order by i.ID";
-								
+						//$query = "UPDATE inbox i SET i.isRead=1 WHERE ((i.senderID = :sID && i.receiverID = :rID) || (i.senderID = :rID && i.receiverID = :sID)) order by i.ID";
+						$query = "UPDATE inbox i SET i.isRead=1 WHERE (i.senderID = :sID && i.receiverID = :rID) order by i.ID";
+						
 		$sth = $dbh->prepare($query);
 		$sth->bindValue(':sID',$ID);
 		$sth->bindValue(':rID',$_userID);

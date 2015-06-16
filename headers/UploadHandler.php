@@ -1317,9 +1317,11 @@ class UploadHandler
                 // param_name is an array identifier like "files[]",
                 // $upload is a multi-dimensional array:
                 foreach ($upload['tmp_name'] as $index => $value) {
+					$file_extn = strtolower(end(explode('.', $upload['name'][$index])));
+					$tmpName = substr(md5(time()), 0, 10) . '.' . $file_extn;
                     $files[] = $this->handle_file_upload(
                         $upload['tmp_name'][$index],
-                        $file_name ? $file_name : $upload['name'][$index],
+                        $file_name ? $file_name : $tmpName,
                         $size ? $size : $upload['size'][$index],
                         $upload['type'][$index],
                         $upload['error'][$index],
@@ -1330,10 +1332,12 @@ class UploadHandler
             } else {
                 // param_name is a single object identifier like "file",
                 // $upload is a one-dimensional array:
+				$file_extn = strtolower(end(explode('.', $upload['name'])));
+				$tmpName = substr(md5(time()), 0, 10) . '.' . $file_extn;
                 $files[] = $this->handle_file_upload(
                     isset($upload['tmp_name']) ? $upload['tmp_name'] : null,
                     $file_name ? $file_name : (isset($upload['name']) ?
-                            $upload['name'] : null),
+                            $tmpName : null),
                     $size ? $size : (isset($upload['size']) ?
                             $upload['size'] : $this->get_server_var('CONTENT_LENGTH')),
                     isset($upload['type']) ?

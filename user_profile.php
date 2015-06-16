@@ -566,7 +566,7 @@ function sendMessage()
 						<span class='$kork_status korkbadge'></span>
 						<div class='col-lg-12 single_product'>
 							<div class='img_wrap'>
-								<img src='img/korkImages/$kork_image' width='134' alt='' class='img-responsive'>
+								<img src='img/korkImages/$kork_image' alt='' class='img-responsive'>
 							</div>
 							<h3>$kork_title</h3>
 							<p class='prod_cat_22'>$kork_category Category</p>

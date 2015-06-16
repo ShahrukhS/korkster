@@ -22,9 +22,7 @@
 			$name_hypens = str_replace(' ', '-', $_collegeName);
 			$collegeURL="school-category.php?schoolID={$_college}&schoolName={$name_hypens}";
 			
-			echo "<script>
-			var collegeURL='${collegeURL}';
-			</script>";
+			//echo "<script>var collegeURL='${collegeURL}';</script>";
 		}
 	}
 ?>

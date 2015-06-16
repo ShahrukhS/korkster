@@ -94,6 +94,12 @@ session_start();
 		$userBid['bid'] = $bid;
 		$userBid['dateM'] = date('Y/m/d H:i:s');
 	}
+	
+	//fetching all kork images
+	$stmt = $dbh->prepare("SELECT attachment FROM kork_img WHERE korkID=:korkID");
+	$stmt->bindParam(':korkID', $id);
+	$stmt->execute();
+	$korkImages = $stmt->fetchAll(PDO::FETCH_COLUMN);
 ?>
 <!doctype html>
 <html>
@@ -290,8 +296,11 @@ function sendMessage()
       <!-- <li>
    					 <iframe src="http://player.vimeo.com/video/17914974" width="610" height="425" frameborder="0" 		webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
   				</li> -->
-      <li><img src="img/korkImages/<?php echo $image; ?>" /></li>
-      <li><img src="img/korkImages/<?php echo $image; ?>" /></li>
+	<?php
+		foreach($korkImages as $img){
+			echo "<li><img src='img/korkImages/$img' /></li>";
+		}
+	?>
     </ul>
   </div>
   <div class="right_kork">
@@ -325,6 +334,7 @@ function sendMessage()
     <p>Share this</p>
   </div>
   <ul class="share-buttons">
+	<? $shareLink = "http://".$_SERVER['HTTP_HOST'].$_SERVER['SCRIPT_NAME'];?>
 	<li><a href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Fwalknsell.com%2F&t=WalknSell%20share%20kro%20babes%20%3AP" target="_blank" onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(document.URL) + '&t=' + encodeURIComponent(document.URL)); return false;"><img src="img/Facebook.png"></a></li>
 	<li><a href="https://twitter.com/intent/tweet?source=http%3A%2F%2Fwalknsell.com%2F&text=WalknSell%20share%20kro%20babes%20%3AP:%20http%3A%2F%2Fwalknsell.com%2F" target="_blank" title="Tweet" onclick="window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(document.title) + ':%20'  + encodeURIComponent(document.URL)); return false;"><img src="img/Twitter.png"></a></li>
 	<li><a href="https://plus.google.com/share?url=http%3A%2F%2Fwalknsell.com%2F" target="_blank" title="Share on Google+" onclick="window.open('https://plus.google.com/share?url=' + encodeURIComponent(document.URL)); return false;"><img src="img/Google+.png"></a></li>

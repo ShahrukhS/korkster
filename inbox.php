@@ -151,7 +151,6 @@ window.onload=function() {
 	<div class="header_bg">
         <header class="main-header">
         <a id="simple-menu" class="icon-menu" href="#sidr"></a>
-
            <?php include "headers/menu-top-navigation.php"; ?>
         </header>
         <div class="clear"></div>

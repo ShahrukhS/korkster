@@ -6,10 +6,7 @@
 		
 		$sender = $_POST['sender'];
 		$receiver = $_POST['receiver'];
-		$message=$_POST['msg'];
-		
-		
-		
+		$message = $_POST['msg'];
 			
 		// inserting user details if username doesnot exist
 		
@@ -21,12 +18,10 @@
 		$sth->bindValue(':dateM',date('Y/m/d H:i:s'));
 				
 		//$sth ->execute();
-		 if($sth ->execute())
+		 if($sth->execute())
 		 { 
-		 echo "Message Sent!";
-		 }
-		  
-		 else{	
+			echo "Message Sent!";
+		 }else{	
 			$errorCode = $sth->errorCode();
 			echo "ErrorCode: " . $errorCode; 
 		 }
