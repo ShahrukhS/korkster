@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 	include 'headers/_user-details.php';
 	$korkID = $_GET['korkID'];
@@ -10,8 +10,11 @@ session_start();
     $stmt->execute();
     $result = $stmt->fetchAll();
 	$row = $result[0];
-	
-	if($row['userID'] != $_userID){
+    if(empty($row)){
+        header("Location: 404.php");
+        die();
+    }
+	if(!empty($_SESSION['username']) && $row['userID'] != $_userID){
 		$dbh->exec("UPDATE korks SET visitors=visitors+1 WHERE id=$korkID");
 		$visitors = $row['visitors']+1;
 	}else{
@@ -27,11 +30,37 @@ session_start();
 	
 	/* Checking to see how many days have passed since the gig created */
 	
-	$now = time(); // or your date as well
+	/*$now = time(); // or your date as well
     $dateOfCreation = strtotime($dateOfCreation);
     $datediff = $now - $dateOfCreation;
-    $daysPassed = floor($datediff/(60*60*24));
-	
+    $daysPassed = floor($datediff/(60*60*24));*/
+	function time_elapsed_string($datetime, $full = false) {
+    $now = new DateTime;
+    $ago = new DateTime($datetime);
+    $diff = $now->diff($ago);
+
+    $diff->w = floor($diff->d / 7);
+    $diff->d -= $diff->w * 7;
+
+    $string = array(
+        'y' => 'year',
+        'm' => 'month',
+        'w' => 'week',
+        'd' => 'day',
+        'h' => 'hour',
+        'i' => 'minute',
+        's' => 'second',
+    );
+    foreach ($string as $k => &$v) {
+        if ($diff->$k) {
+            $v = $diff->$k . ' ' . $v . ($diff->$k > 1 ? 's' : '');
+        } else {
+            unset($string[$k]);
+        }
+    }
+	if (!$full) $string = array_slice($string, 0, 1);
+    return $string ? implode(', ', $string) . ' ago' : 'just now';
+	}
 	
  	$date = DateTime::createFromFormat("Y-m-d", $dateOfCreation);
 	
@@ -45,9 +74,10 @@ session_start();
 	/* 
 		Calculating number of days ago username joined.
 	*/
-	$userDate = strtotime($userDate);
+	/*$userDate = strtotime($userDate);
     $datediff_user = $now - $userDate;
-    $joinedAgo = floor($datediff_user/(60*60*24));
+    $joinedAgo = floor($datediff_user/(60*60*24));*/
+
 	
 	/** Bids **/
 	$stmt = $dbh->prepare("SELECT count(ID) FROM inbox WHERE korkID = :korkid");
@@ -106,6 +136,28 @@ session_start();
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+<!-- for Google -->
+<meta name="description" content="" />
+<meta name="keywords" content="" />
+
+<meta name="author" content="" />
+<meta name="copyright" content="" />
+<meta name="application-name" content="" />
+
+<!-- for Facebook -->          
+<meta property="og:title" content="<?php echo $title;?> | WalknSell" />
+<meta property="og:type" content="Product" />
+<meta property="og:image" content="<?php echo "http://walknsell.com/img/korkImages/".$korkImages[0]?>" />
+<meta property="og:url" content="<?php echo "http://walknsell.com".$_SERVER['REQUEST_URI']?>" />
+<meta property="og:description" content="<?php echo $detail; ?>" />
+
+<!-- for Twitter -->          
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="<?php echo $title;?> | WalknSell" />
+<meta name="twitter:description" content="<?php echo $detail; ?>" />
+<meta name="twitter:image" content="<?php echo "http://walknsell.com/img/korkImages/".$korkImages[0]?>" />
+<meta property="twitter:url" content="<?php echo "http://walknsell.com".$_SERVER['REQUEST_URI']?>" />
+    
 <title><?php echo $title ?> | WalknSell</title>
 <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800' rel='stylesheet' type='text/css'>
 <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.css">
@@ -147,20 +199,18 @@ var receiver = $userID;
 <script src="js/modern.js"></script>
 <script src="js/jquery-1.10.2.min.js"></script>
 
-
-
-
 <script src="js/jquery.fitvids.js"></script>
 <script src="js/jquery.bxslider.js"></script>
 <script src="js/jquery.sidr.min.js"></script>
 <script src="js/custom.js"></script>
+<script src="js/fb.js"></script>
 <script src="js/bootstrap.min.js"></script>
 
 <script>
 $(document).ready(function() {
   $('#simple-menu').sidr();
 });
-
+/*
 $(document).ready(function() {
    $(window).bind('scroll', function(e){
 	   parallax();
@@ -171,7 +221,7 @@ function parallax(){
 	var scrollposition = $(window).scrollTop();
 	$('article.header_bg_para').css('top',(0-(scrollposition * 0.2))+'px');
 	$('.full_article_bg').css('top',(0-(scrollposition * 1.1))+'px');
-	}
+	}*/
 </script>
 
 
@@ -259,13 +309,12 @@ function sendMessage()
 
 <body>
 <div class="cate_desc">
-<div class="header_bg static_top">
+<div class="header_bg">
   <header class="main-header"> <a id="simple-menu" class="icon-menu" href="#sidr"></a>
     <?php include 'headers/menu-top-navigation.php';?>
   </header>
+    </div>
   <?php include 'headers/subhead.php' ?>
-  <div class="clear"></div>
-    
   <div class="submenu_wrap">
     <div class="category_submenu">
       <nav>
@@ -283,14 +332,13 @@ function sendMessage()
       </nav>
     </div>
   </div>
-</div>
 <!--/.header_bg-->
 <!-- <article class="header_bg_para">
 
 </article> -->
-<div id="backgroundPopup"></div>
-<div class="full_article_bg" style="top:140px;">
-<div class="kork_desc" style="top:140px;">
+<?php include 'headers/popup.php';?>
+<div class="full_article_bg">
+<div class="kork_desc">
   <div class="left_kork">
     <ul class="bxslider">
       <!-- <li>
@@ -305,10 +353,10 @@ function sendMessage()
   </div>
   <div class="right_kork">
     <h3><?php echo $title;	?></h3>
-    <h4> Created <span class="orange"><?php echo $daysPassed > 1 ? "$daysPassed days ago" : ($daysPassed == 0 ? "today" : "$daysPassed day ago");?></span><br>
+    <h4> Created <span class="orange"><?php echo time_elapsed_string($dateOfCreation);//$daysPassed > 1 ? "$daysPassed days ago" : ($daysPassed == 0 ? "today" : "$daysPassed day ago");?></span><br>
       in <span class="orange"><?php echo $kork_category; ?> category</span> </h4>
     <p><?php echo $detail; ?></p>
-    <?php if($userID != $_userID) { echo "<a href='#' class='btn_signup' data-toggle='modal' data-target='#message'>",($hasBid === true) ? 'Update Bid' : 'Bid Now',"</a>";}?></div>
+    <?php if(!empty($_SESSION['username']) && $userID != $_userID) { echo "<a href='#' class='btn_signup' data-toggle='modal' data-target='#message'>",($hasBid === true) ? 'Update Bid' : 'Bid Now',"</a>";}?></div>
   <div class="clear"></div>
 </div>
 <div class="kork_option">
@@ -316,7 +364,8 @@ function sendMessage()
 <li>
   <div class="first_dt"> <span> <img src="img/users/<?php echo $userPic; ?>" width="50" height="50" alt=""> </span>
     <h2>By <?php echo "<a href='$korkUser'> $korkUser"; ?></a></h2>
-    <p>From: <?php echo "$korkCollege (joined ",$joinedAgo > 1 ? "$joinedAgo days ago" : ($joinedAgo == 0 ? "today $joinedAgo" : "$joinedAgo day ago");?>)</p>
+    <p>From: <?php //echo "$korkCollege (joined ",$joinedAgo > 1 ? "$joinedAgo days ago" : ($joinedAgo == 0 ? "today $joinedAgo" : "$joinedAgo day ago");
+					echo $korkCollege; ?>)</p>
   </div>
 </li>
 <li>
@@ -330,15 +379,16 @@ function sendMessage()
   </div>
 </li>
 <li>
-  <div class="share_dt">
-    <p>Share this</p>
-  </div>
+  <div class="share_dt"><span>
+      <p>Share this</p></span>
+  
   <ul class="share-buttons">
-	<? $shareLink = "http://".$_SERVER['HTTP_HOST'].$_SERVER['SCRIPT_NAME'];?>
-	<li><a href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Fwalknsell.com%2F&t=WalknSell%20share%20kro%20babes%20%3AP" target="_blank" onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(document.URL) + '&t=' + encodeURIComponent(document.URL)); return false;"><img src="img/Facebook.png"></a></li>
+	<!--<li><a href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Fwalknsell.com<?php echo urlencode($_SERVER['REQUEST_URI']);?>&t=<?php echo $title; ?>" target="_blank" onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(document.URL) + '&t=' + encodeURIComponent(document.URL)); return false;"><img src="img/Facebook.png"></a></li>-->
+      <li><a href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Fwalknsell.com<?php echo urlencode($_SERVER['REQUEST_URI']);?>" target="_blank" onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(document.URL)); return false;"><img src="img/Facebook.png"></a></li>
 	<li><a href="https://twitter.com/intent/tweet?source=http%3A%2F%2Fwalknsell.com%2F&text=WalknSell%20share%20kro%20babes%20%3AP:%20http%3A%2F%2Fwalknsell.com%2F" target="_blank" title="Tweet" onclick="window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(document.title) + ':%20'  + encodeURIComponent(document.URL)); return false;"><img src="img/Twitter.png"></a></li>
 	<li><a href="https://plus.google.com/share?url=http%3A%2F%2Fwalknsell.com%2F" target="_blank" title="Share on Google+" onclick="window.open('https://plus.google.com/share?url=' + encodeURIComponent(document.URL)); return false;"><img src="img/Google+.png"></a></li>
 </ul>
+      </div>
 </li>
 </ul>
 <div class="clear"></div>
@@ -377,14 +427,9 @@ function sendMessage()
 						$message = $row['message'];
 						$bid = $row['bid'];
 						$bidDate = $row['dateM'];
-						
-						$now = time(); // or your date as well
-						$creationDate = strtotime($bidDate);
-						$diff = $now - $creationDate;
-						$daysPassed = floor($diff/(60*60*24));
-						
+												
 						echo "<div class='kork_message'><ul><li><div class='first_dt'> <span> <img src='img/users/$profilePic' width='50' height='50' alt=''> </span>
-							<h2><a href='$sender'>$sender</a> (sent ",$daysPassed > 1 ? "$daysPassed days ago" : ($daysPassed == 0 ? "today" : "$daysPassed day ago"),")</h2>
+							<h2><a href='$sender'>$sender</a> (sent ",time_elapsed_string($bidDate),")</h2>
 							</div></li>";
 						echo "<li><div class='second_dt'>
 							 <p>$message</p>
@@ -409,7 +454,7 @@ function sendMessage()
 				$diff = $now - $creationDate;
 				$daysPassed = floor($diff/(60*60*24));
 				if($justInserted === true){
-					echo "<div class='kork_message alert-notice'><p>Your bid has been submitted. You can update the bid whenever you want bro! :p</p></div>";
+					echo "<div class='kork_message alert-notice'><p>Your bid has been submitted. You can update the bid anytime later.</p></div>";
 				}
 				echo "<div class='kork_message'><ul><li><div class='first_dt'><span><img src='img/users/$_profilePic' width='50' height='50' alt=''> </span>
 					<h2><a href='$_username'>$_username</a> (sent ",$daysPassed > 1 ? "$daysPassed days ago" : ($daysPassed == 0 ? "today" : "$daysPassed day ago"),")</h2>
@@ -426,7 +471,7 @@ function sendMessage()
 		}
 	}
 
-	include 'headers/menu-bottom-navigation.php' ?>
+	//include 'headers/menu-bottom-navigation.php' ?>
 </div>
 <div class="modal fade" id="message" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog">
@@ -455,6 +500,9 @@ function sendMessage()
     </div>
   </div>
 </div>
+</div>
+    <?php include 'headers/menu-bottom-navigation.php' ?>
+<script src ="js/register.js"></script>
 <script type="text/javascript">
   $(document).ready(function(){
     
@@ -470,10 +518,6 @@ function getlist(x){
     $("#veiwlist"+x).show();
 }
 </script> 
-
-
-
-
 <script src="js/nav-admin-dropdown.js"></script>
 <script src="js/school-list.js"></script>
 </body>

@@ -13,8 +13,8 @@
     },
     freeInput: true,
     addOnBlur: true,
-    maxTags: undefined,
-    maxChars: undefined,
+    maxTags: 5,
+    maxChars: 25,
     confirmKeys: [13, 44],
     onTagExists: function(item, $tag) {
       $tag.hide().fadeIn();

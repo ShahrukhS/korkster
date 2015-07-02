@@ -1,6 +1,9 @@
 <?php
 session_start();
 include 'headers/_user-details.php';
+if(empty($_SESSION['username'])){
+    header('Location: error.php');
+}
 ?>
 
 
@@ -21,12 +24,9 @@ include 'headers/_user-details.php';
 <link rel="stylesheet" href="css/fontello.css" type="text/css">
 <link href="css/font-awesome.min.css" rel="stylesheet" type="text/css">
 <link rel="stylesheet" href="css/jquery.sidr.dark.css" type="text/css">
-<!--
-<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">-->
-<!-- blueimp Gallery styles -->
-<link rel="stylesheet" href="css/blueimp-gallery.min.css">
+
 <script src="js/dropzone.min.js"></script>
-<link href="css/dropzone.min.css" rel="stylesheet">
+<link href="css/dropzone.css" rel="stylesheet">
 
 <style>
 *, *:before, *:after {
@@ -56,7 +56,6 @@ $(document).ready(function() {
   $('#simple-menu').sidr();
 });
 </script>
-
 
 <!--[if lt IE 9]>
 	<script src="js/lib/html5shiv.js"></script>
@@ -146,7 +145,7 @@ $(document).ready(function() {
         <div class="label_wrap">
           <label for="gig_gallery">gig gallery</label>
         </div>
-        <div class="input_wrap" id="gig_gallery_wrap">
+        <div class="input_wrap">
         <div id="my-dropzone" class="dropzone">
 			<div class="dropzone-previews"></div>
 		</div>
@@ -168,8 +167,16 @@ $(document).ready(function() {
         </div>
         <div class="input_wrap gig_tags">
           <input class="gig_tags_text" type="text" data-role="tagsinput" id="taginput" name="taginput" />
-        
         </div>
+          <aside class="gig-tooltip">
+          <figure>
+            <figcaption>
+              <h3>Add tags.</h3>
+              <p>You can add upto 5 tags. Choose wisely for better promotion.</p>
+            </figcaption>
+            <div class="gig-tooltip-img"></div>
+          </figure>
+        </aside>
       </div>
       <div class="form_row">
         <div class="label_wrap">
@@ -216,7 +223,7 @@ $(function() {
          							  $( "nav.main_nav li#admin > ul" ).css( "display", "block" );
 	            },          
             	function () {      
-							           $( "nav.main_nav li#admin > ul" ).css( "display", "none" );
+						$( "nav.main_nav li#admin > ul" ).css( "display", "none" );
 				        });   
 				     });
 					 
@@ -231,9 +238,6 @@ $(function() {
 <script src="js/school-list.js"></script>
 <!--multiple image upload starts here -->
 
-
-<script src="js/jquery.min.js"></script>
-<!-- The jQuery UI widget factory, can be omitted if jQuery UI is already included -->
 <script>
 function submitForm(action)
     {
@@ -241,21 +245,7 @@ function submitForm(action)
         document.getElementById('form1').submit();
     }
 </script>
-<script src="js/vendor/jquery.ui.widget.js"></script>
-<!-- The Templates plugin is included to render the upload/download listings -->
-<script src="js/tmpl.min.js"></script>
-<!-- The Load Image plugin is included for the preview images and image resizing functionality -->
-<script src="js/load-image.all.min.js"></script>
-<!-- The Canvas to Blob plugin is included for image resizing functionality -->
-<script src="js/canvas-to-blob.min.js"></script>
-<!-- Bootstrap JS is not required, but included for the responsive demo navigation -->
-<script src="js/bootstrap.min.js"></script>
-<!-- blueimp Gallery script -->
-<script src="js/jquery.blueimp-gallery.min.js"></script>
-<!-- The Iframe Transport is required for browsers without support for XHR file uploads -->
-<script src="js/jquery.iframe-transport.js"></script>
-<!-- The main application script -->
-<script src="js/main.js"></script>
+
 <script type="text/javascript">
 	var myDropzone = new Dropzone("div#my-dropzone", { 
 	url: "creating_gig.php",
@@ -263,7 +253,8 @@ function submitForm(action)
 	autoProcessQueue: false,
 	paramName: "files",
         uploadMultiple: true,
-        maxFiles: 100,
+        maxFiles: 4,
+        parallelUploads: 4,
         init: function() {
             var submitButton = document.querySelector("#submit-all")
             dropzone = this; // closure
@@ -272,6 +263,9 @@ function submitForm(action)
             e.preventDefault();
             e.stopPropagation();
             dropzone.processQueue(); // Tell Dropzone to process all queued files.
+        });
+        this.on("maxfilesexceeded", function(file){
+            alert("No more files please!");
         });
             
         // Listen to the sendingmultiple event. In this case, it's the sendingmultiple event instead
@@ -289,9 +283,11 @@ function submitForm(action)
         this.on("successmultiple", function(files, response) {
           // Gets triggered when the files have successfully been sent.
           // Redirect user or notify of success.
-			if(response != "failed"){
-				window.location = "cate_desc.php?korkID="+response;
-			}
+			if(response.request == "Gig created!"){
+				window.location = "cate_desc.php?korkID="+response.id;
+			}else{
+                alert('request failed');
+            }
         });
         this.on("errormultiple", function(files, response) {
           // Gets triggered when there was an error sending the files.
@@ -300,5 +296,6 @@ function submitForm(action)
 		}
 	});
 </script>
+<script src="js/nav-admin-dropdown.js"></script>
 </body>
 </html>

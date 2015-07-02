@@ -16,7 +16,6 @@ include 'headers/_user-details.php';
 			echo $row['ID'];
 		}*/
 	}
-	
 ?>
 
 <!doctype html>
@@ -176,14 +175,14 @@ function parallax(){
 					$price=$row['price'];
 					$bids=$row['bids'];
 					$status = "available";
-					
+                
 					echo "<div class='prod_desc'>";
 					echo "<span class='$status korkbadge'></span>";
-					echo "<img class='main-prod-pic' src='img/korkImages/$image' width='247' style='max-height:172px;' alt=''>";
+					echo "<img class='main-prod-pic' src='img/korkImages/$image' width='247px' height='194px' alt=''>";
 					echo "<div class='details'>";
-					echo "<a href='cate_desc.php?korkID={$id}'><h3 style='font-weight:bold;height:2.5em;overflow:hidden;'>$title</h3></a>";
+					echo "<a href='cate_desc.php?korkID={$id}'><h3 class='block-ellipsis' style='font-weight:bold;'>$title</h3></a>";
 					echo "<a href='cate_desc.php?korkID={$id}'><div class='kork_text_wrap'><h3> $detail </h3></div></a>";					
-					echo"<p><span> $expiryDate <span> | <span>12:03 PM<span></p>
+					echo"<p><span> ".date('m-d-Y | h:i A', strtotime($expiryDate))." </span></p>
 						 <div class='price'><span class='price_first'>$ {$price}</span><span class='prod_scheme'>&nbsp; {$bids} <span class='off'>BID",$bids > 1 ? "S" : "","</span></span></div>
 					
 						</div>

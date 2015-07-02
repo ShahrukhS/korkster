@@ -487,8 +487,8 @@ input.span1, textarea.span1, .uneditable-input.span1 {
 	font-family: 'Pluto';
 	font-weight: normal;
 	font-style: normal;
-	src: url("//cdnil20.fiverrcdn.com/assets/fonts/pluto/pluto_fiverr-webfont-bd5152f9b03f99c82634711f88efb28e.eot");
-	src: url("//cdnil20.fiverrcdn.com/assets/fonts/pluto/pluto_fiverr-webfont-bd5152f9b03f99c82634711f88efb28e.eot?#iefix") format("embedded-opentype"), url("//cdnil21.fiverrcdn.com/assets/fonts/pluto/pluto_fiverr-webfont-547358170d890e6b0531f8ea06341a22.woff") format("woff"), url("//cdnil21.fiverrcdn.com/assets/fonts/pluto/pluto_fiverr-webfont-6e5c730c4994e96d7710c4b323c3010b.ttf") format("truetype"), url("//cdnil21.fiverrcdn.com/assets/fonts/pluto/pluto_fiverr-webfont-d2e5046087430e89c5a1a943cdc433b4.svg#pluto_fiverrregular") format("svg")
+	src: url("../fonts/pluto_fiverr-webfont-bd5152f9b03f99c82634711f88efb28e.eot");
+	src: url("../fonts/pluto_fiverr-webfont-bd5152f9b03f99c82634711f88efb28e.eot?#iefix") format("embedded-opentype"), url("../fonts/pluto_fiverr-webfont-547358170d890e6b0531f8ea06341a22.woff") format("woff"), url("../fonts/pluto_fiverr-webfont-6e5c730c4994e96d7710c4b323c3010b.ttf") format("truetype")
 }
 html {
 	-webkit-font-smoothing: antialiased;
@@ -7814,7 +7814,9 @@ z-index:4
 	letter-spacing: 0;
 	padding-top: 6px;
 	display: block;
-	text-align: center
+	text-align: center;
+	background: rgba(52,52,52,0.7);
+  border-radius: 50px;
 }
 .mp-hero-new .hero-text h1 small a {
 	font-weight: 700;

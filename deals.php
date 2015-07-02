@@ -25,6 +25,17 @@ include 'headers/_user-details.php';
 img {
 	vertical-align: top;
 }
+.wrapper {
+  min-height: 100%;
+  margin-bottom: -118px; 
+}
+.wrapper:after {
+  content: "";
+  display: block;
+}
+.wrapper:after {
+  height: 118px; 
+}
 </style>
 <script src="js/jquery-1.10.2.min.js"></script>
 <script src="js/modern.js"></script>
@@ -38,12 +49,6 @@ img {
 $(document).ready(function() {
   $('#simple-menu').sidr();
 });
-
-$(document).ready(function() {
-   $(window).bind('scroll', function(e){
-	   parallax();
-	  });
-});
 </script>
 <!--[if lt IE 9]>
 			<script src="js/lib/html5shiv.js"></script>
@@ -51,25 +56,21 @@ $(document).ready(function() {
 </head>
 
 <body>
-<div >
-	<div class="header_bg static_top">
+<div class="wrapper">
+    <div class="header_bg">
         <header class="main-header">
         <a id="simple-menu" class="icon-menu" href="#sidr"></a>
-
-       
-            <?php include 'headers/menu-top-navigation.php';?>
+           <?php include "headers/menu-top-navigation.php"; ?>
         </header>
-
+        <div class="clear"></div>
+    </div><!--/.header_bg-->
+     <div id="backgroundPopup"></div>
+    
 <div class="full_article_bg">
     <article  class="prod_detail">
-    
-    
-    
+        
     <?php
-		
 	include 'headers/connect_database.php';
-		
-		
 	try {
 		/*** The SQL SELECT statement ***/
 		$sql = "SELECT k.id, k.title, k.userID, k.detail, k.price, k.image, k.expirydate, k.status, u.ID, u.collegeID, count(i.ID) as `bids` FROM `korks` k join `users` u on u.ID = k.userID left outer join `inbox` i on k.id = i.korkID where u.ID = $_userID group by k.id ORDER BY k.id DESC";
@@ -116,7 +117,7 @@ $(document).ready(function() {
 				echo "<a href='cate_desc.php?korkID={$id}'><div class='kork_text_wrap'><h3> $detail </h3></div></a>";
 				
 				
-				echo"<p><span> $expiryDate <span> | <span>12:03 PM<span></p>
+				echo"<p><span>".date('m-d-Y | h:i A', strtotime($expiryDate))."</p>
 					 <div class='price'><span class='price_first'>$ {$price}</span><span class='prod_scheme'>&nbsp; {$bids} <span class='off'>BIDS																	</span></span></div>
 				
 					</div>
@@ -139,8 +140,8 @@ $(document).ready(function() {
     <div class="clear"></div>
     </div>
 
-    <?php include 'headers/menu-bottom-navigation.php' ?>
 </div>
+    <?php include 'headers/menu-bottom-navigation.php' ?>
 <script>
 function getlist(x){
     $(".hidee").hide();

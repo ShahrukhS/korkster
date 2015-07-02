@@ -1,6 +1,7 @@
 <?php
-session_start();
-include 'headers/_user-details.php';
+    header('Content-Type: application/json');
+    session_start();
+    include 'headers/_user-details.php';
 	if($_SERVER['REQUEST_METHOD'] == "POST")
 	{	
 		//$imgFrom = "korks"; // to upload the image in korkImages folder.
@@ -47,23 +48,23 @@ include 'headers/_user-details.php';
 		
 		$stmt = $dbh->prepare("SELECT max(id) FROM korks WHERE userID = :username");
 		$stmt->bindParam(':username', $_userID);
-		$stmt->execute();
+		$flag = $stmt->execute();
 		$id = $stmt->fetchColumn();
 		
 		if(!empty($_FILES)){
 			$sql = array();
 			foreach( $profilePic as $pic ) {
-				$sql[] = '('.$id.', "'.mysql_real_escape_string($pic).'")';
+				$sql[] = '('.$id.', "'.$pic.'")';
 			}
-			mysqli_query($con, 'INSERT INTO kork_img (korkID, attachment) VALUES '.implode(',', $sql));
+			mysqli_query($con, 'INSERT INTO `kork_img` (`korkID`, `attachment`) VALUES '.implode(',', $sql));
 		}
 		for($i = 0; $i < count($tagArr); $i++){
 			$dbh->exec("INSERT INTO kork_tags(korkId, tag) VALUES($id[0] ,'$tagArr[$i]')");
 		}
 		if($flag){
-			echo $id;
+			die(json_encode(array('request' => 'Gig created!', 'id' => $id)));
 		}else{
-			echo "failed";
+			die(json_encode(array('request' => 'failed',)));
 		}
 		//header("Location: cate_desc.php?korkID=$id[0]");
 } // ending if block of $_POST

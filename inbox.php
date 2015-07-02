@@ -90,6 +90,7 @@ include 'headers/_user-details.php';
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
 <title>::Inbox:</title>
 <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800' rel='stylesheet' type='text/css'>
+<link rel="stylesheet" href="css/bootstrap.min.css" type="text/css">
 <link rel="stylesheet" href="css/style.css" type="text/css">
 <link rel="stylesheet" href="css/media.css" type="text/css">
 <link rel="stylesheet" href="css/fontello.css" type="text/css">
@@ -147,7 +148,7 @@ window.onload=function() {
 </head>
 
 <body>
-<div class="container">
+<div class="wrapper">
 	<div class="header_bg">
         <header class="main-header">
         <a id="simple-menu" class="icon-menu" href="#sidr"></a>
@@ -160,7 +161,7 @@ window.onload=function() {
     	<h1>Inbox</h1>
         <a href="#" class="search_icon"><img src="img/magnifying.png" width="30" alt="search"></a>
         <div class="content_inbox_inner">
-        	<div class="fixed_top">
+        	<div class="conversation_top">
             	<div class="mail_selector">
                 	<div class="dropdown">
                 		<a data-toggle="dropdown" href="#"><input type="checkbox" id="mail_select">
@@ -225,7 +226,7 @@ window.onload=function() {
 									<tr>
 										<td class='checkbox'><input class='msgChecks' type='checkbox' name='allChecks[]' value='$messageID'></td>
 										<td class='star'><img src='img/star.png' width='23' alt='star'></td>
-										<td class='sender_dt'><img src='img/users/$profileImg' width='26' alt='sender'>${sender}</td>
+										<td class='sender_dt'><img src='img/users/$profileImg' width='42' alt='sender'>${sender}</td>
 										<td class='messege_subject'><a href='inbox_des.php?id=$senderID&mode=0'>${lastmessage}</a></td>
 										<td class='update'>${date}</td>
 								   </tr>
@@ -237,15 +238,25 @@ window.onload=function() {
                     </tbody></form>
                 </table>
                 <p class="summary_para">Showing <?php echo $count.' of '.$records; ?> messages</p>
+                <nav style="text-align: center;">
+                <ul class="pagination">
+                    <li>
+                      <a href="#" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                      </a>
+                    </li>
+                    <?php
+                        for($number = 1; $number <= $pages; $number++){
+                            echo "<li><a href='inbox.php?",(isset($_GET['type']) == true) ? "type=$type&" : "","page=$number'>$number</a></li>";
+                        }
+                    ?>
+                    <li><a href="#" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                      </a>
+                    </li>
+                </ul>
+                </nav>
             </div><!--/.main_table-->
-            <div><p>
-			<?php
-				for($number = 1; $number <= $pages; $number++){
-					echo "<a href='inbox.php?",(isset($_GET['type']) == true) ? "type=$type&" : "","page=$number'>$number</a>";
-				}
-			?></p>
-			</div>
-            
         	<div class="clear"></div>
         </div>
         <a href="#" class="load_more_btn">OLDER CONVERSATIONS</a>

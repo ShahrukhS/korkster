@@ -1,10 +1,10 @@
-﻿<?php
+<?php
 session_start();
 	include 'headers/_user-details.php';
 	$username = $_GET['username'];
 	
 	/* getting user details */
-	$stmt = $dbh->prepare("SELECT u.ID, u.username, u.profilePic, u.fname, u.lname, u.joinDate, u.description, c.name, c.city FROM users u INNER JOIN colleges c ON u.collegeID = c.id WHERE u.username = :username");
+	$stmt = $dbh->prepare("SELECT u.ID, u.username, u.profilePic, u.fname, u.lname, u.active, u.joinDate, u.description, c.name, c.city FROM users u INNER JOIN colleges c ON u.collegeID = c.id WHERE u.username = :username");
     $stmt->bindParam(':username', $username);
     $stmt->execute();
 	if($row = $stmt->fetch()){
@@ -12,14 +12,14 @@ session_start();
 		$username = $row['username'];
 		$profilePic = $row['profilePic'];
 		$fullname = $row['fname'].' '.$row['lname'];
+        $activeFlag = $row['active'];
 		$joinDate = $row['joinDate'];
 		$description = $row['description'];
 		
 		$college_name = $row['name'];
 		$city = $row['city'];
 	}else{
-		header($_SERVER["SERVER_PROTOCOL"]." 404 Not Found");
-		//include("notFound.php");
+		header("Location: 404.php");
 		exit();
 	}
 	
@@ -28,14 +28,6 @@ session_start();
     $stmt->bindParam(':userID', $userID);
     $stmt->execute();
     $allKorks = $stmt->fetchAll(PDO::FETCH_ASSOC);
-	//print_r($allKorks);
-	$kork_title = $allKorks[0]['title'];
-	$kork_detail = $allKorks[0]['detail'];
-	$kork_price = $allKorks[0]['price'];
-	$kork_image = $allKorks[0]['image'];
-	$kork_status = $allKorks[0]['status'];
-	$kork_date = $allKorks[0]['expiryDate'];
-	$kork_bids = $allKorks[0]['bids'];
 	
 	/*$now = time(); // or your date as well
     //$date = DateTime::createFromFormat("Y-m-d", $dateOfCreation);
@@ -84,7 +76,15 @@ img {
 vertical-align: top;
 }
 </style>
-
+    
+<?php
+if(!empty($_SESSION['username'])){
+    echo "<script>
+        var sender = $_userID;
+        var receiver = $userID;
+        </script>";
+}
+?>
 
 <script src="js/modern.js"></script>
 <script src="js/jquery-1.10.2.min.js"></script>
@@ -134,56 +134,53 @@ sendMessage();
 
 function sendMessage()
 {
-	
-	
-	
-		// variable to hold request
-		var request;
-		// bind to the submit event of our form
-		$("#msgsend").on('click',function(event){
-		// show loading bar until the json is recieved
-		
-		
-    
-		//alert(sender+receiver);
-		
-			request = $.ajax({
-				url: "catlog_sendmsg.php",
-				type: "post",
-				data: {msg:$('#msg').val(),bid:$('#bid').val(),sender:sender,receiver:receiver,korkid:korkid}
-			});
-			
-				// callback handler that will be called on success
-			request.done(function (response, textStatus, jqXHR){
-				// log a message to the console
-				
-				
-					if(response=="Message Sent!"){
-						alert('Bid noted');
-						}
-				
-				//window.location.href = "your-questions.html";
-			});
-		
-			// callback handler that will be called on failure
-			request.fail(function (jqXHR, textStatus, errorThrown){
-				// log the error to the console
-				
-				alert('Request Failed!');
-				console.error(
-					"The following error occured: "+
-					textStatus, errorThrown
-				);
-			});
-	
-			// callback handler that will be called regardless
-			// if the request failed or succeeded
-			request.always(function () {
-				// reenable the inputs
-			});
-			
-			
-	
+    // variable to hold request
+    var request;
+    // bind to the submit event of our form
+    $("#msgsend").on('click',function(event){
+    // show loading bar until the json is recieved
+
+
+
+    //alert(sender+receiver);
+
+        request = $.ajax({
+            url: "catlog_sendmsg.php",
+            type: "post",
+            data: {msg:$('#msg').val(),sender:sender,receiver:receiver}
+        });
+
+            // callback handler that will be called on success
+        request.done(function (response, textStatus, jqXHR){
+            // log a message to the console
+
+
+            if(response=="Message Sent!"){
+                alert('Message has been sent.');
+                $('#loading').html('<span class =\'alert alert-success\'><strong>Your message has been sent successfully! </strong>. A Verificaiton Link has been Emailed to you!</span>');
+            }else {
+                $('#loading').html('<span class=\'alert alert-danger\'>Sorry, There has been an error in our system!' + response+'</span>');
+            }
+
+            //window.location.href = "your-questions.html";
+        });
+
+        // callback handler that will be called on failure
+        request.fail(function (jqXHR, textStatus, errorThrown){
+            // log the error to the console
+
+            alert('Request Failed!');
+            console.error(
+                "The following error occured: "+
+                textStatus, errorThrown
+            );
+        });
+
+        // callback handler that will be called regardless
+        // if the request failed or succeeded
+        request.always(function () {
+            // reenable the inputs
+        });
 	});
 	
 }
@@ -200,14 +197,15 @@ function sendMessage()
 </head>
 
 <body>
-<div class="cate_desc">
-<div class="header_bg static_top">
-  <header class="main-header"> <a id="simple-menu" class="icon-menu" href="#sidr"></a>
-	<?php include 'headers/menu-top-navigation.php';?>
-  </header>
-  <?php include 'headers/subhead.php' ?>
-  <div class="clear"></div>
-    
+<div class="wrapper">
+    <div class="header_bg">
+      <header class="main-header"> <a id="simple-menu" class="icon-menu" href="#sidr"></a>
+        <?php include 'headers/menu-top-navigation.php';?>
+      </header>
+    </div>
+      <?php include 'headers/subhead.php' ?>
+      <div class="clear"></div>
+
   <div class="submenu_wrap">
     <div class="category_submenu">
       <nav>
@@ -225,13 +223,11 @@ function sendMessage()
       </nav>
     </div>
   </div>
-</div>
 <!--/.header_bg-->
 <!-- <article class="header_bg_para">
 
 </article> -->
-<div id="backgroundPopup"></div>
-</div>
+<?php include 'headers/popup.php';?>
 <div class="main-content">
                     
 
@@ -270,7 +266,7 @@ function sendMessage()
                         <div class="box-row cf">
                             <span class="user-data rf">Member since <?php echo date('F, Y', strtotime($joinDate))?></span>
 							<?php
-							if($_username == $username){
+							if(!empty($_SESSION['username']) && $_username == $username){
 								echo "<span class='user-pict-130 js-user-pict-130'>
 								<form><span class='user-pict-upload js-user-pict-upload'>
 									<small class='js-user-pict-upload-text'>Change<br>Photo</small>
@@ -297,24 +293,30 @@ function sendMessage()
 	<article class="mp-box mp-box-grey mp-user-info p-b-40">
 		<div class="box-row bordered p-b-30">
 
-		<aside class="user-bundle js-user-bundle">
-			<h4><?php echo $username; ?>'s Best Seller</h4>
-			<a href="/umaisdesigns/design-a-killer-logo-with-unlimited-repetitions?extras=2227876" class="bundle-item js-gtm-event-auto" data-gtm-category="new-user-page" data-gtm-action="click" data-gtm-label="top-package-with-extras">
-			<span class="bundle-badge">Package</span>
-			<span class="gig-pict-290"><img src="img/korkImages/<?php echo $kork_image; ?>" data-reload="inprogress"></span>
-			<h3><?php echo $kork_detail; ?></h3>
-			
-			<small>Including:</small>
-			<ul class="bundle-price-extras">
-				
-				<li>Vector file format</li>
-				
-			</ul>
-			
-			<div class="bundle-sub cf">
-				<span class="bundle-price"><small>Total</small>$25</span>
-			</div></a>
-		</aside>
+		<?php
+        if(!empty($allKorks)){
+            $kork_id = $allKorks[0]['id'];
+            $kork_title = $allKorks[0]['title'];
+            $kork_detail = $allKorks[0]['detail'];
+            $kork_price = $allKorks[0]['price'];
+            $kork_image = $allKorks[0]['image'];
+            $kork_status = $allKorks[0]['status'];
+            $kork_date = $allKorks[0]['expiryDate'];
+            $kork_bids = $allKorks[0]['bids'];
+            $kork_cat = $allKorks[0]['category'];
+            echo "<aside class='user-bundle js-user-bundle'>
+                <h4>$username's Best Seller</h4>
+                <a href='cate_desc.php?korkID=$kork_id' class='bundle-item js-gtm-event-auto' data-gtm-category='new-user-page' data-gtm-action='click' data-gtm-label='top-package-with-extras'>
+                <span class='bundle-badge'>$kork_cat</span>
+                <span class='gig-pict-290'><img src='img/korkImages/$kork_image' data-reload='inprogress'></span>
+                <h1>$kork_title</h1>
+                <h3>$kork_detail</h3>
+                <div class='bundle-sub cf'>
+                    <span class='bundle-price'><small>Total</small>$$kork_price</span>
+                </div></a>
+            </aside>";
+        }
+        ?>
 
                         <header>
                             <h2>About <?php echo $fullname; ?>
@@ -333,223 +335,34 @@ function sendMessage()
                             </li>
                             <li class="icn-response">Avg. Response Time: <em>1 Day</em></li>
                             <li class="icn-recent">Recent Delivery: <em>1 day ago</em></li>
-                            <li class="icn-verified">Email Verified</li>
+                            <li class="<?php echo ($activeFlag == 0) ? "icn-cross" : "icn-verified" ?>">Email Verified</li>
                             
                             
                         </ul>
 
                         <footer class="cf">
                                 <?php
-								if($username == $_username){
-									echo '<a class="btn-standard btn-edit js-btn-edit-user" href="profile_edit.php" rel="nofollow"><i></i>Edit</a>';
-								}else{
-									echo '<a class="btn-standard btn-green-grad btn-contact js-btn-user-contact js-gtm-event-auto" data-gtm-action="click" data-gtm-category="new-user-page" data-gtm-label="contact-user" data-user-id="umaisdesigns" href="/conversations/umaisdesigns" rel="nofollow"><i></i>Contact</a>';
-								}
+                                if(!empty($_SESSION['username'])){
+                                    if($username == $_username){
+                                        echo '<a class="btn-standard btn-edit js-btn-edit-user" href="profile_edit.php" rel="nofollow"><i></i>Edit</a>';
+                                    }else{
+                                        echo "<a href='#' class='btn-standard btn-green-grad btn-contact js-btn-user-contact js-gtm-event-auto' data-toggle='modal' data-target='#message'><i></i>Contact</a>";
+                                    }
+                                }
 								?>
                         </footer>
 
                     </div>
                 </article>
-
-                <div class="mp-box mp-box-grey">
-                    <div class="box-row p-b-20 featured_prod">
-                        
-                                    
-                            <!--<article class="mp-gig-carousel ">
-
-                                <header>
-                                    <h2>
-                                        
-                                        
-                                        umaisdesigns's Gigs
-                                        
-                                    </h2>
-                                </header>
-
-                                <div class="gig-carousel gallery cf" data-json-path="/gigs/gigs_as_json_for_user?host=user&amp;type=user_all&amp;user_id=1938987&amp;limit=50" data-load-more="false" data-two-lines="" data-hide-empty="true" data-hide-parent="" data-gigs-shown="4" data-do-sliding="false" data-do-endless="false" data-host="user" data-box-id="u1938987">
-
-                                    <div class="js-gallery-box">
-                                        <div class="js-coll-slider cf">
-    
-
-        
-
-        <div class="gig-item gig-item-default js-slide js-gig-card" data-gig-id="2226306" data-cached-slug="design-a-killer-logo-with-unlimited-repetitions" data-gig-index="0" data-gig-category="graphics-design" data-gig-sub-category="creative-logo-design" data-seen="true">
-            
-            <div class="gig-seller">
-                
-                    <span class="ratings-count">(1k+)</span>
-                    <span class="circ-rating-s8 rate-10"></span>
-                
-                By <a href="/umaisdesigns" rel="nofollow" class="seller-name">umaisdesigns</a>
-            </div>
-            <a href="/umaisdesigns/design-a-killer-logo-with-unlimited-repetitions?funnel=2015012210412209017052440" class="gig-link-main">
-                
-                    
-                
-                <span class="gig-pict-226"><img src="//cdnil1.fiverrcdn.com/photos/2226306/v2_200/optima_JME_FIVERR_3.jpg" width="226" height="139" data-reload="inprogress"></span>
-                <h3>I will design a KILLER logo with  unlimited repetitions</h3>
-            </a>
-            <aside class="gig-badges cf">
-                
-                    
-                
-                
-                    <span class="featured-badge">featured</span>
-                
-                <span class="toprated-badge">Fiverr Top Rated Seller!</span>
-            </aside>
-            <div class="gig-sub cf">
-                
-                    <a href="/umaisdesigns/design-a-killer-logo-with-unlimited-repetitions?funnel=2015012210412209017052440" class="gig-price" rel="nofollow">$5</a>
-                
-                <aside class="gig-collect js-gig-collect" id="coll-gig-2226306" data-coll-id="2226306">
-                    
-                        <a href="/join" class="icn-heart hint--top js-open-popup-join" rel="nofollow" data-hint="Favorite"><span></span></a>
-                    
-                </aside>
-            </div>
-        </div>
-
-    
-
-    
-
-        
-
-        <div class="gig-item gig-item-default js-slide js-gig-card" data-gig-id="3681494" data-cached-slug="design-killer-signature-logo" data-gig-index="1" data-gig-category="graphics-design" data-gig-sub-category="creative-logo-design" data-seen="true">
-            
-            <div class="gig-seller">
-                
-                    <span class="ratings-count">(80)</span>
-                    <span class="circ-rating-s8 rate-10"></span>
-                
-                By <a href="/umaisdesigns" rel="nofollow" class="seller-name">umaisdesigns</a>
-            </div>
-            <a href="/umaisdesigns/design-killer-signature-logo?funnel=2015012210412209017052440" class="gig-link-main">
-                
-                    
-                
-                <span class="gig-pict-226"><img src="//cdnil0.fiverrcdn.com/photos/3681494/v2_200/GIG_PORTFOLIO_FIRST_PIC.jpg" width="226" height="139" data-reload="inprogress"></span>
-                <h3>I will design KILLER signature logo</h3>
-            </a>
-            <aside class="gig-badges cf">
-                
-                    
-                
-                
-                <span class="toprated-badge">Fiverr Top Rated Seller!</span>
-            </aside>
-            <div class="gig-sub cf">
-                
-                    <a href="/umaisdesigns/design-killer-signature-logo?funnel=2015012210412209017052440" class="gig-price" rel="nofollow">$5</a>
-                
-                <aside class="gig-collect js-gig-collect" id="coll-gig-3681494" data-coll-id="3681494">
-                    
-                        <a href="/join" class="icn-heart hint--top js-open-popup-join" rel="nofollow" data-hint="Favorite"><span></span></a>
-                    
-                </aside>
-            </div>
-        </div>
-
-    
-
-    
-
-        
-
-        <div class="gig-item gig-item-default js-slide js-gig-card" data-gig-id="2134015" data-cached-slug="do-any-photoshop-work-within-24-hours--2" data-gig-index="2" data-gig-category="graphics-design" data-gig-sub-category="buy-photos-online-photoshopping" data-seen="true">
-            
-            <div class="gig-seller">
-                
-                    <span class="ratings-count">(9)</span>
-                    <span class="circ-rating-s8 rate-10"></span>
-                
-                By <a href="/umaisdesigns" rel="nofollow" class="seller-name">umaisdesigns</a>
-            </div>
-            <a href="/umaisdesigns/do-any-photoshop-work-within-24-hours--2?funnel=2015012210412209017052440" class="gig-link-main">
-                
-                    
-                
-                <span class="gig-pict-226"><img src="//cdnil0.fiverrcdn.com/photos/2134015/v2_200/Photoshop_GIG_US.jpg" width="226" height="139" data-reload="inprogress"></span>
-                <h3>I will do any PHOTOSHOP work and photo retouching</h3>
-            </a>
-            <aside class="gig-badges cf">
-                
-                    
-                
-                
-                <span class="toprated-badge">Fiverr Top Rated Seller!</span>
-            </aside>
-            <div class="gig-sub cf">
-                
-                    <a href="/umaisdesigns/do-any-photoshop-work-within-24-hours--2?funnel=2015012210412209017052440" class="gig-price" rel="nofollow">$5</a>
-                
-                <aside class="gig-collect js-gig-collect" id="coll-gig-2134015" data-coll-id="2134015">
-                    
-                        <a href="/join" class="icn-heart hint--top js-open-popup-join" rel="nofollow" data-hint="Favorite"><span></span></a>
-                    
-                </aside>
-            </div>
-        </div>
-
-    
-
-    
-
-        
-
-        <div class="gig-item gig-item-default js-slide js-gig-card" data-gig-id="3697181" data-cached-slug="develop-a-killer-website" data-gig-index="3" data-gig-category="programming-tech" data-gig-sub-category="wordpress-services" data-waypoint="true" data-seen="true">
-            
-            <div class="gig-seller">
-                
-                    <span class="ratings-count">New Arrival</span>
-                
-                By <a href="/umaisdesigns" rel="nofollow" class="seller-name">umaisdesigns</a>
-            </div>
-            <a href="/umaisdesigns/develop-a-killer-website?funnel=2015012210412209017052440" class="gig-link-main">
-                
-                    
-                
-                <span class="gig-pict-226"><img src="//cdnil0.fiverrcdn.com/photos/3697181/v2_200/GIG-PORTFOLIO_WEBSITE.jpg" width="226" height="139" data-reload="inprogress"></span>
-                <h3>I will develop a KILLER website</h3>
-            </a>
-            <aside class="gig-badges cf">
-                
-                    
-                
-                
-                <span class="toprated-badge">Fiverr Top Rated Seller!</span>
-            </aside>
-            <div class="gig-sub cf">
-                
-                    <a href="/umaisdesigns/develop-a-killer-website?funnel=2015012210412209017052440" class="gig-price" rel="nofollow">$5</a>
-                
-                <aside class="gig-collect js-gig-collect" id="coll-gig-3697181" data-coll-id="3697181">
-                    
-                        <a href="/join" class="icn-heart hint--top js-open-popup-join" rel="nofollow" data-hint="Favorite"><span></span></a>
-                    
-                </aside>
-            </div>
-        </div>
-
-    
-
-</div>
-                                    </div>
-
-
-                                </div>
-
-
-
-                            </article>-->
-					<header>
-						<h2><?php echo $username; ?>'s Gigs</h2>
-					</header>		
-					<article  class="prod_detail col-lg-12">
-      	<ul class="row">
 		<?php
+        if(!empty($allKorks)){
+            echo "<div class='mp-box mp-box-grey'>
+                    <div class='box-row p-b-20 featured_prod'>
+					<header>
+						<h2>$username's Gigs</h2>
+					</header>		
+					<article  class='prod_detail col-lg-12'>
+      	            <ul class='row'>";
 			foreach ($allKorks as $row){
 			$kork_id = $row['id'];
 			$kork_title = $row['title'];
@@ -562,15 +375,15 @@ function sendMessage()
 			$kork_bids = $row['bids'];
 			if($kork_status == 0 || $kork_status == 1){
 				($kork_status == 0) ? $kork_status = "available" : $kork_status = "sold";
-				echo "<li class='col-lg-3 col-md-6 col-sm-6'><a href='cate_desc.php?korkID=$kork_id'>
+                echo "<li class='col-lg-3 col-md-6 col-sm-6'><a href='cate_desc.php?korkID=$kork_id'>
 						<span class='$kork_status korkbadge'></span>
 						<div class='col-lg-12 single_product'>
 							<div class='img_wrap'>
 								<img src='img/korkImages/$kork_image' alt='' class='img-responsive'>
 							</div>
-							<h3>$kork_title</h3>
+                            <h3 class='block-ellipsis'>$kork_title</h3>
 							<p class='prod_cat_22'>$kork_category Category</p>
-							<p class='attributes'>2014-05-24  | 05:26:51  | 12:03 PM</p>
+							<p class='attributes'>".date('m-d-Y | h:i A', strtotime($kork_date))."</p>
 							<div class='price_tag_22'>
 								<span class='price_main'>$$kork_price</span>
 								<span class='offer_dt'>$kork_bids BID",($kork_bids > 1) ? "S" : "","</span>
@@ -579,43 +392,42 @@ function sendMessage()
 					</a></li>";
 			}
 			}
-		?>           
-        </ul>
-        <div class="clear"></div>
-    </article>
-                    </div>
-                </div>
-				</div>
-
-<?php include 'headers/menu-bottom-navigation.php'; ?>
-</div>
-<div class="modal fade" id="message" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">X</button>
-        <h1 class="modal-title" id="myModalLabel">Contact Now</h1>
-        <p>Please enter your message!</p>
-      </div>
-      <div class="modal-body">
-        <form id="msg-form" method="post">
-          <input type="text"  id="msg" class="form-control txt_boxes" placeholder="Enter Your Message" />
-          <div style="width:80%;margin-left:30px">
-            <table>
-              <tr>
-                <td ><label>Your Bid</label></td>
-                <td><input type="number" id="bid" style="margin-bottom:0px;padding:0px;width:40%;line-height:1px;height:30px" class="form-control txt_boxes" />
-                  </td>
-                <td><input type="button" id="msgsend" style="margin-right:10px" class="btn_signup" value="send" /></td>
-              </tr>
-            </table>
+            echo "</ul>
+                <div class='clear'></div>
+                </article>
+                </div></div>";
+        }else if(!empty($_SESSION['username']) && $_username == $username){
+            echo "<div id='contentSub' class='clearfix'>
+              <div class='contentBox'>
+                  <p class='noKorks'> You have no gigs to sell.</p>
+                  <p class='noKorksCreate'><a href='create_gig.php' class='entypo-pencil'> Do you want to start selling today?</a></p>
+              </div>
+            </div>";
+        }
+		?>
+    <?php include 'headers/menu-bottom-navigation.php'; ?>
+    </div>
+    <div class="modal fade" id="message" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">X</button>
+            <h1 class="modal-title" id="myModalLabel">Contact Now</h1>
+            <p>Please enter your message!</p>
           </div>
-        </form>
-        <div class="clearfix"></div>
+          <div class="modal-body">
+            <form id="msg-form" method="post">
+              <input type="text" id="msg" class="form-control txt_boxes" placeholder="Enter Your Message" />
+              <div style="  width: 0%; margin-left: 47px;"><input type="button" id="msgsend" style="margin-right:10px" class="btn_signup" value="send" />
+              </div>
+            <div id="loading"></div>
+            </form>
+            <div class="clearfix"></div>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-</div>
+<script src ="js/register.js"></script>
 <script type="text/javascript">
   $(document).ready(function(){
     

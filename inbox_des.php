@@ -71,35 +71,64 @@ function sendMessage()
 		// variable to hold request
 		var request;
 		// bind to the submit event of our form
-		$("#msgsend").on('click',function(event){
+		//$("#msgsend").on('click',function(event){
+        $("#msgForm").on('submit',function(){
 		// show loading bar until the json is recieved
-		
 		if(msgLength() >= 4){
+            var formData = new FormData($(this)[0]);
+            formData.append("sender",sender);
+            formData.append("receiver",receiver);
 			request = $.ajax({
 				url: "http://localhost:2126/korkster/inbox_sendmsg.php",
+                contentType: false,
+                processData: false,
 				type: "post",
-				data: {msg:$('#reply_texts').val(),sender:sender,receiver:receiver}
+                cache: false,
+                data: formData
+				//data: {msg:$('#reply_texts').val(),sender:sender,receiver:receiver}
 			});
 				// callback handler that will be called on success
 			request.done(function (response, textStatus, jqXHR){
 				// log a message to the console
-					if(response=="Message Sent!"){
-						$( "<div class='msg_wrap_2'> <div class='messege_push'><span class='user-pict_50'>"
-						+"<a href='/"+username+"'><img src='img/users/"+img+"' width='50' height='50' /></a></span>"
-						+"<h4><a href='/"+username+"'>"+fname + " "+lname+"</a></h4> <div class='msg_body'>"
-						 +" <p>"+$('#reply_texts').val()+"</p></div></div>"
-					   +"<div class='clear'></div>" ).insertBefore( ".reply_box_22" );
+					if(response.request=="Message Sent!"){
+                        var files = $('#FileUpload')[0].files;
+                        var filenames = [];
+                        for (var i = 0; i < files.length; i++) {
+                            filenames.push(files[i].name);
+                        }
+                        if (filenames.length === 0){
+                            $( "<div class='msg_wrap_2'> <div class='messege_push'><span class='user-pict_50'>"
+                            +"<a href='/"+username+"'><img src='img/users/"+img+"' width='50' height='50' /></a></span>"
+                            +"<h4><a href='/"+username+"'>"+fname + " "+lname+"</a></h4> <div class='msg_body'>"
+                             +" <p class='texttype'>"+$('#reply_texts').val()+"</p></div></div>"
+                           +"<div class='clear'></div>" ).insertBefore( ".reply_box_22" );
+                        }else{
+                            filenames_final = response.files;
+                            var filename ="";
+                            for (var i = 0; i < filenames.length; i++) {
+                                filename += "<p class='attachment-para'><a class='attachment-anchor' href='assets/inboxData/"+filenames_final[i]+"' download>"+filenames[i]+"</a></p>";
+                            }
+                            
+                            $( "<div class='msg_wrap_2'> <div class='messege_push'><span class='user-pict_50'>"
+                            +"<a href='/"+username+"'><img src='img/users/"+img+"' width='50' height='50' /></a></span>"
+                            +"<h4><a href='/"+username+"'>"+fname + " "+lname+"</a></h4> <div class='msg_body'>"
+                             +" <p class='texttype'>"+$('#reply_texts').val()+"</p>"+filename+"</div></div>"
+                           +"<div class='clear'></div>" ).insertBefore( ".reply_box_22" );
+                        }
 							
 						//location.reload();
 						$('#reply_texts').val('');
-					}
+                        $("#FileUpload").replaceWith($("#FileUpload").val('').clone(true));
+                        $('#fileAttach').html("<span class='fa fa-file'> &nbsp;</span>ATTACH FILE");
+					}else{
+                        alert(response);
+                    }
 				//window.location.href = "your-questions.html";
 			});
 		
 			// callback handler that will be called on failure
 			request.fail(function (jqXHR, textStatus, errorThrown){
 				// log the error to the console
-				
 				alert('Request Failed!');
 				console.error("The following error occured: "+textStatus, errorThrown);
 			});
@@ -112,8 +141,7 @@ function sendMessage()
 			}else{
 				$(".error-alert").text("Your message should contain atleast 4 characters.");
 			}
-			
-	
+	       return false;
 	});
 	
 }
@@ -192,16 +220,13 @@ function sendMessage()
 			
 			$readindex=0;
 		if($_GET['mode']==1){
-			$query = "SELECT i.*, u.fname,u.username,u.lname,u.profilePic,k.image,k.title from inbox i 
-			join users u on u.ID = i.senderID left outer join korks k on k.ID = i.korkID WHERE ((i.senderID = :sID && i.receiverID = :rID) || (i.senderID = :rID && i.receiverID = 	:sID)) && i.isRead=1 order by i.ID";
+			$query = "SELECT i.*, u.fname,u.username,u.lname,u.profilePic,k.image,k.title from inbox i join users u on u.ID = i.senderID left outer join korks k on k.ID = i.korkID WHERE ((i.senderID = :sID && i.receiverID = :rID) || (i.senderID = :rID && i.receiverID = 	:sID)) && i.isRead=1 order by i.ID";
 			$readindex=1;
 		}else if($_GET['mode']==2){
-			$query = "SELECT i.*, u.fname,u.username,u.lname,u.profilePic,k.image,k.title  from inbox i 
-			join users u on u.ID = i.senderID left outer join korks k on k.ID = i.korkID WHERE ((i.senderID = :sID && i.receiverID = :rID) || (i.senderID = :rID && i.receiverID = :sID))  && i.isRead=0 order by i.ID";
+			$query = "SELECT i.*, u.fname,u.username,u.lname,u.profilePic,k.image,k.title from inbox i join users u on u.ID = i.senderID left outer join korks k on k.ID = i.korkID WHERE ((i.senderID = :sID && i.receiverID = :rID) || (i.senderID = :rID && i.receiverID = :sID))  && i.isRead=0 order by i.ID";
 			$readindex=2;
 		}else{
-			$query = "SELECT i.*, u.fname,u.username,u.lname,u.profilePic,k.image,k.title  from inbox i 
-			join users u on u.ID = i.senderID left outer join korks k on k.ID = i.korkID WHERE ((i.senderID = :sID && i.receiverID = :rID) || (i.senderID = :rID && i.receiverID = :sID)) order by i.ID";
+			$query = "SELECT i.*, u.fname,u.username,u.lname,u.profilePic,k.image,k.title  from inbox i join users u on u.ID = i.senderID left outer join korks k on k.ID = i.korkID WHERE ((i.senderID = :sID && i.receiverID = :rID) || (i.senderID = :rID && i.receiverID = :sID)) order by i.ID";
 			$readindex=0;
 		}
 		$sth = $dbh->prepare($query);
@@ -214,6 +239,11 @@ function sendMessage()
 		$now = time();	
 		while($result = $sth->fetch(PDO::FETCH_ASSOC)){
 			
+        $nth = $dbh->prepare("SELECT attachment, displayname FROM inbox_attachments WHERE inboxID = :inboxID");
+        $nth->bindValue(':inboxID', $result['ID']);
+        $nth->execute();
+        $attachments = $nth->fetchAll(PDO::FETCH_ASSOC);
+            
 		  if($result['korkID']!=0){
 			echo"<div class='msg_wrap_11'>
             <div class='conv_action'>
@@ -223,7 +253,7 @@ function sendMessage()
                		</span>
                     <h4><a href='#'>$result[fname] $result[lname]</a></h4>
                       <div class='msg_body'>
-                      <p>$result[message]</p>
+                      <p class='texttype'>$result[message]</p>
                       </div>
                 </div>
                 <div class='clear'></div>
@@ -250,9 +280,16 @@ function sendMessage()
                		</span>
                     <h4><a href='#'>$result[fname] $result[lname]</a></h4>
                       <div class='msg_body'>
-                      <p>$result[message]</p>
-                      </div>
+                      <p class='texttype'>$result[message]</p>";
+                        if(!empty($attachments)){
+                            foreach($attachments as $attach){
+                                echo "<p class='attachment-para'><a class='attachment-anchor' href='assets/inboxData/$attach[attachment]' download>$attach[displayname]</a></p>";
+                            }
+                        }
+                    echo "</div>
                 </div>
+                <div class='msgtime'>
+				<p>",date('H:i F, d, Y', strtotime($result['dateM'])),"</p></div>
 				   <div class='clear'></div>
             </div> ";
 		}else{
@@ -264,8 +301,13 @@ function sendMessage()
                		</span>
                     <h4><a href='#'>$result[fname] $result[lname]</a></h4>
                       <div class='msg_body'>
-                      <p>$result[message]</p>
-                      </div>
+                      <p class='texttype'>$result[message]</p>";
+                        if(!empty($attachments)){
+                            foreach($attachments as $attach){
+                                echo "<p class='attachment-para'><a class='attachment-anchor' href='assets/inboxData/$attach[attachment]' download>$attach[displayname]</a></p>";
+                            }
+                        }
+                    echo "</div>
                 </div>
 				<div class='msgtime'>
 				<p>",date('H:i F, d, Y', strtotime($result['dateM'])),"</p></div>
@@ -290,13 +332,15 @@ function sendMessage()
 					
 ?>
       <div class="write_wrap">
-        <textarea class="reply_text" id='reply_texts' cols="75" placeholder="Type your text here..." rows="3"></textarea>
+      <form id="msgForm" method="post" enctype="multipart/form-data">
+        <textarea class="reply_text" id='reply_texts' name="msgText" cols="75" placeholder="Type your text here..." rows="3"></textarea>
         <div class="bottom_div">
-          <button class="btn btn_file read_un"><span class="fa fa-file"> &nbsp;</span>ATTACH FILE</button>
+          <a class="btn btn_file read_un" id="fileAttach" onclick='$("#FileUpload").click()'><span class="fa fa-file"> &nbsp;</span>ATTACH FILE</a>
+          <input type="file" style="display:none;" name="FileUpload[]" id="FileUpload" multiple="multiple" />
           <p class="maxsize"> <span>Maxsize 30MB</span> <br>
           <span><a class="upload_prob" href="#">Problems with upload?</a></span> </p>
 		  <p class="error-alert"></p>
-          <input class="button_send" type="button" id="msgsend" value="SEND" />
+            <button class="button_send" id="msgsend">SEND</button></form>
 		  <p class="char-count"><span class="count-num">0</span><span> / 1200</span> Characters Limit</p>
         </div>
         <div class="clear"></div>
@@ -323,5 +367,16 @@ $(function() {
 					 
 </script> 
 <script src="js/school-list.js"></script>
+<script>
+    $("#FileUpload").trigger('click');
+    $('#FileUpload').bind('change', function() {
+      var filesize = this.files[0].size/(1024*1024);
+      if(filesize > 0 && filesize < 30){
+        $('#fileAttach').html("<span class='fa fa-file'> &nbsp;</span>ATTACHED");
+      }else{
+        $(".error-alert").html("The file attachment is not acceptable. Please try again.")
+      }
+    });
+</script>
 </body>
 </html>

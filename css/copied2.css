@@ -778,7 +778,7 @@ html.opacity .mp-gig-columns-slim .gig-items {
 }
 .mp-gig-columns-slim .gig-item .gig-main .holidays-badge:before {
 	content: "";
-	background: transparent url("//cdnil21.fiverrcdn.com/assets/v2_globals/icn-master-small-91b6689850b06a72d0932dbc08079dac.png") no-repeat -533px -982px;
+	background: transparent url("../img/icn-master-small.png") no-repeat -533px -982px;
 	position: absolute;
 	z-index: 1;
 	display: block;

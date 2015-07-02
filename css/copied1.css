@@ -1,5 +1,4 @@
 .main-content {
-	top: 139px;
 	position: relative
 }
 .main-content.cursor-waiting {
@@ -194,7 +193,7 @@
 }
 .desc-tooltip:before {
 	content: "";
-	background: transparent url("//cdnil21.fiverrcdn.com/assets/v2_globals/icn-master-small-91b6689850b06a72d0932dbc08079dac.png") no-repeat 0 0;
+	background: transparent url("../img/icn-master-small.png") no-repeat 0 0;
 	position: absolute;
 	z-index: 1;
 	display: block;
@@ -786,7 +785,7 @@
 }
 .body-home .mp-hp-section header h2 i.icn-star:before {
 	content: "";
-	background: transparent url("//cdnil21.fiverrcdn.com/assets/v2_globals/icn-master-small-91b6689850b06a72d0932dbc08079dac.png") no-repeat -625px -976px;
+	background: transparent url("../img/icn-master-small.png") no-repeat -625px -976px;
 	position: absolute;
 	z-index: 1;
 	display: block;
@@ -801,7 +800,7 @@
 }
 .body-home .mp-hp-section header h2 i.icn-heart:before {
 	content: "";
-	background: transparent url("//cdnil21.fiverrcdn.com/assets/v2_globals/icn-master-small-91b6689850b06a72d0932dbc08079dac.png") no-repeat -628px -950px;
+	background: transparent url("../img/icn-master-small.png") no-repeat -628px -950px;
 	position: absolute;
 	z-index: 1;
 	display: block;
@@ -816,7 +815,7 @@
 }
 .body-home .mp-hp-section header h2 i.icn-tag:before {
 	content: "";
-	background: transparent url("//cdnil21.fiverrcdn.com/assets/v2_globals/icn-master-small-91b6689850b06a72d0932dbc08079dac.png") no-repeat -600px -950px;
+	background: transparent url("../img/icn-master-small.png") no-repeat -600px -950px;
 	position: absolute;
 	z-index: 1;
 	display: block;
@@ -831,7 +830,7 @@
 }
 .body-home .mp-hp-section header h2 i.icn-suitcase:before {
 	content: "";
-	background: transparent url("//cdnil21.fiverrcdn.com/assets/v2_globals/icn-master-small-91b6689850b06a72d0932dbc08079dac.png") no-repeat -600px -982px;
+	background: transparent url("../img/icn-master-small.png") no-repeat -600px -982px;
 	position: absolute;
 	z-index: 1;
 	display: block;
@@ -1162,7 +1161,7 @@ html.opacity .popup-how-it-works .popup-content .js-gallery-nav:hover span {
 	height: 47px
 }
 .popup-how-it-works header .btn-close {
-	background: transparent url("//cdnil21.fiverrcdn.com/assets/v2_globals/icn-master-small-91b6689850b06a72d0932dbc08079dac.png") no-repeat -500px -550px;
+	background: transparent url("../img/icn-master-small.png") no-repeat -500px -550px;
 	position: absolute;
 	z-index: 1;
 	top: 57px;
@@ -1645,7 +1644,7 @@ html.opacity .popup-how-it-works .popup-content .js-gallery-nav:hover span {
 	box-sizing: border-box
 }
 .mp-user-info .user-stats li:before {
-	background: transparent url("//cdnil21.fiverrcdn.com/assets/v2_globals/icn-master-small-91b6689850b06a72d0932dbc08079dac.png") no-repeat 0 0;
+	background: transparent url("../img/icn-master-small.png") no-repeat 0 0;
 	content: '';
 	width: 37px;
 	position: absolute;
@@ -1668,6 +1667,10 @@ html.opacity .popup-how-it-works .popup-content .js-gallery-nav:hover span {
 }
 .mp-user-info .user-stats li.icn-verified:before {
 	background-position: -493px -1250px;
+	height: 20px
+}
+.mp-user-info .user-stats li.icn-cross:before {
+	background-position: -489px -497px;
 	height: 20px
 }
 .mp-user-info .user-stats li.icn-delivery:before {
@@ -1711,16 +1714,19 @@ html.opacity .popup-how-it-works .popup-content .js-gallery-nav:hover span {
 }
 .mp-user-info .user-bundle .bundle-item {
 	background: #fff;
+	text-decoration: none;
 	border: 1px #e5e5e5 solid;
 	padding: 4px 4px 10px 4px;
 	position: relative;
 	display: block
 }
 .mp-user-info .user-bundle .bundle-item:hover {
-	text-decoration: none
+	
 }
-.mp-user-info .user-bundle .bundle-item:hover h3 {
-	color: #00b22d
+.mp-user-info .user-bundle .bundle-item h1 {
+	margin: 14px 0 0 7px;
+	font-size:22px;
+	color: #0084a6;
 }
 .mp-user-info .user-bundle .bundle-item .bundle-badge {
 	background-color: #f21aa5;
@@ -1793,11 +1799,12 @@ html.opacity .popup-how-it-works .popup-content .js-gallery-nav:hover span {
 	font-size: 18px;
 	line-height: 20px;
 	font-weight: 700;
-	color: #00b22d
+	color: #0084a6;
 }
 .mp-user-info .user-bundle .bundle-item .bundle-sub .bundle-price small {
 	font-size: 10px;
 	font-weight: 400;
+	color: #0084a6;
 	text-transform: uppercase;
 	display: inline-block;
 	vertical-align: top;

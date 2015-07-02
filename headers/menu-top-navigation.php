@@ -93,7 +93,7 @@
 		<nav class='main_nav'>
                 <ul>
                     <li class='home'><a href='index.php'>HOME</a></li>
-                    <li class='to_do'><a href=''>START SELLING</a></li>
+                    <li class='to_do'><a href='error.php'>START SELLING</a></li>
                     <!-- <li class='bubble'><a href='#'><img src='img/bubble.png' width='24' alt=''></a></li> -->
                     <li class='shopping'><a href='#'  data-toggle='modal' data-target='#login'>LOGIN</a></li>
                     <li id='sales'><a href='#' data-toggle='modal' data-target='#register'>JOIN</a></li>

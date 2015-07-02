@@ -370,7 +370,7 @@ function loginForm()
 				if(response=="success")
 				{
 					$('#loading-login').html('<span class=\'alert alert-success\'><strong>Login Successfull</strong></span>');
-					window.location.href = "index.php";
+					window.location.href = document.location.search;
 				}
 				else if(response == "incorrect credentials")
 				{

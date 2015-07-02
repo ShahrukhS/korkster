@@ -77,8 +77,7 @@ img {
   </div>
   <!--/.header_bg-->
 
-    <?php
-           include 'headers/popup.php';?>
+    <?php include 'headers/popup.php';?>
   
   
   <article class="content">
@@ -121,12 +120,12 @@ img {
 					<span class='available korkbadge'></span>
 					<div class='col-lg-12 single_product'>
 						<div class='img_wrap'>
-							<img src='img/korkImages/$kork_image' width='134' alt='' class='img-responsive'>
+							<img src='img/korkImages/$kork_image' width='234' alt='' class='img-responsive'>
 						</div>
-						<h3>$kork_title</h3>
+						<h3 class='block-ellipsis'>$kork_title</h3>
 						<p class='prod_cat_22'>$kork_category Category</p>
 						<p class='prod_cat_22'>By $kork_user</p>
-						<p class='attributes'>2014-05-24  | 05:26:51  | 12:03 PM</p>
+						<p class='attributes'>".date('m-d-Y | h:i A', strtotime($kork_date))."</p>
 						<div class='price_tag_22'>
 							<span class='price_main'>$$kork_price</span>
 							<span class='offer_dt'>$kork_bids BID",($kork_bids > 1) ? "S" : "","</span>
@@ -136,66 +135,6 @@ img {
 		}
 		$dbh = null;
 		?>
-        	<!--<li class="col-lg-3 col-md-6 col-sm-6">
-            	<span class="featured_tag"></span>
-            	<div class="col-lg-12 single_product">
-                	<div class="img_wrap">
-                		<img src="img/mobile_img.png" width="134" alt="" class="img-responsive">
-                	</div>
-                    <h3>Android Cell Phone</h3>
-                    <p class="prod_desc_22">I want to sell my android phone</p>
-                    <p class="attributes">2014-05-24  | 05:26:51  | 12:03 PM</p>
-                    <div class="price_tag_22">
-                    	<span class="price_main">$200</span>
-                        <span class="offer_dt">10% OFF</span>
-                    </div>
-               </div>
-            </li>
-            <li class="col-lg-3 col-md-6 col-sm-6">
-            <span class="featured_tag"></span>
-            	<div class="col-lg-12 single_product">
-                	<div class="img_wrap">
-                		<img src="img/mobile_img.png" width="134" alt="" class="img-responsive">
-                	</div>
-                    <h3>Android Cell Phone</h3>
-                    <p class="prod_desc_22">I want to sell my android phone</p>
-                    <p class="attributes">2014-05-24  | 05:26:51  | 12:03 PM</p>
-                    <div class="price_tag_22">
-                    	<span class="price_main">$200</span>
-                        <span class="offer_dt">10% OFF</span>
-                    </div>
-               </div>
-            </li>
-            <li class="col-lg-3 col-md-6 col-sm-6">
-            <span class="featured_tag"></span>
-            	<div class="col-lg-12 single_product">
-                	<div class="img_wrap">
-                		<img src="img/mobile_img.png" width="134" alt="" class="img-responsive">
-                	</div>
-                    <h3>Android Cell Phone</h3>
-                    <p class="prod_desc_22">I want to sell my android phone</p>
-                    <p class="attributes">2014-05-24  | 05:26:51  | 12:03 PM</p>
-                    <div class="price_tag_22">
-                    	<span class="price_main">$200</span>
-                        <span class="offer_dt">10% OFF</span>
-                    </div>
-               </div>
-            </li>
-            <li class="col-lg-3 col-md-6 col-sm-6">
-            <span class="featured_tag"></span>
-            	<div class="col-lg-12 single_product">
-                	<div class="img_wrap">
-                		<img src="img/mobile_img.png" width="134" alt="" class="img-responsive">
-                	</div>
-                    <h3>Android Cell Phone</h3>
-                    <p class="prod_desc_22">I want to sell my android phone</p>
-                    <p class="attributes">2014-05-24  | 05:26:51  | 12:03 PM</p>
-                    <div class="price_tag_22">
-                    	<span class="price_main">$200</span>
-                        <span class="offer_dt">10% OFF</span>
-                    </div>
-               </div>
-            </li>-->
 		</ul>
         <div class="clear"></div>
     </article>
@@ -241,9 +180,9 @@ img {
       <div class="clear"></div>
     </div>
   </article>
-  <?php include 'headers/menu-bottom-navigation.php' ?>
+    <?php include 'headers/menu-bottom-navigation.php' ?>
   </div>
-<script src ="js/register.js"></script> 
+<script src ="js/register.js"></script>
 <script type="text/javascript">
 
 $(document).ready(function() {
