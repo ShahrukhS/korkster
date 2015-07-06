@@ -12,7 +12,7 @@
 		$price = $_POST['priceinput'];
 		$category = $_POST['category'];
 		$tags = $_POST['taginput'];
-		$tagArr = explode(",", $tags);
+		$tagArr = explode("%2C", $tags);
 		/*if($korkname==null)
 		{
 			echo "Enter Korkname.";
@@ -59,7 +59,8 @@
 			mysqli_query($con, 'INSERT INTO `kork_img` (`korkID`, `attachment`) VALUES '.implode(',', $sql));
 		}
 		for($i = 0; $i < count($tagArr); $i++){
-			$dbh->exec("INSERT INTO kork_tags(korkId, tag) VALUES($id[0] ,'$tagArr[$i]')");
+            $tag = urldecode($tagArr[$i]);
+			$dbh->exec("INSERT INTO kork_tags(korkId, tag) VALUES($id ,'$tag')");
 		}
 		if($flag){
 			die(json_encode(array('request' => 'Gig created!', 'id' => $id)));

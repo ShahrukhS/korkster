@@ -383,9 +383,10 @@ function sendMessage()
       <p>Share this</p></span>
   
   <ul class="share-buttons">
-	<!--<li><a href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Fwalknsell.com<?php echo urlencode($_SERVER['REQUEST_URI']);?>&t=<?php echo $title; ?>" target="_blank" onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(document.URL) + '&t=' + encodeURIComponent(document.URL)); return false;"><img src="img/Facebook.png"></a></li>-->
+	<!--<li><a href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Fwalknsell.com<?php echo urlencode($_SERVER['REQUEST_URI']);?>&t=<?php echo $title; ?>" target="_blank" onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(document.URL) + '&t=' + encodeURIComponent(document.URL)); return false;"><img src="img/Facebook.png"></a></li>
+<li><a href="https://twitter.com/intent/tweet?source=http%3A%2F%2Fwalknsell.com%2F&text=WalknSell%20share%20kro%20babes%20%3AP:%20http%3A%2F%2Fwalknsell.com%2F" target="_blank" title="Tweet" onclick="window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(document.title) + ':%20'  + encodeURIComponent(document.URL)); return false;"><img src="img/Twitter.png"></a></li>-->
       <li><a href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Fwalknsell.com<?php echo urlencode($_SERVER['REQUEST_URI']);?>" target="_blank" onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(document.URL)); return false;"><img src="img/Facebook.png"></a></li>
-	<li><a href="https://twitter.com/intent/tweet?source=http%3A%2F%2Fwalknsell.com%2F&text=WalknSell%20share%20kro%20babes%20%3AP:%20http%3A%2F%2Fwalknsell.com%2F" target="_blank" title="Tweet" onclick="window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(document.title) + ':%20'  + encodeURIComponent(document.URL)); return false;"><img src="img/Twitter.png"></a></li>
+	<li><a href="https://twitter.com/intent/tweet?source=http%3A%2F%2Fwalknsell.com<?php echo urlencode($_SERVER['REQUEST_URI']);?>:%20http%3A%2F%2Fwalknsell.com%2F" target="_blank" title="Tweet" onclick="window.open('https://twitter.com/share?text=Hello there! Check out my gig on WalknSell.&url=' + encodeURIComponent(document.URL)); return false;"><img src="img/Twitter.png"></a></li>
 	<li><a href="https://plus.google.com/share?url=http%3A%2F%2Fwalknsell.com%2F" target="_blank" title="Share on Google+" onclick="window.open('https://plus.google.com/share?url=' + encodeURIComponent(document.URL)); return false;"><img src="img/Google+.png"></a></li>
 </ul>
       </div>
@@ -487,8 +488,8 @@ function sendMessage()
           <div style="width:80%;margin-left:30px">
             <table>
               <tr>
-                <td ><label>Your Bid</label></td>
-                <td><input type="number" name="bid" id="bid" <?php echo ($hasBid === true) ? "value='{$userBid['bid']}'" : ""; ?> style="margin-bottom:0px;padding:0px;width:40%;line-height:1px;height:30px" class="form-control txt_boxes" />
+                <td style="width:40%;"><label>Your Bid:</label></td>
+                <td><input type="number" name="bid" id="bid" <?php echo ($hasBid === true) ? "value='{$userBid['bid']}'" : ""; ?> style="margin:0px auto;padding:0px 0px 0px 8px;width:40%;line-height:1px;height:30px;box-sizing: border-box;" class="form-control txt_boxes" />
                   </td>
                 <td><input type="submit" id="msgsend" style="margin-right:10px" class="btn_signup" value="send" /></td>
               </tr>

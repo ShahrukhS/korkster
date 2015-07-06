@@ -7,15 +7,28 @@ include 'headers/_user-details.php';
 	
 	if(isset($_POST['query'])){
 		$searchq = $_POST['query'];
-		preg_replace("#[^0-9a-z]#i","",$searchq);
+		/*preg_replace("#[^0-9a-z]#i","",$searchq);
 		$stmt = $dbh->prepare("SELECT ID FROM users WHERE username like :q");
 		$stmt->bindValue(':q', "%$searchq%");
 		$stmt->execute();
-		$searchRows = $stmt->fetchAll(PDO::FETCH_COLUMN, 0);
-		/*foreach($dbh->query("SELECT * FROM users WHERE username like '%$searchq%'") as $row){
-			echo $row['ID'];
-		}*/
+		$searchRows = $stmt->fetchAll(PDO::FETCH_COLUMN, 0);*/
 	}
+
+    function nice_number($n) {
+        // first strip any formatting;
+        $n = (0+str_replace(",", "", $n));
+
+        // is this a number?
+        if (!is_numeric($n)) return false;
+
+        // now filter it;
+        if ($n > 1000000000000) return round(($n/1000000000000), 2).' trillion';
+        elseif ($n > 1000000000) return round(($n/1000000000), 2).' B';
+        elseif ($n > 1000000) return round(($n/1000000), 2).'M';
+        elseif ($n > 1000) return round(($n/1000), 2).'K';
+
+        return number_format($n);
+    }
 ?>
 
 <!doctype html>
@@ -120,9 +133,6 @@ function parallax(){
     </article>
     
     <div class="full_article_bg">
-    <article  class="prod_detail">
-    
-    
     
     <?php
 		
@@ -131,18 +141,19 @@ function parallax(){
 			
 		try {
 			/*** The SQL SELECT statement ***/
-			if(isset($_GET['category']) == true || empty($searchRows) == false){
-				if(isset($_GET['category']) == true && empty($searchRows) == false){
+			if(isset($_GET['category']) == true || isset($_POST['query']) == true){
+				if(isset($_GET['category']) == true && isset($_POST['query']) == true){
 						$cat_id = $_GET['category'];
-						$searchRows = implode(',',$searchRows);
-						$sql = "SELECT k.id, k.title, k.userID, k.detail, k.price, k.image, k.expirydate, u.ID, u.collegeID, count(i.ID) as `bids` FROM `korks` k join `users` u on u.ID = k.userID left outer join `inbox` i on k.id = i.korkID where u.collegeID = $school_id AND k.catID = $cat_id AND k.status = 0 AND k.userID IN ($searchRows) group by k.id ORDER BY k.id DESC";
+						$sql = "SELECT k.id, k.title, k.userID, k.detail, k.price, k.image, k.expirydate, u.ID, u.collegeID, count(i.ID) as `bids` FROM `korks` k join `users` u on u.ID = k.userID left outer join `inbox` i on k.id = i.korkID where u.collegeID = $school_id AND k.catID = $cat_id AND k.status = 0 AND k.id IN (Select kt.korkId FROM kork_tags kt where kt.tag like '%".mysqli_real_escape_string($con, $searchq)."%') group by k.id ORDER BY k.id DESC";
 				}else{
 					if(isset($_GET['category'])){
 						$cat_id = $_GET['category'];
 						$sql = "SELECT k.id, k.title, k.userID, k.detail, k.price, k.image, k.expirydate, u.ID, u.collegeID, count(i.ID) as `bids` FROM `korks` k join `users` u on u.ID = k.userID left outer join `inbox` i on k.id = i.korkID where u.collegeID = $school_id AND k.catID = $cat_id AND k.status = 0 group by k.id ORDER BY k.id DESC";
 					}else {
-						$searchRows = implode(',',$searchRows);
-						$sql = "SELECT k.id, k.title, k.userID, k.detail, k.price, k.image, k.expirydate, u.ID, u.collegeID, count(i.ID) as `bids` FROM `korks` k join `users` u on u.ID = k.userID left outer join `inbox` i on k.id = i.korkID where u.collegeID = $school_id AND k.status = 0 AND k.userID IN ($searchRows) group by k.id ORDER BY k.id DESC";
+						$sql = "SELECT k.id, k.title, k.userID, k.detail, k.price, k.image, k.expirydate, u.ID, u.collegeID, count(i.ID) as `bids` FROM `korks` k join `users` u on u.ID = k.userID left outer join `inbox` i on k.id = i.korkID where u.collegeID = $school_id AND k.status = 0 AND k.id IN (Select kt.korkId FROM kork_tags kt where kt.tag like '%".mysqli_real_escape_string($con, $searchq)."%') group by k.id ORDER BY k.id DESC";
+                        
+                        //$searchRows = implode(',',$searchRows);    
+                        /*"SELECT k.id, k.title, k.userID, k.detail, k.price, k.image, k.expirydate, u.ID, u.collegeID, count(i.ID) as `bids` FROM `korks` k join `users` u on u.ID = k.userID left outer join `inbox` i on k.id = i.korkID where u.collegeID = $school_id AND k.status = 0 AND k.userID IN ($searchRows) group by k.id ORDER BY k.id DESC";*/
 					}
 				}
 			}else{
@@ -151,7 +162,14 @@ function parallax(){
 			$result = mysqli_query($con,$sql);
 			$count = mysqli_num_rows($result);
 			
-			if($count==0){
+            if(isset($_POST['query'])){
+                    echo "<div style='width: 1040px; margin: 15px auto;'><p class='alert-notice'>$count search result",($count == 1) ? "" : "s"," found for '$searchq'.</p>
+                    </div>";
+            } ?>
+        
+<article class="prod_detail">
+			
+    <?php if($count==0){
 				echo "<div id='contentSub' class='clearfix'>
 						  <div class='contentBox'>
 							  <p class='fontelico-emo-unhappy noKorks'> No Korks found.</p>
@@ -159,7 +177,7 @@ function parallax(){
 							  <p class='noKorksCreate'><a href='create_gig.php' class='entypo-pencil'> Create Your Kork!</a></p>
 						  </div>
 					  </div>";
-			}
+            }
 			
 			$counter = 0;	 
 		
@@ -172,7 +190,7 @@ function parallax(){
 					$image = $row['image'];
 					$expiryDate = $row['expirydate'];
 					$detail = $row['detail'];
-					$price=$row['price'];
+					$price=nice_number($row['price']);
 					$bids=$row['bids'];
 					$status = "available";
                 

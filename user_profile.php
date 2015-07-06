@@ -153,13 +153,10 @@ function sendMessage()
             // callback handler that will be called on success
         request.done(function (response, textStatus, jqXHR){
             // log a message to the console
-
-
             if(response=="Message Sent!"){
-                alert('Message has been sent.');
-                $('#loading').html('<span class =\'alert alert-success\'><strong>Your message has been sent successfully! </strong>. A Verificaiton Link has been Emailed to you!</span>');
+                $('#shoading').html('<span class =\'alert alert-success\'><strong>Your message has been sent successfully! </strong>.');
             }else {
-                $('#loading').html('<span class=\'alert alert-danger\'>Sorry, There has been an error in our system!' + response+'</span>');
+                $('#shoading').html('<span class=\'alert alert-danger\'>Sorry, There has been an error in our system!' + response+'</span>');
             }
 
             //window.location.href = "your-questions.html";
@@ -417,11 +414,11 @@ function sendMessage()
           </div>
           <div class="modal-body">
             <form id="msg-form" method="post">
-              <input type="text" id="msg" class="form-control txt_boxes" placeholder="Enter Your Message" />
-              <div style="  width: 0%; margin-left: 47px;"><input type="button" id="msgsend" style="margin-right:10px" class="btn_signup" value="send" />
+              <textarea id="msg" class="form-control txt_boxes" placeholder="Enter Your Message"></textarea>
+              <div style="width: 0%;"><input type="button" id="msgsend" style="margin-right:10px" class="btn_signup" value="send" />
               </div>
-            <div id="loading"></div>
             </form>
+              <div id="shoading" style="margin: 40px 80px 10px;"></div>
             <div class="clearfix"></div>
           </div>
         </div>
