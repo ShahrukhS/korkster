@@ -1,8 +1,10 @@
 <?php
 	include 'connect_database.php';
+    include 'cookie_user.php';
+
 	if(isset($_SESSION['username'])){
-		$username = $_SESSION['username'];
-		$query = "SELECT * FROM users u, colleges c WHERE u.collegeID = c.ID and u.username like '$username'";
+        $username = $_SESSION['username'];
+        $query = "SELECT * FROM users u, colleges c WHERE u.collegeID = c.ID and u.username like '$username'";
 		$result = mysqli_query($con,$query);
 		
 		while ($row = mysqli_fetch_array($result)){
@@ -24,5 +26,5 @@
 			
 			//echo "<script>var collegeURL='${collegeURL}';</script>";
 		}
-	}
+    }
 ?>

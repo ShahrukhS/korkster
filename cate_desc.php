@@ -5,7 +5,7 @@ session_start();
 	//$korkName_Hypens = $_GET['kork'];
 	//$korkName = str_replace('-', ' ', $korkName_Hypens);	
 	
-  	$stmt = $dbh->prepare("SELECT k.*, kc.category, u.username, u.profilePic, u.joinDate, c.name, c.city FROM korks k INNER JOIN kork_categories kc ON k.catID = kc.cat_id INNER JOIN users u ON k.userID = u.ID INNER JOIN colleges c ON u.collegeID = c.id WHERE k.id = :korkid");
+  	$stmt = $dbh->prepare("SELECT k.*, kc.category, u.username, u.profilePic, u.joinDate, c.name, c.city FROM korks k INNER JOIN kork_categories kc ON k.catID = kc.cat_id INNER JOIN users u ON k.userID = u.ID INNER JOIN colleges c ON k.collegeID = c.id WHERE k.id = :korkid");
     $stmt->bindParam(':korkid', $korkID);
     $stmt->execute();
     $result = $stmt->fetchAll();
@@ -25,6 +25,7 @@ session_start();
 	$title = $row['title'];
 	$detail = $row['detail'];
 	$status = $row['status'];
+    $kork_price = $row['price'];    
 	$kork_category = $row['category'];
 	$dateOfCreation = $row['expirydate'];
 	
@@ -137,7 +138,7 @@ session_start();
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
 <!-- for Google -->
-<meta name="description" content="" />
+<meta name="description" content="<?php echo $detail; ?>" />
 <meta name="keywords" content="" />
 
 <meta name="author" content="" />
@@ -159,14 +160,14 @@ session_start();
 <meta property="twitter:url" content="<?php echo "http://walknsell.com".$_SERVER['REQUEST_URI']?>" />
     
 <title><?php echo $title ?> | WalknSell</title>
-<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800' rel='stylesheet' type='text/css'>
-<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.css">
 <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css">
-<link rel="stylesheet" href="css/jquery.bxslider.css" type="text/css">
 <link rel="stylesheet" href="css/style.css" type="text/css">
+<link rel="stylesheet" href="css/jquery.bxslider.css" type="text/css">
 <link rel="stylesheet" href="css/media.css" type="text/css">
 <link rel="stylesheet" href="css/fontello.css" type="text/css">
 <link rel="stylesheet" href="css/jquery.sidr.dark.css" type="text/css">
+<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800' rel='stylesheet' type='text/css'>
+<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.css">
 <style>
 .modal-dialog {
 	padding-top: 180px;
@@ -191,7 +192,7 @@ echo "<script>
 var sender = $_userID;
 var korkid = $id;
 var receiver = $userID;
-
+var price = $kork_price;
 </script>";
 
 ?>
@@ -354,7 +355,7 @@ function sendMessage()
   <div class="right_kork">
     <h3><?php echo $title;	?></h3>
     <h4> Created <span class="orange"><?php echo time_elapsed_string($dateOfCreation);//$daysPassed > 1 ? "$daysPassed days ago" : ($daysPassed == 0 ? "today" : "$daysPassed day ago");?></span><br>
-      in <span class="orange"><?php echo $kork_category; ?> category</span> </h4>
+        in <span class="orange"><?php echo $kork_category; ?> category</span><br><br><span class="l_bold">PRICE <span class="orange">$<?php echo $kork_price; ?></span></span> </h4>
     <p><?php echo $detail; ?></p>
     <?php if(!empty($_SESSION['username']) && $userID != $_userID) { echo "<a href='#' class='btn_signup' data-toggle='modal' data-target='#message'>",($hasBid === true) ? 'Update Bid' : 'Bid Now',"</a>";}?></div>
   <div class="clear"></div>
@@ -387,7 +388,7 @@ function sendMessage()
 <li><a href="https://twitter.com/intent/tweet?source=http%3A%2F%2Fwalknsell.com%2F&text=WalknSell%20share%20kro%20babes%20%3AP:%20http%3A%2F%2Fwalknsell.com%2F" target="_blank" title="Tweet" onclick="window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(document.title) + ':%20'  + encodeURIComponent(document.URL)); return false;"><img src="img/Twitter.png"></a></li>-->
       <li><a href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Fwalknsell.com<?php echo urlencode($_SERVER['REQUEST_URI']);?>" target="_blank" onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(document.URL)); return false;"><img src="img/Facebook.png"></a></li>
 	<li><a href="https://twitter.com/intent/tweet?source=http%3A%2F%2Fwalknsell.com<?php echo urlencode($_SERVER['REQUEST_URI']);?>:%20http%3A%2F%2Fwalknsell.com%2F" target="_blank" title="Tweet" onclick="window.open('https://twitter.com/share?text=Hello there! Check out my gig on WalknSell.&url=' + encodeURIComponent(document.URL)); return false;"><img src="img/Twitter.png"></a></li>
-	<li><a href="https://plus.google.com/share?url=http%3A%2F%2Fwalknsell.com%2F" target="_blank" title="Share on Google+" onclick="window.open('https://plus.google.com/share?url=' + encodeURIComponent(document.URL)); return false;"><img src="img/Google+.png"></a></li>
+	<li><a href="https://plus.google.com/share?url=http%3A%2F%2Fwalknsell.com<?php echo urlencode($_SERVER['REQUEST_URI']);?>" target="_blank" title="Share on Google+" onclick="window.open('https://plus.google.com/share?url=' + encodeURIComponent(document.URL)); return false;"><img src="img/Google+.png"></a></li>
 </ul>
       </div>
 </li>
@@ -396,7 +397,7 @@ function sendMessage()
 </div>
 <?php
 	if($userID == $_userID || $hasBid == true){
-		echo '<div class="kork_bidding">
+		/*echo '<div class="kork_bidding">
 				<div class="bidding_header">
 					<ul><li>
 					<div class="first_dt">
@@ -410,36 +411,44 @@ function sendMessage()
 					<h2>Bid</h2>
 					</div></li></ul>
 				</div>
-			</div>';
+			</div>';*/
 		try {
 			if($userID == $_userID){
 				if($bidnum != 0){
+                    echo "<div id='no-more-tables' class='bid_wrapper'>
+            <table class='table-bordered table-striped table-condensed cf kork_bid'>
+                <thead class='cf bid_header'>
+                    <tr>
+                        <th style='width: 35%;'>Bidders</th>
+                        <th style='width: 42%;'>Message</th>
+                        <th class='numeric' style='width: 22%;'>Bid</th>
+                    </tr>
+                </thead>
+                <tbody>";
+                    
 					include 'headers/connect_database.php';
 					/*** The SQL SELECT statement ***/
 					$sql = "SELECT u.username, u.profilePic, i.senderID, i.message, i.bid, i.dateM FROM inbox i INNER JOIN users u ON i.senderID = u.ID WHERE i.korkID = $korkID";
 					$result = mysqli_query($con,$sql);
 						 
 				
-					foreach ($dbh->query($sql) as $row)
-					{
+					foreach ($dbh->query($sql) as $row){
 						$profilePic = $row['profilePic'];
 						$sender = $row['username'];
 						$senderID = $row['senderID'];
 						$message = $row['message'];
 						$bid = $row['bid'];
 						$bidDate = $row['dateM'];
-												
-						echo "<div class='kork_message'><ul><li><div class='first_dt'> <span> <img src='img/users/$profilePic' width='50' height='50' alt=''> </span>
-							<h2><a href='$sender'>$sender</a> (sent ",time_elapsed_string($bidDate),")</h2>
-							</div></li>";
-						echo "<li><div class='second_dt'>
-							 <p>$message</p>
-							 </div></li>";
-						echo "<li><div class='third_dt'>
-							 <p>$$bid</p>
-							 </div></li></ul></div>";
+                    
+						echo "<tr><td data-title='Bidders'><div class='first_dt'><span><img src='img/users/$profilePic' width='50' height='50'></span>
+                    <h2><a href='$sender'>$sender</a> (sent ",time_elapsed_string($bidDate),")</h2>
+                    </div></td>";
+						echo "<td data-title='Message'>$message</td>";
+						echo "<td data-title='Bid' class='numeric'>$".$bid."</td></tr>";
 					}
 					$dbh = null;
+                    
+                    echo "</tbody></table></div>";
 				}else{				
 				  echo '<div class="first_dt" style="width:100%; text-align:center;">
 				  <p>No bids found.</p>
@@ -448,24 +457,27 @@ function sendMessage()
 			}else{
 				$message = $userBid['message'];
 				$bid = $userBid['bid'];
-				$bidDate = $userBid['dateM'];
+				$bidDate = time_elapsed_string($userBid['dateM']);
+                
+                echo "<div id='no-more-tables' class='bid_wrapper'>
+                <table class='table-bordered table-striped table-condensed cf kork_bid'>
+                <thead class='cf bid_header'>
+                    <tr>
+                        <th style='width: 35%;'>Bidders</th>
+                        <th style='width: 42%;'>Message</th>
+                        <th class='numeric' style='width: 22%;'>Bid</th>
+                    </tr>
+                </thead>
+                <tbody>";
 				
-				$now = time(); // or your date as well
-				$creationDate = strtotime($bidDate);
-				$diff = $now - $creationDate;
-				$daysPassed = floor($diff/(60*60*24));
-				if($justInserted === true){
-					echo "<div class='kork_message alert-notice'><p>Your bid has been submitted. You can update the bid anytime later.</p></div>";
+                if($justInserted === true){
+					echo "<tr class='kork_message alert-notice'><p>Your bid has been submitted. You can update the bid anytime later.</p></tr>";
 				}
-				echo "<div class='kork_message'><ul><li><div class='first_dt'><span><img src='img/users/$_profilePic' width='50' height='50' alt=''> </span>
-					<h2><a href='$_username'>$_username</a> (sent ",$daysPassed > 1 ? "$daysPassed days ago" : ($daysPassed == 0 ? "today" : "$daysPassed day ago"),")</h2>
-					</div></li>";
-				echo "<li><div class='second_dt'>
-					 <p>$message</p>
-					 </div></li>";
-				echo "<li><div class='third_dt'>
-					 <p>$bid$</p>
-					 </div></li></ul></div>";
+				echo "<tr><td data-title='Bidders'><div class='first_dt'><span><img src='img/users/$_profilePic' width='50' height='50'></span>
+                    <h2><a href='$_username'>$_username</a> (sent $bidDate)</h2>
+                    </div></td>";
+                echo "<td data-title='Message'>$message</td>";
+                echo "<td data-title='Bid' class='numeric'>$".$bid."</td></tr></tbody></table></div>";
 			}
 		}catch(PDOException $e){
 				echo $e->getMessage();
@@ -473,7 +485,32 @@ function sendMessage()
 	}
 
 	//include 'headers/menu-bottom-navigation.php' ?>
+    <!--<div class="container">
+    <div class="row">
+        <div id="no-more-tables" style="width: 1018px; margin: 10px auto;">
+            <table class="table-bordered table-striped table-condensed cf kork_bid">
+                <thead class="cf bid_header">
+                    <tr>
+                        <th style="width: 35%;">Bidders</th>
+                        <th style="width: 42%;">Message</th>
+                        <th class="numeric" style="width: 22%;">Bid</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td data-title="Bidders"><div class="first_dt"><span><img src="img/users/profile_pic.jpg" width="50" height="50" alt=""> </span>
+                    <h2><a href="ShahrukhS">ShahrukhS</a> (sent today)</h2>
+                    </div></td>
+                        <td data-title="Message">AUSTRALIAN AGRICULTURAL COMPANY LIMITED.</td>
+                        <td data-title="Bid" class="numeric">$1.38</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>-->
 </div>
+    
 <div class="modal fade" id="message" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -488,8 +525,8 @@ function sendMessage()
           <div style="width:80%;margin-left:30px">
             <table>
               <tr>
-                <td style="width:40%;"><label>Your Bid:</label></td>
-                <td><input type="number" name="bid" id="bid" <?php echo ($hasBid === true) ? "value='{$userBid['bid']}'" : ""; ?> style="margin:0px auto;padding:0px 0px 0px 8px;width:40%;line-height:1px;height:30px;box-sizing: border-box;" class="form-control txt_boxes" />
+                <td style="width:20%;"><label>Your Bid:</label></td>
+                <td><input type="number" name="bid" id="bid" <?php echo ($hasBid === true) ? "value='{$userBid['bid']}'" : ""; ?> class="form-control modal-bid" />
                   </td>
                 <td><input type="submit" id="msgsend" style="margin-right:10px" class="btn_signup" value="send" /></td>
               </tr>
@@ -521,5 +558,14 @@ function getlist(x){
 </script> 
 <script src="js/nav-admin-dropdown.js"></script>
 <script src="js/school-list.js"></script>
+<script>
+	$(document).ready(function() {
+	$("#bid").keyup(function(){
+		if($(this).val() > price){
+			$(this).val(price);
+		}
+	});
+	});
+</script>
 </body>
 </html>

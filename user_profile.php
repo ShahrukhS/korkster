@@ -42,6 +42,22 @@ session_start();
 		
 	$result = $stmt->fetchAll();
 	$prod_num=$result[0][0];
+
+    function nice_number($n) {
+        // first strip any formatting;
+        $n = (0+str_replace(",", "", $n));
+
+        // is this a number?
+        if (!is_numeric($n)) return false;
+
+        // now filter it;
+        /*if ($n > 1000000000000) return round(($n/1000000000000), 2).' trillion';
+        elseif ($n > 1000000000) return round(($n/1000000000), 2).' B';*/
+        if ($n > 1000000) return round(($n/1000000), 2).'M';
+        elseif ($n > 1000) return round(($n/1000), 2).'K';
+
+        return number_format($n);
+    }
 ?>
 <!doctype html>
 <html>
@@ -52,14 +68,14 @@ session_start();
 <link href="css/copied.css" media="all" rel="stylesheet" />
 <link href="css/copied1.css" media="all" rel="stylesheet" />
 <link href="css/copied2.css" media="all" rel="stylesheet" />
-<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800' rel='stylesheet' type='text/css'>
-<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.css">
+<link rel="stylesheet" href="css/style.css" type="text/css">
 <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css">
 <link rel="stylesheet" href="css/jquery.bxslider.css" type="text/css">
-<link rel="stylesheet" href="css/style.css" type="text/css">
 <link rel="stylesheet" href="css/media.css" type="text/css">
 <link rel="stylesheet" href="css/fontello.css" type="text/css">
 <link rel="stylesheet" href="css/jquery.sidr.dark.css" type="text/css">
+<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800' rel='stylesheet' type='text/css'>
+<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.css">
 <style>
 .modal-dialog {
 	padding-top: 180px;
@@ -262,22 +278,7 @@ function sendMessage()
                     <div class="hero-profile-image">
                         <div class="box-row cf">
                             <span class="user-data rf">Member since <?php echo date('F, Y', strtotime($joinDate))?></span>
-							<?php
-							if(!empty($_SESSION['username']) && $_username == $username){
-								echo "<span class='user-pict-130 js-user-pict-130'>
-								<form><span class='user-pict-upload js-user-pict-upload'>
-									<small class='js-user-pict-upload-text'>Change<br>Photo</small>
-									<div id='uploadifive-user-profile-pic' class='uploadifive-button .js-user-pict-upload btn-upload' style='height: auto; overflow: hidden; position: relative; text-align: center; width: auto;'>ATTACH FILES<input type='file' id='user-profile-pic' name='user-profile-pic' class='inp-uploadify hidden' style='display: none;'><input type='file' class='uploadifive-input' style='opacity: 0; position: absolute; right: -3px; top: -3px; z-index: 999;'></div>
-									<input type='hidden' name='authenticity_token' value='v6Z2sfCwe61F73NmXvOHpLQVHsRGSh+yYO72yGsgS8U='>
-									<span id='user-profile-pic-queue' class='hidden'></span>
-								</span></form>
-								<img src='img/users/$profilePic' width='130' height='130'></span>";
-							}else{
-								echo "<span class='user-pict-130'><img src='img/users/$profilePic' class='user-pict-img' alt='umaisdesigns' itemprop='logo' width='130' height='130' data-reload='inprogress'></span>
-                                <!--<span class='user-badge-round-med top_rated_seller'><a href='/levels'></a></span>-->";
-							}
-							?>
-                                <!--<span class="user-data lf"><a href="/levels">Top Rated Seller</a></span>-->
+                            <span class='user-pict-130'><img src="img/users/<?php echo $profilePic; ?>" class='user-pict-img' alt='umaisdesigns' itemprop='logo' width='130' height='130' data-reload='inprogress'></span>
                         </div>
                     </div>
 
@@ -295,7 +296,7 @@ function sendMessage()
             $kork_id = $allKorks[0]['id'];
             $kork_title = $allKorks[0]['title'];
             $kork_detail = $allKorks[0]['detail'];
-            $kork_price = $allKorks[0]['price'];
+            $kork_price = nice_number($allKorks[0]['price']);
             $kork_image = $allKorks[0]['image'];
             $kork_status = $allKorks[0]['status'];
             $kork_date = $allKorks[0]['expiryDate'];
@@ -306,10 +307,10 @@ function sendMessage()
                 <a href='cate_desc.php?korkID=$kork_id' class='bundle-item js-gtm-event-auto' data-gtm-category='new-user-page' data-gtm-action='click' data-gtm-label='top-package-with-extras'>
                 <span class='bundle-badge'>$kork_cat</span>
                 <span class='gig-pict-290'><img src='img/korkImages/$kork_image' data-reload='inprogress'></span>
-                <h1>$kork_title</h1>
-                <h3>$kork_detail</h3>
+                <h1 class='truncate'>$kork_title</h1>
+                <h3 class='details-block-ellipsis'>$kork_detail</h3>
                 <div class='bundle-sub cf'>
-                    <span class='bundle-price'><small>Total</small>$$kork_price</span>
+                    <span class='bundle-price'><small>Total</small>RS. $kork_price</span>
                 </div></a>
             </aside>";
         }
@@ -364,7 +365,7 @@ function sendMessage()
 			$kork_id = $row['id'];
 			$kork_title = $row['title'];
 			$kork_detail = $row['detail'];
-			$kork_price = $row['price'];
+			$kork_price = nice_number($row['price']);
 			$kork_date = $row['expiryDate'];
 			$kork_status = $row['status'];
 			$kork_image = $row['image'];
@@ -382,7 +383,7 @@ function sendMessage()
 							<p class='prod_cat_22'>$kork_category Category</p>
 							<p class='attributes'>".date('m-d-Y | h:i A', strtotime($kork_date))."</p>
 							<div class='price_tag_22'>
-								<span class='price_main'>$$kork_price</span>
+								<span class='price_main'>Rs. $kork_price</span>
 								<span class='offer_dt'>$kork_bids BID",($kork_bids > 1) ? "S" : "","</span>
 							</div>
 					   </div>

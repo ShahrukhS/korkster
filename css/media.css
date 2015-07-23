@@ -3,10 +3,10 @@
 .featured_prod li{margin-bottom:15px;}	
 }
 @media only screen and (max-width:999px){
-header, .content_inner, .lower_content_inner{width:95%;}
+header, .content_inner, .lower_content_inner{width:95%!important;}
 .detail{width:30%;}
 #tfheader{width:98%;}
-.footer_inner{width:100%; text-align:center;}
+.footer_inner{width:100%;}
 .footer_nav{margin-left:10%;}
 .copyright{float:right; margin-left:0;}
 .wrap-search{margin-right:5px;}
@@ -31,7 +31,8 @@ article.prod_detail{width:100%; position:static;}
 
 .inbox_des .content_inbox{width:100%;}
 .user_head{ width:100%;}
-.category_inner .wrap-search{margin-right:10px;}
+.category_inner .wrap-search {margin-right:10px;}
+.category_inner .fake-dropdown {margin-left:10px;}
 .msg_wrap_11{padding-right:20px;}
 .gig_related_to{width:100%; float:left; margin-right:0; border-top:1px solid #ebebeb; border-left:0; margin-top:20px;}
 .gig_related_to .gig-desc{width:80%; float:left;}
@@ -41,6 +42,7 @@ article.prod_detail{width:100%; position:static;}
 
 .cate_desc .full_article_bg{margin-top:100px;}
 .cate_desc .kork_desc{width:100%; padding-top:10px;}
+.bid_wrapper{width:100%;}
 .cate_desc .left_kork{width:58%; margin:10px}
 .cate_desc .right_kork{width:36%; padding-right:15px;}
 .kork_option{width:100%;}
@@ -73,7 +75,8 @@ article.prod_detail{width:100%; position:static;}
 	#simple-menu{display:block; position:absolute; top:0; left:0}
 	.main_nav{display:none;}
 	.content_inner label{font-size:240%;}
-	.logo{text-align:center; float:none; margin:0 auto;}
+	.logo{ text-align:center; float:none; margin:0 auto; }
+	.logo img{ margin-top: 8px; }
 	.tfbutton{font-size:25px;}
 	.sidebar-list ul li{width:100%; float:none; border:none;}
 	.social, .footer_nav{padding-bottom:20px;}
@@ -83,7 +86,6 @@ article.prod_detail{width:100%; position:static;}
 	.footer_inner .footer_nav{text-align:center; margin:10px auto; float:none;}
 	.copyright{text-align:center; float:none; margin:20px auto 0 auto;}
 	.copyright h4.f_logo{text-align:center; width:112px; display:block; margin:5px auto;}
-	.wrap-search{display:none;}
 	.footer_nav ul{width:100%; float:none;}
 	
 	
@@ -99,7 +101,7 @@ article.prod_detail{width:100%; position:static;}
 	
 	.main_table table thead{display:none;}
 	a.search_icon{display:block; position:absolute; right:20px; top:96px;}
-	.category_nav{display:none;}
+	/*.category_nav{display:none;}*/
 	
 	.cate_desc .kork_desc{padding:0; padding-top:10px;}
 	.cate_desc .left_kork{width:90%; margin:0 auto; float:none;}
@@ -117,8 +119,20 @@ article.prod_detail{width:100%; position:static;}
 	.user_head h1.with-thumb{font-size:180%; line-height:normal;}
 	.maxsize, .char-count{display:none;}
 	.modal-dialog{width:95%;}
+	
+	/*************STYLES FOR PROFILE EDIT*******************/
+	.form_row .user_names { width: 71%; }
+	.form_row .userl_lname { text-align: left; }
+	.form_row .user_fname { margin-bottom: 20px; }
 }
-
+@media only screen and (max-width:516px){
+	.wrap-search{left: -7px; width: 96%; margin-right: 0px!important;}
+	.category_inner .fake-dropdown{right: -7px; width: 96%; margin-left: 0px!important;}
+}
+@media only screen and (max-width:562px){
+	.modal-dialog input.names { width: 93%; }
+	.modal-dialog #firstName { margin-bottom: 0px; }
+}
 @media only screen and (max-width:480px){
 	.how_it_works{padding:0;}
 	.how_it_works ul li{width:80% !important; float:none; margin:5px auto;}
@@ -132,17 +146,15 @@ article.prod_detail{width:100%; position:static;}
 	.content_inbox h1.with-thumb{margin-top:20px;}
 	.prod_desc{width:100%;}
 	.prod_desc .main-prod-pic{width:100%; float:none; margin:0 auto;}
-	.prod_desc .details{float:none; width:100%; margin-left:0;}
+	.prod_desc .details{float:none; width:100%; margin-left:0; text-align:center;}
 	div.price{width:190px; margin:0 auto; float:none;}
 	
-	.modal-header h1{font-size:28px; padding-right:25px;}
+	.modal-header h1{ font-size:28px!important; }
 	.modal-header p{font-size:13px; padding-right:25px;}
-	.modal-dialog button.close{right:9px; top:10px;}
+	/*.modal-dialog button.close{right:9px; top:10px;}*/
+	.modal-dialog button.close{ right: 11px; width: 10px; top: 10px; position: absolute; height: 19px; font-size: 15px; }
 	
 	.kork_option .first_dt{width:100%;}
-	
-	
-	
 	
 	.conv_action .messege_push_1{width:100%;}
 	
@@ -168,4 +180,5 @@ article.prod_detail{width:100%; position:static;}
 	#results{top:40px; left:5px; width:95%;}
 	.form_row .label_wrap{width:80%; text-align:left;}
 	.form_row .input_wrap{width:95%;}
+	.form_row .user_names{width:90%;}
 	.form_row label{font-size:11px; text-align:left;}

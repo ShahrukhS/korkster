@@ -112,7 +112,7 @@
 			?>
             <div class="wrap-search">
 					<form action="<?php echo $pageurl; ?>" method="post">
-						<input id="query" maxlength="80" name="query" type="text" value="<?php echo (isset($_POST['query'])) ? $_POST['query'] : ""; ?>"placeholder="SEARCH">
+						<input id="query" maxlength="80" name="query" type="text" value="<?php echo (isset($_POST['query'])) ? $_POST['query'] : ""; ?>" placeholder="SEARCH">
 						<input type="image" src="img/glass_small.png" alt="Go">
 					</form>
                   </div>

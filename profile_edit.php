@@ -108,15 +108,14 @@ $(document).ready(function() {
         <div class="label_wrap">
           <label for="firstname">First Name</label>
         </div>
-        <div class="input_wrap user_fname" style="width:auto;">
-          <input class="gig_text price" type="text" id="fname" value="<?php echo $_fname;?>" name="fname" style="width:198px;" required/>
-        
+        <div class="user_names user_fname">
+          <input class="gig_text price" type="text" id="fname" value="<?php echo $_fname;?>" name="fname" style="width:100%;" required/>
         </div>
-		<div class="label_wrap user_lname">
+		<div class="label_wrap userl_lname">
           <label for="lastname">Last Name</label>
         </div>
-        <div class="input_wrap user_lname" style="width:auto;">
-          <input class="gig_text price" type="text" id="lname" value="<?php echo $_lname;?>" name="lname" style="width:198px;" required/>
+        <div class="user_names">
+          <input class="gig_text price" type="text" id="lname" value="<?php echo $_lname;?>" name="lname" style="width:100%;" required/>
         </div>
       </div>
       <div class="form_row">
@@ -128,15 +127,6 @@ $(document).ready(function() {
             <ul id ="regresults" name="schools" >
             </ul>
         </div>
-        <aside class="gig-tooltip">
-          <figure>
-            <figcaption>
-              <h3>Select a Category.</h3>
-              <p>This is your Gig category. Choose wisely for better promotion.</p>
-            </figcaption>
-            <div class="gig-tooltip-img"></div>
-          </figure>
-        </aside>
       </div>
       <div class="form_row">
         <div class="label_wrap">
@@ -183,46 +173,6 @@ $(document).ready(function() {
   </div>
   <?php include 'headers/menu-bottom-navigation.php' ?>
 </div>
-
-<nav class="navbar navbar-default" role="navigation">
-    <div class="navbar-header">
-        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-        </button>
-        <a class="navbar-brand" href="#">Company Name</a>
-    </div>
-    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-        <ul class="nav navbar-nav">
-            <li class="active"><a href="#">Link</a></li>
-            <li><a href="#">Link</a></li>
-            <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
-                <ul class="dropdown-menu">
-                    <li><a href="#">Action</a></li>
-                    <li><a href="#">Another action</a></li>
-                    <li><a href="#">Something else here</a></li>
-                    <li class="divider"></li>
-                    <li><a href="#">Separated link</a></li>
-                    <li class="divider"></li>                    
-                </ul>
-            </li>
-        </ul>
-        <div class="col-sm-3 col-md-3 pull-right">
-            <form class="navbar-form" role="search">
-                <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Search" name="q">
-                    <div class="input-group-btn">
-                        <button class="btn btn-default" type="submit"><i class="glyphicon glyphicon-search"></i></button>
-                    </div>
-                </div>
-            </form>
-        </div>        
-    </div>
-</nav>
-
 
 <script>
 $(function() {      

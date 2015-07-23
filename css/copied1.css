@@ -1350,7 +1350,7 @@ html.opacity .popup-how-it-works .popup-content .js-gallery-nav:hover span {
 .mp-user-hero .hero-profile-image {
 	position: absolute;
 	z-index: 6;
-	bottom: -25px;
+	bottom: -55px;
 	left: 0;
 	width: 100%;
 	text-align: center;
@@ -1744,7 +1744,8 @@ html.opacity .popup-how-it-works .popup-content .js-gallery-nav:hover span {
 	border: 1px #f21aa5 solid;
 	-webkit-border-radius: 3px;
 	-moz-border-radius: 3px;
-	border-radius: 3px
+	border-radius: 3px;
+	margin-top: 0px;
 }
 .mp-user-info .user-bundle .bundle-item h3 {
 	font-size: 16px;

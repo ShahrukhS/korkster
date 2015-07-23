@@ -3,11 +3,14 @@ header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept');
 session_start();
 if(isset($_GET['status']) && $_GET['status'] == 'logout')
-	{	
-	
-	unset($_SESSION);
-    session_unset();
-    session_destroy();
+	{
+        unset($_SESSION);
+        session_unset();
+        session_destroy();
+        if (isset($_COOKIE['walknsell_remember'])) {
+            unset($_COOKIE['walknsell_remember']);
+            setcookie('walknsell_remember', '', time() - 3600, '/'); // empty value and old timestamp
+        }
 	}
 
 include 'headers/_user-details.php';
@@ -18,13 +21,11 @@ include 'headers/_user-details.php';
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
 <title>::WalknSell::</title>
-<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800' rel='stylesheet' type='text/css'>
 <link rel="stylesheet" href="css/bootstrap.min.css">
 <link rel="stylesheet" href="css/style.css" type="text/css">
 <link rel="stylesheet" href="css/media.css" type="text/css">
 <link rel="stylesheet" href="css/fontello.css" type="text/css">
 <link rel="stylesheet" href="css/jquery.sidr.dark.css" type="text/css">
-<link href="css/font-awesome.min.css" rel="stylesheet" type="text/css">
 <style>
 *, *:before, *:after {
 	-webkit-box-sizing: initial;
@@ -40,6 +41,8 @@ img {
 <script src="js/jquery.sidr.min.js"></script>
 <script src="js/custom.js"></script>
 <script src="js/fb.js"></script>
+<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800' rel='stylesheet' type='text/css'>
+<link href="css/font-awesome.min.css" rel="stylesheet" type="text/css">
 </head>
 
 <body>
@@ -127,7 +130,7 @@ img {
 						<p class='prod_cat_22'>By $kork_user</p>
 						<p class='attributes'>".date('m-d-Y | h:i A', strtotime($kork_date))."</p>
 						<div class='price_tag_22'>
-							<span class='price_main'>$$kork_price</span>
+							<span class='price_main'>Rs. $kork_price</span>
 							<span class='offer_dt'>$kork_bids BID",($kork_bids > 1) ? "S" : "","</span>
 						</div>
 				   </div>

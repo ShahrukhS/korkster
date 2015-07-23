@@ -15,17 +15,16 @@ if(empty($_SESSION['username'])){
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
 <title>Create Gig</title>
-<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800' rel='stylesheet' type='text/css'>
 <link rel="stylesheet" href="css/bootstrap.min.css">
 <link rel="stylesheet" href="css/bootstrap-tagsinput.css" type="text/css">
-
 <link rel="stylesheet" href="css/style.css" type="text/css">
 <link rel="stylesheet" href="css/media.css" type="text/css">
+<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800' rel='stylesheet' type='text/css'>
 <link rel="stylesheet" href="css/fontello.css" type="text/css">
 <link href="css/font-awesome.min.css" rel="stylesheet" type="text/css">
 <link rel="stylesheet" href="css/jquery.sidr.dark.css" type="text/css">
 
-<script src="js/dropzone.min.js"></script>
+<script src="js/dropzone.js"></script>
 <link href="css/dropzone.css" rel="stylesheet">
 
 <style>
@@ -254,7 +253,9 @@ function submitForm(action)
 	paramName: "files",
         uploadMultiple: true,
         maxFiles: 4,
+        maxFilesize: 5,
         parallelUploads: 4,
+        addRemoveLinks : true,
         init: function() {
             var submitButton = document.querySelector("#submit-all")
             dropzone = this; // closure
@@ -266,6 +267,12 @@ function submitForm(action)
         });
         this.on("maxfilesexceeded", function(file){
             alert("No more files please!");
+        });
+        this.on("thumbnail", function(file) {
+            if(file.width < 550 || file.height < 370){
+                dropzone.removeFile(file);
+                alert("Minimum image size: 550x370 pixels");
+            }
         });
             
         // Listen to the sendingmultiple event. In this case, it's the sendingmultiple event instead
@@ -297,5 +304,15 @@ function submitForm(action)
 	});
 </script>
 <script src="js/nav-admin-dropdown.js"></script>
+<script>
+	$(document).ready(function() {
+	var maxnum = 500000;
+	$("#priceinput").keyup(function(){
+		if($(this).val() > maxnum){
+			$(this).val(maxnum);
+		}
+	});
+	});
+</script>
 </body>
 </html>

@@ -9,7 +9,7 @@
 		$fname = $_POST['firstName'];
 		$lname = $_POST['lastName'];
 		$email = $_POST['email'];
-		$college = $_POST['college'];
+		$college = $_POST['regcollege'];
 		$activationKey = md5(microtime().rand());
 		
 		

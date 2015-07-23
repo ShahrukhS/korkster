@@ -33,29 +33,20 @@
                 	<li class=""><a href="index.php">Home</a></li>
                     <li class=""><a href="create_gig.php">Start selling</a></li>
 				</ul>
-                <ul class="second">
-                	 <?php
-	              	if(!isset($_SESSION['username'])) 
-	{
-                  
-                   echo"<li class=''><a href='#'  data-toggle='modal' data-target='#login'>Sign in</a></li>";
-	}
-	?> 
-    <?php
-	              	if(!isset($_SESSION['username'])) 
-	{
     
-                    echo "<li class=''><a href='#' data-toggle='modal' data-target='#register'>Join</a></li>";
-	}
-	?>
-                	
-                </ul>
-    
-             <ul class="third">
+             <ul class="second">
              	<li class=""><a href="privacy_policy.php">Policy</a></li>
                 <li class=""><a href='#' data-toggle='modal' data-target='#contactus'>Contact us</a></li>
 
-             </ul>    
+             </ul>
+            <?php
+                if(!isset($_SESSION['username'])) {
+                echo "<ul class='third'>
+                            <li class=''><a href='#' data-toggle='modal' data-target='#register'>Join</a></li>
+                            <li class=''><a href='#'  data-toggle='modal' data-target='#login'>Sign in</a></li>
+                    </ul>";
+                }
+            ?>
 
                
 

@@ -10,7 +10,7 @@
           <form id="login-form" method="post">
             <input type="text" class="form-control txt_boxes" placeholder="Username" name="username-login" id="username-login" required>
             <input type="password" class="form-control txt_boxes" placeholder="Password" name="password-login" id="password-login" required>
-            <div id="loading-login"></div>
+            <div id="loading-login" class="genload"></div>
             <input type="submit" class="btn_signup" value="login"/>
             <div class="forg_pass">
               <input type="checkbox" name="remember"><p>Remember me</p>
@@ -47,8 +47,8 @@
         <div class="modal-body">
           <form id="signup" method="post">
             <div id="error"></div>
-            <input type="text" class="form-control txt_boxes" placeholder="First Name" name="firstName" id="firstName" required>
-            <input type="text" class="form-control txt_boxes" placeholder="Last Name" name="lastName" id="lastName" required>
+            <div style="float:left; width:91%; margin: 0 5%;"><input type="text" class="form-control txt_boxes names" placeholder="First Name" name="firstName" id="firstName" required>
+                <input type="text" class="form-control txt_boxes names" placeholder="Last Name" name="lastName" id="lastName" required></div>
             <input type="email" class="form-control txt_boxes" placeholder="Email Address" name="email" id="email" required>
             <input type="text" class="form-control txt_boxes" name="regcollege" placeholder="School" size="" id="regsearch" onKeyUp="regfindmatch();" autocomplete="off" required>
             <ul id ="regresults" name="school" >
@@ -59,7 +59,7 @@
             <input type="password" pattern=".{5,15}" class="form-control txt_boxes" placeholder="Confirm Password" name="verifyPassword" id="verifyPassword" required>
             <input type="hidden" name="typeAcc" id="typeAcc">
             <center>
-              <div id="loading"></div>
+              <div id="loading" class="genload"></div>
               <input type="submit" class="btn_signup" value="submit" />
               <p class="terms">By signing up, I agree to WalknSell <a href="#" class="terms_link">terms of service.</a></p>
             </center>
@@ -92,15 +92,15 @@
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">X</button>
           <h1 class="modal-title" id="myModalLabel">WalknSell Contact Us</h1>
-          <p>Please Enter valid Id and password for Signin!</p>
+          <p>We'd love to help. Feel free to say hello!</p>
         </div>
         <div class="modal-body">
           <form id="login-form" method="post">
             <div id="error-login"></div>
-            <input type="text" class="form-control txt_boxes" placeholder="Your Name" name="name-contact" id="name-contact" required= "true">
-            <input type="email" class="form-control txt_boxes" placeholder="Your Email" name="email-contact" id="email-contact" required>
-             <input type="text"  name="message-contact" id="message-contact" class="form-control txt_boxes" placeholder="Enter Your Message" required/>
-            <div id="loading-contact"></div>
+            <input type="text" class="form-control txt_boxes contact-form" placeholder="Your Name" name="name-contact" id="name-contact" required= "true">
+            <input type="email" class="form-control txt_boxes contact-form" placeholder="Your Email" name="email-contact" id="email-contact" required>
+            <textarea name="message-contact" id="message-contact" style="width: 85%; margin-left: auto; margin-right: auto;" class="form-control txt_boxes" placeholder="Enter Your Message" required></textarea>
+            <div id="loading-contact" class="genload"></div>
             <input type="submit" class="btn_signup" value="send"/>
          </form>
           <div class="clearfix"></div>

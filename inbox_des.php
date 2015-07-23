@@ -8,10 +8,10 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
 <title>::Inbox::</title>
-<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800' rel='stylesheet' type='text/css'>
 <link rel="stylesheet" href="css/style.css" type="text/css">
 <link rel="stylesheet" href="css/media.css" type="text/css">
 <link rel="stylesheet" href="css/fontello.css" type="text/css">
+<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800' rel='stylesheet' type='text/css'>
 <link href="css/font-awesome.min.css" rel="stylesheet" type="text/css">
 <link rel="stylesheet" href="css/jquery.sidr.dark.css" type="text/css">
 <!--<script src="js/jquery.min.js"></script>-->
@@ -294,7 +294,7 @@ function sendMessage()
             </div> ";
 		}else{
 		  echo"
-            <div class='msg_wrap_11'>
+            <div class='msg_wrap_3'>
             <div class='messege_push'>
                 	<span class='user-pict_50'>
                 			<a href='#'><img src='img/users/$result[profilePic]' alt='$result[username]' width='50' height='50' class=''></a>

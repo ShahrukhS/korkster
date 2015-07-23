@@ -36,12 +36,13 @@
 		}else{
 			$profilePic[] = "kork.png";
 		}
-		$stmt = $dbh->prepare("INSERT INTO korks(userID,title,detail,image,catID,expirydate,price) VALUES(:userID,:korkTitle,:desc,:profilePic,:category,:expirydate, :price)");
+		$stmt = $dbh->prepare("INSERT INTO korks(userID,title,detail,image,catID,collegeID,expirydate,price) VALUES(:userID,:korkTitle,:desc,:profilePic,:category,:collegeID,:expirydate,:price)");
 		$stmt->bindValue(':userID',$_userID);
 		$stmt->bindValue(':korkTitle',$korkname);
 		$stmt->bindValue(':desc',$description);
 		$stmt->bindValue(':profilePic',$profilePic[0]);
 		$stmt->bindValue(':category',$category);
+        $stmt->bindValue(':collegeID',$_college);
 		$stmt->bindValue(':expirydate',date('Y/m/d H:i:s'));
 		$stmt->bindValue(':price',$price);
 		$flag = $stmt->execute();
