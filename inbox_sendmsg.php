@@ -2,7 +2,7 @@
 	
 		header('Content-Type: application/json');
 		include 'headers/connect_database.php';      // Connection to Mysql Database.
-		//require_once('PHP/recaptchalib.php');   // Captcha Library.
+		 date_default_timezone_set("Asia/Karachi");
 
 		$sender = $_POST['sender'];
 		$receiver = $_POST['receiver'];

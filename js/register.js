@@ -4,7 +4,7 @@ $(document).ready(function(e)
 {
 	signupForm();
 	loginForm();
-	contactForm();	
+	contactForm();
 });
 
 // register form ajax
@@ -14,7 +14,7 @@ function contactForm()
 		// variable to hold request
 		var request;
 		// bind to the submit event of our form
-		$("#contactus").submit(function(event){
+		$("#contact-form").submit(function(event){
 		// show loading bar until the json is recieved
 	
 		contact_validation();
@@ -106,6 +106,8 @@ function contact_validation()
 	
 	if($('#message-contact').val().length < 4)
 	{
+		$('.genload').css("padding-top", "20px");
+		$('.genload').css("padding-bottom", "20px");
 		$('#loading-contact').html('<span class=\'alert alert-warning\'><strong>Your message is too short.</strong></span>');
 		error.push("Message is too short!");
 	}
@@ -136,7 +138,6 @@ function signupForm()
 		$("#signup").submit(function(event){
 	
 		// show loading bar until the json is recieved
-	
 		validation();
 		
     	// abort any pending request
@@ -154,7 +155,6 @@ function signupForm()
 		// let's disable the inputs for the duration of the ajax request
 		// Note: we disable elements AFTER the form data has been serialized.
 		// Disabled form elements will not be serialized.
-		
 			
 		if(error.length==0)
 		{
@@ -176,8 +176,7 @@ function signupForm()
 				
 				//console.log("Hooray, it worked!");
 				$('#loading').html('');
-				
-				if(response=="success")
+				if(response == "success")
 				{
 					$('#loading').html('<span class =\'alert alert-success\'><strong>Registered Successfully! </strong>. A Verificaiton Link has been Emailed to you!</span>');
 					setTimeout(function() {   //calls after a certain time
@@ -188,13 +187,19 @@ function signupForm()
 				{
 					$('#loading').html('<span class=\'alert alert-danger\'><strong>Username not available!</strong> Select a different username.</span>');
 				}
+				else if(response == "email address already exist")
+				{
+					$('#loading').html('<span class=\'alert alert-danger\'><strong>An account with the same email address already exists!</strong></span>');
+				}
 				else if(response == "You are already registered, Logging you in!")
 				{
 					$('#loading').html('<span class=\'alert alert-danger\'><strong>You are already registered, Logging you in!</strong></span>');
 					LoginFormFB(_userID);
 				}
-				else
-				{
+				/*else if(response == "password didn't match"){
+					$('#loading').html('<span class=\'alert alert-warning\'><strong>Oops! Password did not match! Try again.</strong></span>');
+				}*/
+				else{
 					$('#loading').html('<span class=\'alert alert-danger\'>Sorry, There has been an error in our system!' + response+'</span>');
 				}
 			});
@@ -313,9 +318,8 @@ function validation()
 
 {
 	error = [];
-	
-	var errorDiv = document.getElementById('error');
-	errorDiv.innerHTML = "";
+	/*var errorDiv = document.getElementById('error');
+	errorDiv.innerHTML = "";*/
 	var username = document.getElementById('username').value;
 	var firstName = document.getElementById('firstName').value;
 	var lastName = document.getElementById('lastName').value;
@@ -323,11 +327,18 @@ function validation()
 	var college = document.getElementById('regsearch').value;
 	var password = document.getElementById('password').value;
 	var verifyPassword = document.getElementById('verifyPassword').value;
-	
-	if(password != verifyPassword)
+	if($('#regresults').text() == "No results found!"){
+		$('.genload').css("padding-top", "20px");
+		$('.genload').css("padding-bottom", "20px");
+		$('#loading').html('<span class=\'alert alert-warning\'><strong>Sorry! No school found with the name "'+$('#regsearch').val()+'".</strong></span>');
+		error.push('no school found');
+	}
+	if($('#password').val() != $('#verifyPassword').val())
 	{
+		$('.genload').css("padding-top", "20px");
+		$('.genload').css("padding-bottom", "20px");
 		$('#loading').html('<span class=\'alert alert-warning\'><strong>Oops! Password did not match! Try again.</strong></span>');
-		//error.push("Password Doesn't Match!");
+		error.push('password didnt match');
 	}
 	
 	nullCheck(username,"Username");
@@ -337,11 +348,11 @@ function validation()
 	nullCheck(email,"Email");
 	nullCheck(password,"Password");
 	nullCheck(verifyPassword,"Verify Password");
-	
+	/*
 	for(var i=0; i<error.length; i++)
 	{
 		errorDiv.innerHTML += error[i];
-	}
+	}*/
 }
 
 

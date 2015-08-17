@@ -166,8 +166,9 @@ session_start();
 <link rel="stylesheet" href="css/media.css" type="text/css">
 <link rel="stylesheet" href="css/fontello.css" type="text/css">
 <link rel="stylesheet" href="css/jquery.sidr.dark.css" type="text/css">
-<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800' rel='stylesheet' type='text/css'>
-<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.css">
+<link href='css/font-open-sans.css' rel='stylesheet' type='text/css'>
+<link rel="stylesheet" href="css/font-awesome.css" type='text/css'>
+<link href="css/font-awesome.min.css" rel="stylesheet" type="text/css">
 <style>
 .modal-dialog {
 	padding-top: 180px;
@@ -355,7 +356,7 @@ function sendMessage()
   <div class="right_kork">
     <h3><?php echo $title;	?></h3>
     <h4> Created <span class="orange"><?php echo time_elapsed_string($dateOfCreation);//$daysPassed > 1 ? "$daysPassed days ago" : ($daysPassed == 0 ? "today" : "$daysPassed day ago");?></span><br>
-        in <span class="orange"><?php echo $kork_category; ?> category</span><br><br><span class="l_bold">PRICE <span class="orange">$<?php echo $kork_price; ?></span></span> </h4>
+        in <span class="orange"><?php echo $kork_category; ?> category</span><br><br><span class="l_bold">PRICE <span class="orange">Rs. <?php echo $kork_price; ?></span></span> </h4>
     <p><?php echo $detail; ?></p>
     <?php if(!empty($_SESSION['username']) && $userID != $_userID) { echo "<a href='#' class='btn_signup' data-toggle='modal' data-target='#message'>",($hasBid === true) ? 'Update Bid' : 'Bid Now',"</a>";}?></div>
   <div class="clear"></div>
@@ -364,9 +365,9 @@ function sendMessage()
 <ul>
 <li>
   <div class="first_dt"> <span> <img src="img/users/<?php echo $userPic; ?>" width="50" height="50" alt=""> </span>
-    <h2>By <?php echo "<a href='$korkUser'> $korkUser"; ?></a></h2>
+    <h2>By <?php echo "<a href='$korkUser'> $korkUser </a>"; ?></h2>
     <p>From: <?php //echo "$korkCollege (joined ",$joinedAgo > 1 ? "$joinedAgo days ago" : ($joinedAgo == 0 ? "today $joinedAgo" : "$joinedAgo day ago");
-					echo $korkCollege; ?>)</p>
+					echo $korkCollege; ?></p>
   </div>
 </li>
 <li>
@@ -387,7 +388,7 @@ function sendMessage()
 	<!--<li><a href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Fwalknsell.com<?php echo urlencode($_SERVER['REQUEST_URI']);?>&t=<?php echo $title; ?>" target="_blank" onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(document.URL) + '&t=' + encodeURIComponent(document.URL)); return false;"><img src="img/Facebook.png"></a></li>
 <li><a href="https://twitter.com/intent/tweet?source=http%3A%2F%2Fwalknsell.com%2F&text=WalknSell%20share%20kro%20babes%20%3AP:%20http%3A%2F%2Fwalknsell.com%2F" target="_blank" title="Tweet" onclick="window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(document.title) + ':%20'  + encodeURIComponent(document.URL)); return false;"><img src="img/Twitter.png"></a></li>-->
       <li><a href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Fwalknsell.com<?php echo urlencode($_SERVER['REQUEST_URI']);?>" target="_blank" onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(document.URL)); return false;"><img src="img/Facebook.png"></a></li>
-	<li><a href="https://twitter.com/intent/tweet?source=http%3A%2F%2Fwalknsell.com<?php echo urlencode($_SERVER['REQUEST_URI']);?>:%20http%3A%2F%2Fwalknsell.com%2F" target="_blank" title="Tweet" onclick="window.open('https://twitter.com/share?text=Hello there! Check out my gig on WalknSell.&url=' + encodeURIComponent(document.URL)); return false;"><img src="img/Twitter.png"></a></li>
+	<li><a href="https://twitter.com/intent/tweet?source=http%3A%2F%2Fwalknsell.com<?php echo urlencode($_SERVER['REQUEST_URI']);?>:%20http%3A%2F%2Fwalknsell.com%2F" target="_blank" title="Tweet" onclick="window.open('https://twitter.com/share?text=Hello there! Check out my deal on WalknSell.&url=' + encodeURIComponent(document.URL)); return false;"><img src="img/Twitter.png"></a></li>
 	<li><a href="https://plus.google.com/share?url=http%3A%2F%2Fwalknsell.com<?php echo urlencode($_SERVER['REQUEST_URI']);?>" target="_blank" title="Share on Google+" onclick="window.open('https://plus.google.com/share?url=' + encodeURIComponent(document.URL)); return false;"><img src="img/Google+.png"></a></li>
 </ul>
       </div>
@@ -444,7 +445,7 @@ function sendMessage()
                     <h2><a href='$sender'>$sender</a> (sent ",time_elapsed_string($bidDate),")</h2>
                     </div></td>";
 						echo "<td data-title='Message'>$message</td>";
-						echo "<td data-title='Bid' class='numeric'>$".$bid."</td></tr>";
+						echo "<td data-title='Bid' class='numeric'>Rs. ".$bid."</td></tr>";
 					}
 					$dbh = null;
                     
@@ -516,8 +517,7 @@ function sendMessage()
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">X</button>
-        <h1 class="modal-title" id="myModalLabel"><?php echo ($hasBid === true) ? "Update Bid" : "Bid Now"; ?></h1>
-        <p>Please enter your message!</p>
+        <h1 class="modal-title" id="myModalLabel"><?php if($hasBid == true) { echo "Update Bid"; } else{echo "Bid Now";}  ?></h1>
       </div>
       <div class="modal-body">
         <form id="msg-form" method="post" action="cate_desc.php?korkID=<?php echo $korkID; ?>">
@@ -528,7 +528,8 @@ function sendMessage()
                 <td style="width:20%;"><label>Your Bid:</label></td>
                 <td><input type="number" name="bid" id="bid" <?php echo ($hasBid === true) ? "value='{$userBid['bid']}'" : ""; ?> class="form-control modal-bid" />
                   </td>
-                <td><input type="submit" id="msgsend" style="margin-right:10px" class="btn_signup" value="send" /></td>
+                <td><input type="submit" id="msgsend" style="margin-right:10px" class="btn_signup" 
+                           value='<?php echo ($hasBid === true) ? "Update" : "Send";  ?>' /></td>
               </tr>
             </table>
           </div>

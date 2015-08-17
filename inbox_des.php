@@ -18,6 +18,7 @@
 <script src="js/jquery-1.10.2.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
 <script src="js/jquery.sidr.min.js"></script>
+    <script src="js/moment.min.js"></script>
 <script src="js/custom.js"></script>
 <script>
 $(document).ready(function() {
@@ -65,9 +66,6 @@ sendMessage();
 
 function sendMessage()
 {
-	
-	
-	
 		// variable to hold request
 		var request;
 		// bind to the submit event of our form
@@ -75,11 +73,15 @@ function sendMessage()
         $("#msgForm").on('submit',function(){
 		// show loading bar until the json is recieved
 		if(msgLength() >= 4){
+        $(document).ajaxSend(function(e, jqXHR){
+            $('#msgForm *').attr('disabled', true);
+            $('.gif_image').show();
+            });
             var formData = new FormData($(this)[0]);
             formData.append("sender",sender);
             formData.append("receiver",receiver);
 			request = $.ajax({
-				url: "http://localhost:2126/korkster/inbox_sendmsg.php",
+				url: "inbox_sendmsg.php",
                 contentType: false,
                 processData: false,
 				type: "post",
@@ -89,10 +91,16 @@ function sendMessage()
 			});
 				// callback handler that will be called on success
 			request.done(function (response, textStatus, jqXHR){
-				// log a message to the console
+                   $('#msgForm *').attr('disabled', false);
+                $('.gif_image').hide();
 					if(response.request=="Message Sent!"){
+                        $(document).ajaxComplete(function(e, jqXHR){
+                        //remove the div here
+                        });
                         var files = $('#FileUpload')[0].files;
                         var filenames = [];
+                         
+                        var datetime = moment().format('HH:mm MMMM,Do,YYYY');
                         for (var i = 0; i < files.length; i++) {
                             filenames.push(files[i].name);
                         }
@@ -101,6 +109,9 @@ function sendMessage()
                             +"<a href='/"+username+"'><img src='img/users/"+img+"' width='50' height='50' /></a></span>"
                             +"<h4><a href='/"+username+"'>"+fname + " "+lname+"</a></h4> <div class='msg_body'>"
                              +" <p class='texttype'>"+$('#reply_texts').val()+"</p></div></div>"
+                              +"<div class='msgtime'>"
+			                 +"<p>"+datetime+"</p></div>"
+			                 +"<div class='clear'></div></div>"
                            +"<div class='clear'></div>" ).insertBefore( ".reply_box_22" );
                         }else{
                             filenames_final = response.files;
@@ -337,8 +348,8 @@ function sendMessage()
         <div class="bottom_div">
           <a class="btn btn_file read_un" id="fileAttach" onclick='$("#FileUpload").click()'><span class="fa fa-file"> &nbsp;</span>ATTACH FILE</a>
           <input type="file" style="display:none;" name="FileUpload[]" id="FileUpload" multiple="multiple" />
-          <p class="maxsize"> <span>Maxsize 30MB</span> <br>
-          <span><a class="upload_prob" href="#">Problems with upload?</a></span> </p>
+          <p class="maxsize"> <span>Maxsize 30MB <img class="gif_image" src="img/loading.gif" /></span> <br>
+          <span><a class="upload_prob" href="#">No File Selected</a></span> </p>
 		  <p class="error-alert"></p>
             <button class="button_send" id="msgsend">SEND</button></form>
 		  <p class="char-count"><span class="count-num">0</span><span> / 1200</span> Characters Limit</p>
@@ -378,5 +389,27 @@ $(function() {
       }
     });
 </script>
+    	<script>
+	var selDiv = "";
+		
+	document.addEventListener("DOMContentLoaded", init, false);
+	
+	function init() {
+		document.querySelector('#FileUpload').addEventListener('change', handleFileSelect, false);
+		selDiv = document.querySelector(".upload_prob");
+	}
+		
+	function handleFileSelect(e) {
+		selDiv.innerHTML ="";
+		var files = e.target.files;
+		for(var i=0; i<=1; i++) {
+			var f = files[i];			
+			selDiv.innerHTML += f.name + "";
+
+		}
+        selDiv.innerHTML ="";
+		
+	}
+	</script>
 </body>
 </html>

@@ -1,3 +1,6 @@
+<?php 
+header( "refresh:1;url=index.php" );
+?>
 <html>
 <head>
 <meta charset="utf-8">

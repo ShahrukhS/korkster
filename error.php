@@ -1,6 +1,9 @@
 <?php
 session_start();
 include 'headers/_user-details.php';
+	if(isset($_SESSION['username'])){
+        header('Location: index.php');  
+    }
 ?>
 <html>
 <head>
@@ -66,7 +69,7 @@ img {
 	  <div class='contentBox'>
 		  <p class='fontelico-emo-happy noKorks'> Welcome to WalknSell</p>
 		  <p class='noKorksCreate'>Are you looking to buy or sell something at WalknSell?</p>
-		  <p class='noKorksCreate'><a href='index.php' class='entypo-pencil'> To start selling within your school or university, sign up for WalknSell today!</a></p>
+		  <p class='noKorksCreate'><a  href="#" data-toggle="modal" data-target="#register" class='entypo-pencil'> To start selling within your school or university, sign up for WalknSell today!</a></p>
 	  </div>
 	</div>
   </div>

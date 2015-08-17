@@ -14,24 +14,25 @@
             <input type="submit" class="btn_signup" value="login"/>
             <div class="forg_pass">
               <input type="checkbox" name="remember"><p>Remember me</p>
-			  <p><a href="#">Forgot Password?</a></p>
+			  <p><a href="password_forgotten.php" target="_blank">Forgot Password?</a></p>
               <div class="clearfix"></div>
             </div>
           </form>
           <div class="clearfix"></div>
         </div>
-        <div class="modal-footer"> <a href="#"><img src="img/login_via_fb.png" width="251" alt="join using facebook" id="login_fb"></a> 
+        <div class="modal-footer"> <a style="display:none;" href="#"><img src="img/login_via_fb.png" width="251" alt="join using facebook" id="login_fb"></a> 
           <script>
 								(function ($) {
 									$(function () {
 										$("#login_fb").on("click", function () {
 											initfb('login');
-
+                                            LoginFormFB();
 										});
 									});
 									})(jQuery);
     					</script>
-		<p><a href="#" data-toggle='modal' data-target='#register'>I Can't Sign in!</a></p>
+		<p style="margin-top: -18px;">Not a member yet?<a href="#" data-toggle='modal' onclick="$('#login').modal('toggle')" data-target='#register'>
+            Register now »</a></p>
         </div>
       </div>
     </div>
@@ -47,11 +48,11 @@
         <div class="modal-body">
           <form id="signup" method="post">
             <div id="error"></div>
-            <div style="float:left; width:91%; margin: 0 5%;"><input type="text" class="form-control txt_boxes names" placeholder="First Name" name="firstName" id="firstName" required>
-                <input type="text" class="form-control txt_boxes names" placeholder="Last Name" name="lastName" id="lastName" required></div>
+            <div style="float:left; width:91%; margin: 0 5%;"><input maxlength="15" type="text" class="form-control txt_boxes names" placeholder="First Name" name="firstName" id="firstName" required>
+                <input type="text" class="form-control txt_boxes names" maxlength="10" placeholder="Last Name" name="lastName" id="lastName" required></div>
             <input type="email" class="form-control txt_boxes" placeholder="Email Address" name="email" id="email" required>
             <input type="text" class="form-control txt_boxes" name="regcollege" placeholder="School" size="" id="regsearch" onKeyUp="regfindmatch();" autocomplete="off" required>
-            <ul id ="regresults" name="school" >
+            <ul id ="regresults" style="margin-top: -9px;margin-left: 5%;width: 82.5%;" name="school" >
             </ul>
             <div class="regclear"></div>
             <input type="text" pattern=".{5,15}" class="form-control txt_boxes" placeholder="Create your Username" name="username" id="username" required>
@@ -66,7 +67,7 @@
           </form>
           <div class="clearfix"></div>
         </div>
-        <div class="modal-footer"> <a href="#"><img src="img/join_via_fb.png" width="251" alt="join using facebook" id="register_fb"></a> 
+        <div class="modal-footer"> <a style="display:none;" href="#"><img src="img/join_via_fb.png" width="251" alt="join using facebook" id="register_fb"></a> 
           <script>
 									(function ($) {
 									$(function () {
@@ -78,7 +79,7 @@
 									});
 									})(jQuery);
     					</script>
-          <p>Already a member? <a href="#" data-toggle='modal' data-target='#login'>Sign in</a></p>
+          <p>Already a member? <a href="#" data-toggle='modal' onclick="$('#login').modal('toggle')" data-target='#register'>Sign in</a></p>
         </div>
       </div>
     </div>
@@ -95,11 +96,11 @@
           <p>We'd love to help. Feel free to say hello!</p>
         </div>
         <div class="modal-body">
-          <form id="login-form" method="post">
+          <form id="contact-form" method="post">
             <div id="error-login"></div>
             <input type="text" class="form-control txt_boxes contact-form" placeholder="Your Name" name="name-contact" id="name-contact" required= "true">
             <input type="email" class="form-control txt_boxes contact-form" placeholder="Your Email" name="email-contact" id="email-contact" required>
-            <textarea name="message-contact" id="message-contact" style="width: 85%; margin-left: auto; margin-right: auto;" class="form-control txt_boxes" placeholder="Enter Your Message" required></textarea>
+            <textarea name="message-contact" id="message-contact" maxlength="250" style="width: 85%; margin-left: auto; margin-right: auto;resize:none;" class="form-control txt_boxes" placeholder="Enter Your Message" required></textarea>
             <div id="loading-contact" class="genload"></div>
             <input type="submit" class="btn_signup" value="send"/>
          </form>

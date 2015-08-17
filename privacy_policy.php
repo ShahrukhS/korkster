@@ -53,10 +53,12 @@ function parallax(){
 <body id="policy">
 <div>
     <div class="header_bg">
+        <div class="random_header">
     <header class="main-header"> <a id="simple-menu" class="icon-menu" href="#sidr"></a>
       <?php
            include 'headers/menu-top-navigation.php';?>
     </header>
+        </div>
        <nav class="category_nav main-category-search">
         	<div class="category_inner">
             	<h1>WalknSell's Privacy Policy</h1>
@@ -127,9 +129,9 @@ function parallax(){
 				
 				<p><strong>WalknSell</strong><br>
 				www.WalknSell.com<br>
-				info [at] WalknSell.com</p>
+				info@WalknSell.com</p>
 
-				<p><em>This document was last updated on January 20, 2014</em></p>
+				<p><em>This document was last updated on  August, 2015</em></p>
 			</div>
 		</div>
         

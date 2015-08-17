@@ -42,22 +42,6 @@ session_start();
 		
 	$result = $stmt->fetchAll();
 	$prod_num=$result[0][0];
-
-    function nice_number($n) {
-        // first strip any formatting;
-        $n = (0+str_replace(",", "", $n));
-
-        // is this a number?
-        if (!is_numeric($n)) return false;
-
-        // now filter it;
-        /*if ($n > 1000000000000) return round(($n/1000000000000), 2).' trillion';
-        elseif ($n > 1000000000) return round(($n/1000000000), 2).' B';*/
-        if ($n > 1000000) return round(($n/1000000), 2).'M';
-        elseif ($n > 1000) return round(($n/1000), 2).'K';
-
-        return number_format($n);
-    }
 ?>
 <!doctype html>
 <html>
@@ -74,8 +58,8 @@ session_start();
 <link rel="stylesheet" href="css/media.css" type="text/css">
 <link rel="stylesheet" href="css/fontello.css" type="text/css">
 <link rel="stylesheet" href="css/jquery.sidr.dark.css" type="text/css">
-<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800' rel='stylesheet' type='text/css'>
-<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.css">
+<link href='css/font-open-sans.css' rel='stylesheet' type='text/css'>
+<link rel="stylesheet" href="css/font-awesome.css" type='text/css'>
 <style>
 .modal-dialog {
 	padding-top: 180px;
@@ -118,18 +102,6 @@ if(!empty($_SESSION['username'])){
 $(document).ready(function() {
   $('#simple-menu').sidr();
 });
-
-$(document).ready(function() {
-   $(window).bind('scroll', function(e){
-	   parallax();
-	  });
-});
-
-function parallax(){
-	var scrollposition = $(window).scrollTop();
-	$('article.header_bg_para').css('top',(0-(scrollposition * 0.2))+'px');
-	$('.full_article_bg').css('top',(0-(scrollposition * 1.1))+'px');
-	}
 </script>
 
 
@@ -169,10 +141,12 @@ function sendMessage()
             // callback handler that will be called on success
         request.done(function (response, textStatus, jqXHR){
             // log a message to the console
+            $('.genload').css("padding-top", "0px");
+            $('.genload').css("padding-bottom", "0px");
             if(response=="Message Sent!"){
-                $('#shoading').html('<span class =\'alert alert-success\'><strong>Your message has been sent successfully! </strong>.');
+                $('#shoading').html('<div class =\'alert alert-success\'><strong>Your message has been sent successfully! </strong>.');
             }else {
-                $('#shoading').html('<span class=\'alert alert-danger\'>Sorry, There has been an error in our system!' + response+'</span>');
+                $('#shoading').html('<div class=\'alert alert-danger\'>Sorry, There has been an error in our system!' + response+'</div>');
             }
 
             //window.location.href = "your-questions.html";
@@ -250,7 +224,7 @@ function sendMessage()
                 </script>
 
 
-                <header class="mp-box mp-hero-new hero-small mp-user-hero" itemscope="" itemtype="http://schema.org/Organization">
+                <div class="mp-box mp-hero-new hero-small mp-user-hero" itemscope="" itemtype="http://schema.org/Organization">
 
                     <div class="hero-slide sel" style="background-image: url('img/header_bg.jpg');">
                     </div>
@@ -286,35 +260,10 @@ function sendMessage()
 
                     <img alt="Bg hero small spacer" class="trans-img" src="//cdnil21.fiverrcdn.com/assets/v2_backgrounds/bg-hero-small-spacer-7c831c845101e6082cb60043c5c3be49.png">
 
-                </header>
+                </div>
 
 	<article class="mp-box mp-box-grey mp-user-info p-b-40">
 		<div class="box-row bordered p-b-30">
-
-		<?php
-        if(!empty($allKorks)){
-            $kork_id = $allKorks[0]['id'];
-            $kork_title = $allKorks[0]['title'];
-            $kork_detail = $allKorks[0]['detail'];
-            $kork_price = nice_number($allKorks[0]['price']);
-            $kork_image = $allKorks[0]['image'];
-            $kork_status = $allKorks[0]['status'];
-            $kork_date = $allKorks[0]['expiryDate'];
-            $kork_bids = $allKorks[0]['bids'];
-            $kork_cat = $allKorks[0]['category'];
-            echo "<aside class='user-bundle js-user-bundle'>
-                <h4>$username's Best Seller</h4>
-                <a href='cate_desc.php?korkID=$kork_id' class='bundle-item js-gtm-event-auto' data-gtm-category='new-user-page' data-gtm-action='click' data-gtm-label='top-package-with-extras'>
-                <span class='bundle-badge'>$kork_cat</span>
-                <span class='gig-pict-290'><img src='img/korkImages/$kork_image' data-reload='inprogress'></span>
-                <h1 class='truncate'>$kork_title</h1>
-                <h3 class='details-block-ellipsis'>$kork_detail</h3>
-                <div class='bundle-sub cf'>
-                    <span class='bundle-price'><small>Total</small>RS. $kork_price</span>
-                </div></a>
-            </aside>";
-        }
-        ?>
 
                         <header>
                             <h2>About <?php echo $fullname; ?>
@@ -328,11 +277,13 @@ function sendMessage()
                         <ul class="user-stats cf">
                                 <li class="icn-country">From: <em><?php echo $city; ?></em></li>
                             <li class="icn-speaks">
-                                Number of Gigs:
+                                Number of Deals:
                                     <em><?php echo $prod_num; ?></em>
                             </li>
+<!--
                             <li class="icn-response">Avg. Response Time: <em>1 Day</em></li>
                             <li class="icn-recent">Recent Delivery: <em>1 day ago</em></li>
+-->
                             <li class="<?php echo ($activeFlag == 0) ? "icn-cross" : "icn-verified" ?>">Email Verified</li>
                             
                             
@@ -349,15 +300,38 @@ function sendMessage()
                                 }
 								?>
                         </footer>
-
+        <?php
+                if(!empty($allKorks)){
+                    $kork_id = $allKorks[0]['id'];
+                    $kork_title = $allKorks[0]['title'];
+                    $kork_detail = $allKorks[0]['detail'];
+                    $kork_price = nice_number($allKorks[0]['price']);
+                    $kork_image = $allKorks[0]['image'];
+                    $kork_status = $allKorks[0]['status'];
+                    $kork_date = $allKorks[0]['expiryDate'];
+                    $kork_bids = $allKorks[0]['bids'];
+                    $kork_cat = $allKorks[0]['category'];
+                    echo "<aside class='user-bundle js-user-bundle'>
+                        <h4>$username's Best Seller</h4>
+                        <a href='cate_desc.php?korkID=$kork_id' class='bundle-item js-gtm-event-auto' data-gtm-category='new-user-page' data-gtm-action='click' data-gtm-label='top-package-with-extras'>
+                        <span class='bundle-badge'>$kork_cat</span>
+                        <span class='gig-pict-290'><img src='img/korkImages/$kork_image' data-reload='inprogress'></span>
+                        <h1 class='truncate'>$kork_title</h1>
+                        <h3 class='details-block-ellipsis'>$kork_detail</h3>
+                        <div class='bundle-sub cf'>
+                            <span class='bundle-price'>RS. $kork_price</span>
+                        </div></a>
+                    </aside>";
+                }
+                ?>
                     </div>
                 </article>
 		<?php
         if(!empty($allKorks)){
             echo "<div class='mp-box mp-box-grey'>
-                    <div class='box-row p-b-20 featured_prod'>
-					<header>
-						<h2>$username's Gigs</h2>
+                    <div class='featured_prod'>
+					<header style='width: 70.6%; margin: auto;'>
+						<h2>$username's Deals</h2>
 					</header>		
 					<article  class='prod_detail col-lg-12'>
       	            <ul class='row'>";
@@ -397,14 +371,14 @@ function sendMessage()
         }else if(!empty($_SESSION['username']) && $_username == $username){
             echo "<div id='contentSub' class='clearfix'>
               <div class='contentBox'>
-                  <p class='noKorks'> You have no gigs to sell.</p>
+                  <p class='noKorks'> You have no deals to sell.</p>
                   <p class='noKorksCreate'><a href='create_gig.php' class='entypo-pencil'> Do you want to start selling today?</a></p>
               </div>
             </div>";
         }
 		?>
-    <?php include 'headers/menu-bottom-navigation.php'; ?>
     </div>
+    <?php include 'headers/menu-bottom-navigation.php'; ?>
     <div class="modal fade" id="message" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
@@ -415,11 +389,11 @@ function sendMessage()
           </div>
           <div class="modal-body">
             <form id="msg-form" method="post">
-              <textarea id="msg" class="form-control txt_boxes" placeholder="Enter Your Message"></textarea>
-              <div style="width: 0%;"><input type="button" id="msgsend" style="margin-right:10px" class="btn_signup" value="send" />
+            <div id="shoading" class="genload"></div>
+                <textarea id="msg" class="form-control txt_boxes" style="height: 54px;padding-top: 11px;font-size: 22px;" placeholder="Enter Your Message"></textarea>
+              <div style="width: 0%;    margin-left: 31%;"><input type="button" id="msgsend" style="margin-left: 0px;margin-top: 26px;width: 169px;height: 42px;font-size: 22px;" class="btn_signup" value="send" />
               </div>
             </form>
-              <div id="shoading" style="margin: 40px 80px 10px;"></div>
             <div class="clearfix"></div>
           </div>
         </div>

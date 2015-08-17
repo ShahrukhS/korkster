@@ -63,7 +63,9 @@ function regfindmatch()
 			//var li = document.createElement("li");
 			//li.appendChild(document.createTextNode(xmlhttp.responseText));
 			//ul.appendChild(li);
-			
+			/*if(xmlhttp.responseText == "No results found!"){
+				$('#regsearch').val('');
+			}*/
 			document.getElementById('regresults').innerHTML = xmlhttp.responseText;
 			}
 		}
@@ -76,6 +78,4 @@ function regfindmatch()
 $(document).on('click','#regresults li' , function() {
 	$('#regsearch').val($(this).text());
 	$('#regresults').empty();
-	
-
 });

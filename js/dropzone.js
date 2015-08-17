@@ -70,7 +70,7 @@
     Emitter.prototype.off = function(event, fn) {
       var callback, callbacks, i, _i, _len;
       if (!this._callbacks || arguments.length === 0) {
-        this._callbacks = {};
+          this._callbacks = {};
         return this;
       }
       callbacks = this._callbacks[event];
@@ -143,7 +143,7 @@
       dictFallbackText: "Please use the fallback form below to upload your files like in the olden days.",
       dictFileTooBig: "File is too big ({{filesize}}MiB). Max filesize: {{maxFilesize}}MiB.",
       dictInvalidFileType: "You can't upload files of this type.",
-      dictResponseError: "Server responded with {{statusCode}} code.",
+      dictResponse : "Server responded with {{statusCode}} code.",
       dictCancelUpload: "Cancel upload",
       dictCancelUploadConfirmation: "Are you sure you want to cancel this upload?",
       dictRemoveFile: "Remove file",
@@ -944,13 +944,20 @@
         return this.options.accept.call(this, file, done);
       }
     };
-
     Dropzone.prototype.addFile = function(file) {
-      file.upload = {
-        progress: 0,
-        total: file.size,
-        bytesSent: 0
-      };
+     if (this.files.length) {
+   var _i, _len;
+   for (_i = 0, _len = this.files.length; _i < _len; _i++) {
+      if(this.files[_i].name === file.name && this.files[_i].size === file.size){
+        alert('file exits');
+          return false;
+      }
+    }
+  }	
+        /* Manual */
+     
+	/* End Manual */
+
       this.files.push(file);
       file.status = Dropzone.ADDED;
       this.emit("addedfile", file);
@@ -966,23 +973,10 @@
               _this.enqueueFile(file);
             }
           }
-		  /* Manual */
-		  if (this.files.length) {
-		   var _i, _len;
-		   for (_i = 0, _len = _this.files.length; _i < _len; _i++) {
-		   		  
-			  if(this.files[_i].name === file.name && this.files[_i].size === file.size){
-				alert('File already exists');
-				return false;
-			  }
-			}
-		  }
-		/* End Manual */
           return _this._updateMaxFilesReachedClass();
         };
       })(this));
     };
-
     Dropzone.prototype.enqueueFiles = function(files) {
       var file, _i, _len;
       for (_i = 0, _len = files.length; _i < _len; _i++) {
@@ -1122,6 +1116,7 @@
       }
       queuedFiles = this.getQueuedFiles();
       if (!(queuedFiles.length > 0)) {
+          $('#shoading').html('<div class =\'alert alert-danger\' style=\'margin-left: 5%;width: 87%;\'><strong>Could not find any image </strong>.');
         return;
       }
       if (this.options.uploadMultiple) {

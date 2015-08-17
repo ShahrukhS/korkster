@@ -64,7 +64,7 @@
 			$dbh->exec("INSERT INTO kork_tags(korkId, tag) VALUES($id ,'$tag')");
 		}
 		if($flag){
-			die(json_encode(array('request' => 'Gig created!', 'id' => $id)));
+			die(json_encode(array('request' => 'Deal created!', 'id' => $id)));
 		}else{
 			die(json_encode(array('request' => 'failed',)));
 		}

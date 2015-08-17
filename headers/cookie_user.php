@@ -1,6 +1,5 @@
 <?php
     if(isset($_COOKIE['walknsell_remember']) === true && isset($_SESSION['username']) === false){
-        echo 'cookie set';
         $cookie = $_COOKIE['walknsell_remember'];
 		$query_cookie = "SELECT username FROM users WHERE cookie like '$cookie' ";
 		$result_cookie = mysqli_query($con,$query_cookie);

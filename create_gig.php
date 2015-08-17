@@ -14,7 +14,7 @@ if(empty($_SESSION['username'])){
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
-<title>Create Gig</title>
+<title>Create Deal</title>
 <link rel="stylesheet" href="css/bootstrap.min.css">
 <link rel="stylesheet" href="css/bootstrap-tagsinput.css" type="text/css">
 <link rel="stylesheet" href="css/style.css" type="text/css">
@@ -77,23 +77,24 @@ $(document).ready(function() {
 
   <!--<form id="fileupload" action="//jquery-file-upload.appspot.com/" method="POST" enctype="multipart/form-data">-->
   
-    <h2>Create a new gig</h2>
+    <h2>Create a new deal</h2>
     <div class="left_gig">
       <div class="form_row">
         <div class="label_wrap">
-          <label for="gig_title">Gig Title</label>
+          <label for="gig_title">Deal Title</label>
         </div> 
         <div class="input_wrap gig_title">
-          <input class="gig_text title" style="width:95%" maxlength="80"  name="korkName"/ required>
+          <input class="gig_text title" style="width:95%" maxlength="80" id="korkName" name="korkName" required>
         </div>
         <aside class="gig-tooltip">
           <figure>
             <figcaption>
-              <h3>Describe your Gig.</h3>
-              <p>This is your Gig title. Choose wisely, you can only use 80 characters.</p>
+              <h3>Describe your Deal.</h3>
+              <p>This is your Deal title. Choose wisely, you can only use 80 characters.</p>
             </figcaption>
             <div class="gig-tooltip-img"></div>
           </figure>
+          <div class="error"></div>
         </aside>
       </div>
       <div class="form_row">
@@ -117,7 +118,7 @@ $(document).ready(function() {
             </div>
             <div class="clear"></div>
           </div>-->
-		<select class="fake-dropdown fake-dropdown-double dropdown-inner " style="width:95%" name="category" required>
+		<select class="fake-dropdown fake-dropdown-double dropdown-inner " style="width:95%" name="category" id="gigCategory" required>
         <option value="0">Select Category</option>
 		<?php
 			$sql = "SELECT category FROM kork_categories";
@@ -134,7 +135,7 @@ $(document).ready(function() {
           <figure>
             <figcaption>
               <h3>Select a Category.</h3>
-              <p>This is your Gig category. Choose wisely for better promotion.</p>
+              <p>This is your Deal category. Choose wisely for better promotion.</p>
             </figcaption>
             <div class="gig-tooltip-img"></div>
           </figure>
@@ -142,7 +143,7 @@ $(document).ready(function() {
       </div>
      <div class="form_row">
         <div class="label_wrap">
-          <label for="gig_gallery">gig gallery</label>
+          <label for="gig_gallery">Deal gallery</label>
         </div>
         <div class="input_wrap">
         <div id="my-dropzone" class="dropzone">
@@ -165,7 +166,7 @@ $(document).ready(function() {
           <label for="taginput">Tags</label>
         </div>
         <div class="input_wrap gig_tags">
-          <input class="gig_tags_text" type="text" data-role="tagsinput" id="taginput" name="taginput" />
+          <input class="gig_tags_text" type="text" data-role="tagsinput" id="taginput" name="taginput" required/>
         </div>
           <aside class="gig-tooltip">
           <figure>
@@ -182,8 +183,7 @@ $(document).ready(function() {
           <label for="priceinput">Price</label>
         </div>
         <div class="input_wrap gig_price">
-          <input class="gig_text price" type="number" id="priceinput" name="priceinput" style="width:95%;"/>
-        
+          <input class="gig_text price" type="number" id="priceinput" name="priceinput" style="width:95%;" required/>
         </div>
       </div>
       
@@ -192,7 +192,7 @@ $(document).ready(function() {
           <label for="gig_desc">Description</label>
         </div>
         <div class="input_wrap gig_desc">
-          <textarea class="gig_text desc" rows="10" maxlength="200" name="korkDesc" required></textarea>
+          <textarea class="gig_text desc" rows="10" maxlength="200" name="korkDesc" id="korkDesc" required></textarea>
         </div>
       </div>
      <!-- <div class="form_row">
@@ -205,8 +205,9 @@ $(document).ready(function() {
       </div> -->
     </div>
     <div class="bottom_save_block">
-      <button id="submit-all" type="submit" class="btn_signup">Submit &amp; Continue</button> <!--onclick="submitForm('create_gig.php')"-->
-      <button class="btn_signup btn_cancel">Cancel</button>
+  <div id="shoading" class="genload"></div>
+      <button id="submit-all" type="submit" class="btn_signup">Submit &amp; Continue</button>
+      <!--<button class="btn_signup btn_cancel">Cancel</button>-->
     </div>
 	</form>
     <div class="clear"></div>
@@ -231,7 +232,7 @@ $(function() {
 	$(document).ready(function(e) {
         $('.input_wrap').on('focus', function(){
 			$(this).find('.gig-tooltip').css('background','red');
-			});
+        });
     });
 </script> 
 <script src="js/school-list.js"></script>
@@ -243,6 +244,22 @@ function submitForm(action)
         document.getElementById('form1').action = action;
         document.getElementById('form1').submit();
     }
+function selectionCheck(inputField)
+{
+	if(inputField==null || inputField=="Select Category")
+	{
+		error.push(e + "");
+        //$('.error').html('<span class=\'alert alert-warning\'><strong>'+nameToPrintOnScreen+' cannot be left empty!</strong></span>');
+	}	
+}
+function nullCheck(inputField)
+{
+	if(inputField==null || inputField=="")
+	{
+		error.push(e + "");
+        //$('.error').html('<span class=\'alert alert-warning\'><strong>'+nameToPrintOnScreen+' cannot be left empty!</strong></span>');
+	}	
+}
 </script>
 
 <script type="text/javascript">
@@ -261,9 +278,23 @@ function submitForm(action)
             dropzone = this; // closure
 
         submitButton.addEventListener("click", function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            dropzone.processQueue(); // Tell Dropzone to process all queued files.
+            error = [];
+            var korkName = document.getElementById('korkName').value;
+            var priceinput = document.getElementById('priceinput').value;
+            var korkDesc = document.getElementById('korkDesc').value;
+            var taginput = document.getElementById('taginput').value;
+            var gigCategory = document.getElementById('gigCategory').value;
+            nullCheck(korkName);
+            selectionCheck(gigCategory);
+            nullCheck(taginput);
+            nullCheck(priceinput);
+            nullCheck(korkDesc);     
+            if(error.length==0) {
+                e.preventDefault();
+                e.stopPropagation();
+                dropzone.processQueue(); // Tell Dropzone to process all queued files.
+        
+            }
         });
         this.on("maxfilesexceeded", function(file){
             alert("No more files please!");
@@ -286,11 +317,12 @@ function submitForm(action)
 				var vals = elem.split('=');
 				formData.append(vals[0],vals[1]);
 			});
+            $('#shoading').html('<div class =\'alert alert-success\' style=\'margin-left: 5%;width: 87%;\'><strong>Please Wait! images are uploading... </strong>.');
         });
         this.on("successmultiple", function(files, response) {
           // Gets triggered when the files have successfully been sent.
           // Redirect user or notify of success.
-			if(response.request == "Gig created!"){
+			if(response.request == "Deal created!"){
 				window.location = "cate_desc.php?korkID="+response.id;
 			}else{
                 alert('request failed');

@@ -4,30 +4,39 @@ include 'headers/_user-details.php';
 	
 	if($_SERVER['REQUEST_METHOD'] == "POST")
 	{
-		$imgFrom="users";
-		include 'headers/image_upload.php';
-		$fname = $_POST['fname'];
-		$description = $_POST['userDesc'];
-		$lname = $_POST['lname'];
-		//$school = $_POST['userSchool'];
-		if(!isset($profilePic)){
-			$profilePic = $_profilePic;
-		}
-		$query = "SELECT ID from colleges WHERE name = :cname";
-		$sth = $dbh->prepare($query);
-		$sth->bindValue(':cname','IBA INSTITUTE OF BUSINESS ADMINISTRATION');
-		$sth->execute();
-		$schoolID = $sth->fetchColumn();
-		
-		$sth = $dbh->prepare("UPDATE users SET fname = :fname, lname = :lname, profilePic = :profilePic, description = :desc, collegeID = :schoolID WHERE ID = :userID");
-		$sth->bindValue(':fname',$fname);
-		$sth->bindValue(':lname',$lname);
-		$sth->bindValue(':profilePic',$profilePic);
-		$sth->bindValue(':desc',$description);
-		$sth->bindValue(':schoolID',$schoolID);
-		$sth->bindValue(':userID',$_userID);
-		$sth->execute();
-		
+        if(isset($_POST['security_btn']) === false){
+            $imgFrom="users";
+            include 'headers/image_upload.php';
+            $fname = $_POST['fname'];
+            $description = $_POST['userDesc'];
+            $lname = $_POST['lname'];
+            $college = explode('-', $_POST['userSchool']);
+            $college = trim($college[0]);
+            if(!isset($profilePic)){
+                $profilePic = $_profilePic;
+            }
+            $query = "SELECT ID from colleges WHERE name LIKE :cname";
+            $sth = $dbh->prepare($query);
+            $sth->bindValue(':cname',$college);
+            $sth->execute();
+            $schoolID = $sth->fetchColumn();
+            $sth = $dbh->prepare("UPDATE users SET fname = :fname, lname = :lname, profilePic = :profilePic, description = :desc, collegeID = :schoolID WHERE ID = :userID");
+            $sth->bindValue(':fname',$fname);
+            $sth->bindValue(':lname',$lname);
+            $sth->bindValue(':profilePic',$profilePic);
+            $sth->bindValue(':desc',$description);
+            $sth->bindValue(':schoolID',$schoolID);
+        }else{
+            $password = $_POST['newPass'];
+            $passwordC = $_POST['newPass_confirm'];
+            if($password != null || $password != '' || $passwordC != null || $passwordC != ''){
+                $password = md5($password);
+                $sth = $dbh->prepare("UPDATE users SET password = :pass WHERE ID = :userID");
+                $sth->bindValue(':pass',$password);
+            }
+        }
+        $sth->bindValue(':userID',$_userID);
+        $sth->execute();
 		header("Location: $_username");
 	}		
 // ending if block of $_POST
@@ -100,9 +109,15 @@ $(document).ready(function() {
   <div id="backgroundPopup"></div>
   <div class="content_inbox">
   
-  <form name="create_gig" action="profile_edit.php" method="post" enctype="multipart/form-data">
-  
     <h2><?php echo $_username;?>'s Profile</h2>
+      <ul class="nav nav-pills">
+  <li class="active"><a data-toggle="pill" href="#general">General</a></li>
+  <li><a data-toggle="pill" href="#security">Security</a></li>
+</ul>
+
+<div class="tab-content">
+  <div id="general" class="tab-pane fade in active">
+  <form name="general_edit" id="general_edit" action="profile_edit.php" method="post" enctype="multipart/form-data">
     <div class="left_gig">
       <div class="form_row">
         <div class="label_wrap">
@@ -136,7 +151,7 @@ $(document).ready(function() {
           <div class="file_input">
             <!--  <button type="file" class="btn_signup" name="file" id="name">Browse</button>  -->
             
-            <input id="fileupload" type="file" name="file" multiple >
+            <input id="fileupload" accept="image/*" type="file" name="file" multiple >
             
             <p>JPEG file, 2MB Max, <span class="grey_c">you own the copyrights</span></p>
           </div>
@@ -151,6 +166,35 @@ $(document).ready(function() {
           <textarea class="gig_text desc" rows="10" maxlength="200" name="userDesc" required><?php echo $_description; ?></textarea>
         </div>
       </div>
+    </div>
+      <div class="bottom_save_block">
+      <button type="submit" class="btn_signup">Save &amp; Continue</button>
+      <button class="btn_signup btn_cancel">Cancel</button>
+    </div>
+  </form>
+    </div>
+    <div id="security" class="tab-pane fade">
+    <form name="security_edit" id="security_edit" action="profile_edit.php" method="post">
+    <div class="left_gig">
+      <div class="form_row">
+        <div class="label_wrap">
+          <label for="newPass">New Password</label>
+        </div>
+        <div class="input_wrap newPass">
+          <input class="gig_text" type="password" id="newPass" name="newPass" style="width:90%;" required/>
+        </div>
+      </div>
+      <div class="form_row">
+        <div class="label_wrap">
+          <label style="width: 134px;" for="newPass_confirm">Confirm Password</label>
+        </div>
+        <div class="input_wrap newPass_confirm">
+          <input class="gig_text" type="password" id="newPass_confirm" name="newPass_confirm" style="width:90%;" required/>
+        </div>
+      </div>
+     <div class="error"></div>
+    </div>
+    
      <!-- <div class="form_row">
         <div class="label_wrap">
           <label for="gig_title">instruction for buyer</label>
@@ -159,20 +203,18 @@ $(document).ready(function() {
           <textarea class="gig_desc_text" rows="2" maxlength="80"></textarea>
         </div>
       </div> -->
-    </div>
-    <div class="bottom_save_block">
-      <button type="submit" class="btn_signup">Save &amp; Continue</button>
+    <div style="margin-bottom: 180px;" class="bottom_save_block">
+      <button type="submit" name="security_btn" class="btn_signup">Save &amp; Continue</button>
       <button class="btn_signup btn_cancel">Cancel</button>
     </div>
-    
-    
-    
     </form>
+    </div>
+    </div>
     
     <div class="clear"></div>
   </div>
-  <?php include 'headers/menu-bottom-navigation.php' ?>
 </div>
+<?php include 'headers/menu-bottom-navigation.php' ?>
 
 <script>
 $(function() {      
@@ -186,7 +228,15 @@ $(function() {
 							           $( "nav.main_nav li#admin > ul" ).css( "display", "none" );
 				        });   
 				     });
-					 
+$("#security_edit").on('submit',function(){
+    if($('#newPass').val() != $('#newPass_confirm').val())
+	{
+		$('.error').css("padding-top", "20px");
+		$('.error').css("padding-bottom", "20px");
+		$('.error').html('<span class=\'alert alert-warning\'><strong>Oops! Password did not match! Try again.</strong></span>');
+		return false;
+	}
+});
 </script> 
 <script>
 	$(document).ready(function(e) {

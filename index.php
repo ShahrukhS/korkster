@@ -12,7 +12,13 @@ if(isset($_GET['status']) && $_GET['status'] == 'logout')
             setcookie('walknsell_remember', '', time() - 3600, '/'); // empty value and old timestamp
         }
 	}
-
+if(isset($_SESSION['username']) && isset($_GET['password'])){
+    header('Location: index.php');
+}
+include 'headers/_user-details.php';
+if(isset($_SESSION['username']) && isset($_GET['activate'])){
+    header('Location: index.php');
+}
 include 'headers/_user-details.php';
 	
 ?>
@@ -23,9 +29,13 @@ include 'headers/_user-details.php';
 <title>::WalknSell::</title>
 <link rel="stylesheet" href="css/bootstrap.min.css">
 <link rel="stylesheet" href="css/style.css" type="text/css">
+<link rel='shortcut icon' href='img/icon.ico' />
 <link rel="stylesheet" href="css/media.css" type="text/css">
 <link rel="stylesheet" href="css/fontello.css" type="text/css">
 <link rel="stylesheet" href="css/jquery.sidr.dark.css" type="text/css">
+<link href='css/font-open-sans.css' rel='stylesheet' type='text/css'>
+<link rel="stylesheet" href="css/font-awesome.css" type='text/css'>
+<link href="css/font-awesome.min.css" rel="stylesheet" type="text/css">
 <style>
 *, *:before, *:after {
 	-webkit-box-sizing: initial;
@@ -40,14 +50,22 @@ img {
 <script src="js/bootstrap.min.js"></script>
 <script src="js/jquery.sidr.min.js"></script>
 <script src="js/custom.js"></script>
+    
 <script src="js/fb.js"></script>
-<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800' rel='stylesheet' type='text/css'>
-<link href="css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
 </head>
 
 <body>
 <?php
-	if(isset($_GET['activate']))
+	if(isset($_GET['password']))
+	{
+			echo "<div class='main-flashes'>
+                            <div style='height: 49px;padding-top: 0px;background-color:#ff9326' class='flash-message flash-success'>
+                                <p>Success! Your password has been changed successfully.</p>
+                            </div>
+                </div>";
+		}
+if(isset($_GET['activate']))
 	{
 		include 'headers/connect_database.php';
 		$activationKey = $_GET['activate'];
@@ -60,6 +78,7 @@ img {
                             </div>
                 </div>";
 		}
+
 		else
 		{
 			echo "<div class='main-flashes'>
@@ -105,37 +124,46 @@ img {
 		/*$sql = "Select a.id, a.title, a.detail, a.price, a.expirydate, a.status, a.image, COUNT(b.korkID), u.username, kc.category from korks a INNER JOIN inbox b ON a.id = b.korkID INNER JOIN kork_categories kc ON a.catID = kc.cat_id INNER JOIN users u ON a.userID = u.ID where b.bid IN (select max(i.bid) from inbox i, korks k where k.id = i.korkID GROUP BY k.catID) LIMIT 4";*/
 		
 		/*$sql = "Select catID, korkID, bids from (Select k.catID, i.korkID, count(i.korkID) bids FROM inbox i INNER JOIN korks k ON i.korkID = k.id GROUP BY i.korkID order by bids DESC) tabs GROUP BY catID";*/
-		$sql = "Select id, title, detail, price, expirydate, status, image, bids, username, category from (Select k.id, k.title, k.detail, k.price, k.expirydate, k.status, k.image, count(i.korkID) bids, u.username, kc.category, k.catID FROM inbox i INNER JOIN korks k ON i.korkID = k.id INNER JOIN users u ON k.userID = u.ID INNER JOIN kork_categories kc ON k.catID = kc.cat_id GROUP BY i.korkID order by bids DESC) b GROUP BY catID";
-		
-		foreach ($dbh->query($sql) as $row){
-			$kork_id = $row['id'];
-			$kork_title = $row['title'];
-			$kork_detail = $row['detail'];
-			$kork_price = $row['price'];
-			$kork_date = $row['expirydate'];
-			$kork_status = $row['status'];
-			$kork_image = $row['image'];
-			$kork_category = $row['category'];
-			$kork_user = $row['username'];
-			$kork_bids = $row['bids'];
-			
-			echo "<li class='col-lg-3 col-md-6 col-sm-6'><a href='cate_desc.php?korkID=$kork_id'>
-					<span class='available korkbadge'></span>
-					<div class='col-lg-12 single_product'>
-						<div class='img_wrap'>
-							<img src='img/korkImages/$kork_image' width='234' alt='' class='img-responsive'>
-						</div>
-						<h3 class='block-ellipsis'>$kork_title</h3>
-						<p class='prod_cat_22'>$kork_category Category</p>
-						<p class='prod_cat_22'>By $kork_user</p>
-						<p class='attributes'>".date('m-d-Y | h:i A', strtotime($kork_date))."</p>
-						<div class='price_tag_22'>
-							<span class='price_main'>Rs. $kork_price</span>
-							<span class='offer_dt'>$kork_bids BID",($kork_bids > 1) ? "S" : "","</span>
-						</div>
-				   </div>
-				</a></li>";
-		}
+		$sth = $dbh->query("Select id, title, detail, price, expirydate, status, image, bids, username, category from (Select k.id, k.title, k.detail, k.price, k.expirydate, k.status, k.image, count(i.korkID) bids, u.username, kc.category, k.catID FROM inbox i INNER JOIN korks k ON i.korkID = k.id INNER JOIN users u ON k.userID = u.ID INNER JOIN kork_categories kc ON k.catID = kc.cat_id GROUP BY i.korkID order by bids DESC) b GROUP BY catID LIMIT 4");
+        $topresults = $sth->fetchAll(PDO::FETCH_ASSOC);
+        $numRes = count($topresults);
+        if($numRes == 0){
+            $sth = $dbh->query("Select k.id, k.title, k.detail, k.price, k.expirydate, k.status, k.image, count(i.korkID) bids, u.username, kc.category, k.catID FROM inbox i INNER JOIN korks k ON i.korkID = k.id INNER JOIN users u ON k.userID = u.ID INNER JOIN kork_categories kc ON k.catID = kc.cat_id GROUP BY i.korkID order by k.expirydate DESC LIMIT 4");
+            $topresults = $sth->fetchAll(PDO::FETCH_ASSOC);
+        }else if($numRes < 4){
+            $sth = $dbh->query("Select k.id, k.title, k.detail, k.price, k.expirydate, k.status, k.image, count(i.korkID) bids, u.username, kc.category, k.catID FROM inbox i INNER JOIN korks k ON i.korkID = k.id INNER JOIN users u ON k.userID = u.ID INNER JOIN kork_categories kc ON k.catID = kc.cat_id GROUP BY i.korkID order by bids DESC LIMIT 4");
+            $restresults = $sth->fetchAll(PDO::FETCH_ASSOC);
+            $topresults = array_unique(array_merge($topresults, $restresults));
+        }
+        foreach ($topresults as $row){
+            $kork_id = $row['id'];
+            $kork_title = $row['title'];
+            $kork_detail = $row['detail'];
+            $kork_price = nice_number($row['price']);
+            $kork_date = $row['expirydate'];
+            $kork_status = $row['status'];
+            $kork_image = $row['image'];
+            $kork_category = $row['category'];
+            $kork_user = $row['username'];
+            $kork_bids = $row['bids'];
+
+            echo "<li class='col-lg-3 col-md-6 col-sm-6'><a href='cate_desc.php?korkID=$kork_id'>
+                    <span class='available korkbadge'></span>
+                    <div class='col-lg-12 single_product'>
+                        <div class='img_wrap'>
+                            <img src='img/korkImages/$kork_image' width='234' alt='' class='img-responsive'>
+                        </div>
+                        <h3 class='block-ellipsis'>$kork_title</h3>
+                        <p class='prod_cat_22'>$kork_category Category</p>
+                        <p class='prod_cat_22'>By $kork_user</p>
+                        <p class='attributes'>".date('m-d-Y | h:i A', strtotime($kork_date))."</p>
+                        <div class='price_tag_22'>
+                            <span class='price_main'>Rs. $kork_price</span>
+                            <span class='offer_dt'>$kork_bids BID",($kork_bids > 1) ? "S" : "","</span>
+                        </div>
+                   </div>
+                </a></li>";
+        }
 		$dbh = null;
 		?>
 		</ul>
@@ -165,7 +193,7 @@ img {
         <ul>
           <li class="register"> <img src="img/register.png" width="58" alt="">
             <p>Register an account</p>
-            </figcaption>
+            
           </li>
           <li class="post_classified"> <img src="img/post_classified.png" width="65" alt="">
             <p>Post a classified<br>
@@ -195,7 +223,8 @@ $(document).ready(function() {
 });
 
 </script> 
-<script src="js/nav-admin-dropdown.js"></script>
 <script src="js/school-list.js"></script>
+<script src="js/nav-admin-dropdown.js"></script>
+
 </body>
 </html>

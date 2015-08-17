@@ -13,22 +13,6 @@ include 'headers/_user-details.php';
 		$stmt->execute();
 		$searchRows = $stmt->fetchAll(PDO::FETCH_COLUMN, 0);*/
 	}
-
-    function nice_number($n) {
-        // first strip any formatting;
-        $n = (0+str_replace(",", "", $n));
-
-        // is this a number?
-        if (!is_numeric($n)) return false;
-
-        // now filter it;
-        /*if ($n > 1000000000000) return round(($n/1000000000000), 2).' trillion';
-        elseif ($n > 1000000000) return round(($n/1000000000), 2).' B';*/
-        if ($n > 1000000) return round(($n/1000000), 2).'M';
-        elseif ($n > 1000) return round(($n/1000), 2).'K';
-
-        return number_format($n);
-    }
 ?>
 
 <!doctype html>
@@ -79,32 +63,31 @@ $(document).ready(function() {
 
 <body>
 <div>
-	<div class="header_bg static_top">
-        <header class="main-header">
-        <a id="simple-menu" class="icon-menu" href="#sidr"></a>
-            <?php include 'headers/menu-top-navigation.php';?>
-        </header>
-		<?php include 'headers/subhead.php' ?>
-        <div class="clear"></div>
-        
-        <div class="submenu_wrap">
-        <div class="category_submenu">
-        	<nav>
-            	<ul class="topic-list">
-                    <li><a href="#">Advertising</a></li>
-                    <li><a href="#">Video &amp; Animation</a></li>
-                    <li><a href="#">Graphics &amp; Design</a></li>
-                    <li><a href="#">Programming &amp; Tech</a></li>
-                    <li><a href="#">Music &amp; Audio</a></li>
-                    <li><a href="#">Gifts</a></li>
-                    <li><a href="#">Fun &amp; Bizarre</a></li>
-                    <li><a href="#">Online Marketing</a></li>
-                    <li><a href="#">Writing &amp; Translation</a></li>
-                </ul>
-            </nav>
-        </div>
-        </div>
-    </div><!--/.header_bg-->
+	    <div class="header_bg">
+      <header class="main-header"> <a id="simple-menu" class="icon-menu" href="#sidr"></a>
+        <?php include 'headers/menu-top-navigation.php';?>
+      </header>
+    </div>
+      <?php include 'headers/subhead.php' ?>
+      <div class="clear"></div>
+
+  <div class="submenu_wrap">
+    <div class="category_submenu">
+      <nav>
+        <ul class="topic-list">
+          <li><a href="#">Advertising</a></li>
+          <li><a href="#">Video &amp; Animation</a></li>
+          <li><a href="#">Graphics &amp; Design</a></li>
+          <li><a href="#">Programming &amp; Tech</a></li>
+          <li><a href="#">Music &amp; Audio</a></li>
+          <li><a href="#">Gifts</a></li>
+          <li><a href="#">Fun &amp; Bizarre</a></li>
+          <li><a href="#">Online Marketing</a></li>
+          <li><a href="#">Writing &amp; Translation</a></li>
+        </ul>
+      </nav>
+    </div>
+  </div>
     <article class="header_bg_para">
     	<div class="banner_static">
         	<div class="left_alpha">
@@ -127,26 +110,26 @@ $(document).ready(function() {
 			if(isset($_GET['category']) == true || isset($_POST['query']) == true){
 				if(isset($_GET['category']) == true && isset($_POST['query']) == true){
 						$cat_id = $_GET['category'];
-						$sql = "SELECT k.id, k.title, k.userID, k.detail, k.price, k.image, k.expirydate, u.ID, u.collegeID, count(i.ID) as `bids` FROM `korks` k join `users` u on u.ID = k.userID left outer join `inbox` i on k.id = i.korkID where k.collegeID = $school_id AND k.catID = $cat_id AND k.status = 0 AND k.id IN (Select kt.korkId FROM kork_tags kt where kt.tag like '%".mysqli_real_escape_string($con, $searchq)."%') group by k.id ORDER BY k.id DESC";
+						$sql = "SELECT k.id, k.title, k.userID, k.detail, k.price, k.image, k.expirydate, u.ID, u.username, u.collegeID, count(i.ID) as `bids` FROM `korks` k join `users` u on u.ID = k.userID left outer join `inbox` i on k.id = i.korkID where k.collegeID = $school_id AND k.catID = $cat_id AND k.status = 0 AND k.id IN (Select kt.korkId FROM kork_tags kt where kt.tag like '%".mysqli_real_escape_string($con, $searchq)."%') group by k.id ORDER BY k.id DESC";
 				}else{
 					if(isset($_GET['category'])){
 						$cat_id = $_GET['category'];
-						$sql = "SELECT k.id, k.title, k.userID, k.detail, k.price, k.image, k.expirydate, u.ID, u.collegeID, count(i.ID) as `bids` FROM `korks` k join `users` u on u.ID = k.userID left outer join `inbox` i on k.id = i.korkID where k.collegeID = $school_id AND k.catID = $cat_id AND k.status = 0 group by k.id ORDER BY k.id DESC";
+						$sql = "SELECT k.id, k.title, k.userID, k.detail, k.price, k.image, k.expirydate, u.ID, u.username, u.collegeID, count(i.ID) as `bids` FROM `korks` k join `users` u on u.ID = k.userID left outer join `inbox` i on k.id = i.korkID where k.collegeID = $school_id AND k.catID = $cat_id AND k.status = 0 group by k.id ORDER BY k.id DESC";
 					}else {
-						$sql = "SELECT k.id, k.title, k.userID, k.detail, k.price, k.image, k.expirydate, u.ID, u.collegeID, count(i.ID) as `bids` FROM `korks` k join `users` u on u.ID = k.userID left outer join `inbox` i on k.id = i.korkID where k.collegeID = $school_id AND k.status = 0 AND k.id IN (Select kt.korkId FROM kork_tags kt where kt.tag like '%".mysqli_real_escape_string($con, $searchq)."%') group by k.id ORDER BY k.id DESC";
+						$sql = "SELECT k.id, k.title, k.userID, k.detail, k.price, k.image, k.expirydate, u.ID, u.username, u.collegeID, count(i.ID) as `bids` FROM `korks` k join `users` u on u.ID = k.userID left outer join `inbox` i on k.id = i.korkID where k.collegeID = $school_id AND k.status = 0 AND k.id IN ((Select kt.korkId FROM kork_tags kt where kt.tag like '%".mysqli_real_escape_string($con, $searchq)."%')) OR k.title Like '%".mysqli_real_escape_string($con, $searchq)."%' group by k.id ORDER BY k.id DESC";
                         
                         //$searchRows = implode(',',$searchRows);    
                         /*"SELECT k.id, k.title, k.userID, k.detail, k.price, k.image, k.expirydate, u.ID, u.collegeID, count(i.ID) as `bids` FROM `korks` k join `users` u on u.ID = k.userID left outer join `inbox` i on k.id = i.korkID where u.collegeID = $school_id AND k.status = 0 AND k.userID IN ($searchRows) group by k.id ORDER BY k.id DESC";*/
 					}
 				}
 			}else{
-				$sql = "SELECT k.id, k.title, k.userID, k.detail, k.price, k.image, k.expirydate, u.ID, u.collegeID, count(i.ID) as `bids` FROM `korks` k join `users` u on u.ID = k.userID left outer join `inbox` i on k.id = i.korkID where k.collegeID = $school_id AND k.status = 0 group by k.id ORDER BY k.id DESC";
+				$sql = "SELECT k.id, k.title, k.userID, k.detail, k.price, k.image, k.expirydate, u.ID, u.username, u.collegeID, count(i.ID) as `bids` FROM `korks` k join `users` u on u.ID = k.userID left outer join `inbox` i on k.id = i.korkID where k.collegeID = $school_id AND k.status = 0 group by k.id ORDER BY k.id DESC";
 			}
 			$result = mysqli_query($con,$sql);
 			$count = mysqli_num_rows($result);
 			
             if(isset($_POST['query'])){
-                    echo "<div style='width: 1040px; margin: 15px auto;'><p class='alert-notice'>$count search result",($count == 1) ? "" : "s"," found for '$searchq'.</p>
+                    echo "<div class='searchmsg'><p class='alert-notice'>$count search result",($count == 1) ? "" : "s"," found for '$searchq'.</p>
                     </div>";
             } ?>
         
@@ -155,10 +138,10 @@ $(document).ready(function() {
     <?php if($count==0){
 				echo "<div id='contentSub' class='clearfix'>
 						  <div class='contentBox'>
-							  <p class='fontelico-emo-unhappy noKorks'> No Korks found.</p>
-							  <p class='noKorksCreate'>Are you looking to buy or sell something at ".ucwords(strtolower($school))."?</p>";
+							  <p class='fontelico-emo-unhappy noKorks'> No Korks found.</p>";
                             if(isset($_SESSION['username']) && $_college == $school_id){
-                              echo "<p class='noKorksCreate'><a href='create_gig.php' class='entypo-pencil'> Create Your Kork!</a></p>";
+							  echo "<p class='noKorksCreate'>Are you looking to buy or sell something at ".ucwords(strtolower($school))."?</p>
+                              <p class='noKorksCreate'><a href='create_gig.php' class='entypo-pencil'> Create Your Kork!</a></p>";
                             }
 						  echo" </div>
 					  </div>";
@@ -177,6 +160,7 @@ $(document).ready(function() {
 					$detail = $row['detail'];
 					$price=nice_number($row['price']);
 					$bids=$row['bids'];
+                    $username = $row['username'];
 					$status = "available";
                 
 					echo "<div class='prod_desc'><a href='cate_desc.php?korkID={$id}'>";
@@ -185,7 +169,7 @@ $(document).ready(function() {
 					echo "<div class='details'>";
 					echo "<h3 class='block-ellipsis' style='font-weight:bold;'>$title</h3>";
 					echo "<h3 class='details-block-ellipsis'> $detail </h3></a>";
-                    echo "<p>By: <a href=''>Rocker</a></p><p class='detail_timestamp'><span> ".date('m-d-Y | h:i A', strtotime($expiryDate))." </span></p>
+                    echo "<p>By: <a href='/$username'>$username</a></p><p class='detail_timestamp'><span> ".date('m-d-Y | h:i A', strtotime($expiryDate))." </span></p>
 						 <div class='price'><span class='price_first'>Rs. {$price}</span><span class='prod_scheme'>&nbsp; {$bids} <span class='off'>BID",$bids > 1 ? "S" : "","</span></span></div>
 					
 						</div>

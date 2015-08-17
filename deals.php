@@ -5,22 +5,6 @@ if(isset($_SESSION['username']) === false){
     header("Location: index.php");
     die();
 }
-
-function nice_number($n) {
-        // first strip any formatting;
-        $n = (0+str_replace(",", "", $n));
-
-        // is this a number?
-        if (!is_numeric($n)) return false;
-
-        // now filter it;
-        /*if ($n > 1000000000000) return round(($n/1000000000000), 2).' trillion';
-        elseif ($n > 1000000000) return round(($n/1000000000), 2).' B';*/
-        if ($n > 1000000) return round(($n/1000000), 2).'M';
-        elseif ($n > 1000) return round(($n/1000), 2).'K';
-
-        return number_format($n);
-}
 ?>
 
 <!doctype html>
@@ -93,16 +77,16 @@ $(document).ready(function() {
 	include 'headers/connect_database.php';
 	try {
 		/*** The SQL SELECT statement ***/
-		$sql = "SELECT k.id, k.title, k.userID, k.detail, k.price, k.image, k.expirydate, k.status, u.ID, u.collegeID, count(i.ID) as `bids` FROM `korks` k join `users` u on u.ID = k.userID left outer join `inbox` i on k.id = i.korkID where u.ID = $_userID group by k.id ORDER BY k.id DESC";
+		$sql = "SELECT k.id, k.title, k.userID, k.detail, k.price, k.image, k.expirydate, k.status, u.ID, u.collegeID, u.username, count(i.ID) as `bids` FROM `korks` k join `users` u on u.ID = k.userID left outer join `inbox` i on k.id = i.korkID where u.ID = $_userID group by k.id ORDER BY k.id DESC";
 		$result = mysqli_query($con,$sql);
 		$count = mysqli_num_rows($result);
 		
 		if($count==0){
 			echo "<div id='contentSub' class='clearfix'>
 					  <div class='contentBox'>
-						  <p class='fontelico-emo-unhappy noKorks'> No Korks found.</p>
-						  <p class='noKorksCreate'>Are you looking to buy or sell something at Southern Polytechnic State University?</p>
-						  <p class='noKorksCreate'><a href='/create-kork' class='entypo-pencil'> Create Your Kork!</a></p>
+						  <p class='fontelico-emo-unhappy noKorks'> No Deals found.</p>
+						  <p class='noKorksCreate'>Are you looking to buy or sell something at Walk n Sell?</p>
+						  <p class='noKorksCreate'><a href='/create-kork' class='entypo-pencil'> Create Your Deals!</a></p>
 					  </div>
 				  </div>";
 		}
@@ -120,6 +104,7 @@ $(document).ready(function() {
 				$detail = $row['detail'];
 				$price = nice_number($row['price']);
 				$bids = $row['bids'];
+                $username = $row['username'];
 				$status = $row['status'];
 				if($status == 0){
 					$status = "available";
@@ -134,7 +119,7 @@ $(document).ready(function() {
 				echo "<div class='details'>";
 				echo "<h3 class='block-ellipsis' style='font-weight:bold;'>$title</h3></a>";
 				echo "<h3 class='details-block-ellipsis'> $detail </h3></a>";
-				echo "<p>By: <a href=''>Rocker</a></p><p class='detail_timestamp'><span>".date('m-d-Y | h:i A', strtotime($expiryDate))."</p>
+				echo "<p>By: <a href='/$username'>$username</a></p><p class='detail_timestamp'><span>".date('m-d-Y | h:i A', strtotime($expiryDate))."</p>
 					 <div class='price'><span class='price_first'>Rs. {$price}</span><span class='prod_scheme'>&nbsp; {$bids} <span class='off'>BIDS</span></span></div>
 				
 					</div>
